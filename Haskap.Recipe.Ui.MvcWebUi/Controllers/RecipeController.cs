@@ -63,6 +63,12 @@ public class RecipeController : Controller
     }
 
     [HttpPut]
+    public async Task MarkAsDraft(Guid id, CancellationToken cancellationToken = default)
+    {
+        await _recipeService.MarkAsDraftAsync(id, cancellationToken);
+    }
+
+    [HttpPut]
     public async Task Update(Guid id, UpdateInputDto inputDto, CancellationToken cancellationToken = default)
     {
         await _recipeService.UpdateAsync(id, inputDto, cancellationToken);

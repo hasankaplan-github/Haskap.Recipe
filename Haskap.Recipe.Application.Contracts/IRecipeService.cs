@@ -11,5 +11,6 @@ public interface IRecipeService
     Task<CreateAsDraftOutputDto> CreateAsDraftAsync(CreateAsDraftInputDto inputDto, CancellationToken cancellationToken);
     Task<RecipeOutputDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     Task ActivateAsync(Guid id, CancellationToken cancellationToken);
+    Task MarkAsDraftAsync(Guid id, CancellationToken cancellationToken);
     Task UpdateAsync(Guid id, UpdateInputDto inputDto, CancellationToken cancellationToken);
 }

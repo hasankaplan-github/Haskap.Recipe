@@ -39,6 +39,17 @@ public class RecipeService : IRecipeService
         await _recipeDbContext.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task MarkAsDraftAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var recipe = await _recipeDbContext.Recipe
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        recipe.MarkAsDraft();
+
+        await _recipeDbContext.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task<CreateAsDraftOutputDto> CreateAsDraftAsync(CreateAsDraftInputDto inputDto, CancellationToken cancellationToken)
     {
         var recipe = new Recipe.Domain.RecipeAggregate.Recipe(
