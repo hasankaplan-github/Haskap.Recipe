@@ -1,0 +1,153 @@
+﻿@using Haskap.Recipe.Application.Dtos;
+@using Haskap.Recipe.Application.Dtos.Accounts
+@using Haskap.DddBase.Domain.Shared.Consts;
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Ajanda Giriş Ekranı";
+
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+@*<p>@TimeZone.CurrentTimeZone.StandardName</p>
+<p>@TimeZone.CurrentTimeZone.DaylightName</p>
+<p>@TimeZone.CurrentTimeZone.ToUniversalTime(DateTime.Now)</p>
+<p>@TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now)</p>
+
+*@
+<div class="login-box">
+   
+    <!-- /.login-logo -->
+    <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+            @*<a href="../../index2.html" class="h1"><b>Admin</b>LTE</a>*@
+            <b>Ajanda</b>
+        </div>
+        <div class="card-body">
+            <p class="login-box-msg">Oturum başlatmak için giriş yapın</p>
+
+            <form id="loginForm" asp-action="Login" method="post" asp-route-returnUrl="@(ViewBag.ReturnUrl)">
+                @*<input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />*@
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Kullanıcı Adı" name="userName" id="userName">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-user"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" class="form-control" placeholder="Şifre" name="password" id="password">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8">
+                        @*
+                        <div class="icheck-primary">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">
+                        Remember Me
+                        </label>
+                        </div>
+                        *@
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary btn-block">Giriş Yap</button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            </form>
+
+            @*<div class="social-auth-links text-center mt-2 mb-3">
+            <a href="#" class="btn btn-block btn-primary">
+            <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
+            </a>
+            <a href="#" class="btn btn-block btn-danger">
+            <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
+            </a>
+            </div>*@
+            <!-- /.social-auth-links -->
+            @*<p class="mb-1">
+            <a href="forgot-password.html">I forgot my password</a>
+            </p>
+            <p class="mb-0">
+            <a href="register.html" class="text-center">Register a new membership</a>
+            </p>*@
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+</div>
+<!-- /.login-box -->
+
+
+@section Scripts{
+
+    
+
+    <script>
+
+        var redirectStarted = false;
+
+        $(document).ready(function () {
+            $('.select2').select2()
+        });
+
+        $(document).ready(function () {
+            $("#userName").val('guest');
+            $("#password").val('guest');
+            //$('#tenantId').prop('selectedIndex', 1).change();
+
+            //$("#loginForm").trigger("submit");
+        });
+
+        $("#loginForm").on("submit", function (event) {
+            redirectStarted = false;
+
+            let userName = $("#userName").val();
+            let password = $("#password").val();
+
+            if (userName == null || userName == undefined || userName == '' ||
+                password == null || password == undefined || password == '') {
+
+                Swal.fire('Hata', 'Kullanıcı Adı ve Şifre girmeniz gerekmektedir.', 'error');
+
+                event.preventDefault();
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Login", "Account")',
+                headers: {
+                    'RequestVerificationToken': '@antiforgeryToken'
+                },
+                data: {
+                    userName: userName,
+                    password: password,
+                    returnUrl: "@ViewBag.ReturnUrl"
+                }
+            }).done(function (result, status, xhr) {
+                redirectStarted = true;
+                window.location.href = "@(ViewBag.ReturnUrl)";
+                
+            });
+
+            event.preventDefault();
+            return false;
+        });
+
+    </script>
+
+}

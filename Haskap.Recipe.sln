@@ -1,0 +1,89 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{29A40090-9FB1-42FB-AE99-E2C1FABF4194}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{E811F540-7C4E-41E8-B6A3-5E83EB5A0EC8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{8F774455-FA94-4C8A-9C73-501E1564CD9A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{518EF7F2-341A-4662-9F72-EBA42C0746F5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ui", "Ui", "{0E0A1C62-3092-42C3-8718-78104D542429}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{35361AEC-FEAC-41CC-B3A3-0BE1797FDEFA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Haskap.Recipe.Application.Contracts", "Haskap.Recipe.Application.Contracts\Haskap.Recipe.Application.Contracts.csproj", "{84F1AAE9-E73A-4D03-8CA8-E63AE0E14E77}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Haskap.Recipe.Application.UseCaseServices", "Haskap.Recipe.Application.UseCaseServices\Haskap.Recipe.Application.UseCaseServices.csproj", "{2D9C4B93-D914-485F-ADA2-A8B7E98F1C37}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Haskap.Recipe.Application.Dtos", "Haskap.Recipe.Application.Dtos\Haskap.Recipe.Application.Dtos.csproj", "{6FFA5E46-B7B8-4D0D-8A54-58A3D65C56D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Haskap.Recipe.Domain", "Haskap.Recipe.Domain\Haskap.Recipe.Domain.csproj", "{CF347A68-6556-4DBC-8E63-A98A71CC5965}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Haskap.Recipe.Domain.Shared", "Haskap.Recipe.Domain.Shared\Haskap.Recipe.Domain.Shared.csproj", "{794EE645-5905-45E5-A138-0C9924F45C3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haskap.Recipe.Presentation.WebApi", "Haskap.Recipe.Presentation.WebApi\Haskap.Recipe.Presentation.WebApi.csproj", "{18285459-E388-4499-AFFA-587791265622}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Haskap.Recipe.Ui.MvcWebUi", "Haskap.Recipe.Ui.MvcWebUi\Haskap.Recipe.Ui.MvcWebUi.csproj", "{B9AE052D-6094-4995-86DF-019E42BDD4F9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Haskap.Recipe.Infra", "Haskap.Recipe.Infra\Haskap.Recipe.Infra.csproj", "{C1729218-B488-4B2B-A545-855FB86C946E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{84F1AAE9-E73A-4D03-8CA8-E63AE0E14E77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84F1AAE9-E73A-4D03-8CA8-E63AE0E14E77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84F1AAE9-E73A-4D03-8CA8-E63AE0E14E77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84F1AAE9-E73A-4D03-8CA8-E63AE0E14E77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D9C4B93-D914-485F-ADA2-A8B7E98F1C37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D9C4B93-D914-485F-ADA2-A8B7E98F1C37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D9C4B93-D914-485F-ADA2-A8B7E98F1C37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D9C4B93-D914-485F-ADA2-A8B7E98F1C37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FFA5E46-B7B8-4D0D-8A54-58A3D65C56D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FFA5E46-B7B8-4D0D-8A54-58A3D65C56D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FFA5E46-B7B8-4D0D-8A54-58A3D65C56D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FFA5E46-B7B8-4D0D-8A54-58A3D65C56D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF347A68-6556-4DBC-8E63-A98A71CC5965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF347A68-6556-4DBC-8E63-A98A71CC5965}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF347A68-6556-4DBC-8E63-A98A71CC5965}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF347A68-6556-4DBC-8E63-A98A71CC5965}.Release|Any CPU.Build.0 = Release|Any CPU
+		{794EE645-5905-45E5-A138-0C9924F45C3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{794EE645-5905-45E5-A138-0C9924F45C3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{794EE645-5905-45E5-A138-0C9924F45C3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{794EE645-5905-45E5-A138-0C9924F45C3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18285459-E388-4499-AFFA-587791265622}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18285459-E388-4499-AFFA-587791265622}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18285459-E388-4499-AFFA-587791265622}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18285459-E388-4499-AFFA-587791265622}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9AE052D-6094-4995-86DF-019E42BDD4F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9AE052D-6094-4995-86DF-019E42BDD4F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9AE052D-6094-4995-86DF-019E42BDD4F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9AE052D-6094-4995-86DF-019E42BDD4F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1729218-B488-4B2B-A545-855FB86C946E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1729218-B488-4B2B-A545-855FB86C946E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1729218-B488-4B2B-A545-855FB86C946E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1729218-B488-4B2B-A545-855FB86C946E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{84F1AAE9-E73A-4D03-8CA8-E63AE0E14E77} = {E811F540-7C4E-41E8-B6A3-5E83EB5A0EC8}
+		{2D9C4B93-D914-485F-ADA2-A8B7E98F1C37} = {E811F540-7C4E-41E8-B6A3-5E83EB5A0EC8}
+		{6FFA5E46-B7B8-4D0D-8A54-58A3D65C56D1} = {E811F540-7C4E-41E8-B6A3-5E83EB5A0EC8}
+		{CF347A68-6556-4DBC-8E63-A98A71CC5965} = {29A40090-9FB1-42FB-AE99-E2C1FABF4194}
+		{794EE645-5905-45E5-A138-0C9924F45C3D} = {29A40090-9FB1-42FB-AE99-E2C1FABF4194}
+		{18285459-E388-4499-AFFA-587791265622} = {518EF7F2-341A-4662-9F72-EBA42C0746F5}
+		{B9AE052D-6094-4995-86DF-019E42BDD4F9} = {0E0A1C62-3092-42C3-8718-78104D542429}
+		{C1729218-B488-4B2B-A545-855FB86C946E} = {8F774455-FA94-4C8A-9C73-501E1564CD9A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C96E24C1-FBF4-49A8-BB7B-87C86D529CB6}
+	EndGlobalSection
+EndGlobal

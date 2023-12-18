@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    @*<link rel="stylesheet" href="~/lib/AdminLte_3_2_0/plugins/fontawesome-free/css/all.min.css">*@
+    <link rel="stylesheet" href="~/lib/fontawesome_6_2_0/css/all.min.css">
+    <link href="~/lib/adminlte_3_2_0/plugins/select2/css/select2.min.css" rel="stylesheet" />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/lib/AdminLte_3_2_0/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <style>
+        .loading {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba( 255, 255, 255, .8 ) url('/LoadingAnimation.gif') 50% 50% no-repeat;
+        }
+
+        .loading_text {
+            position: fixed;
+            z-index: 1000;
+            top: 54%;
+            left: 38%;
+            font-family: Arial;
+            font-size: large;
+            /*color: midnightblue;*/
+        }
+    </style>
+
+    <!-- Styles -->
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body class="hold-transition login-page">
+    <!-- Preloader -->
+    <div class="loading">
+        <p>
+            <span class="loading_text">Başlattığınız işlem devam etmektedir. Lütfen bekleyiniz...</span>
+        </p>
+        @*<img class="animation__shake loading_text" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">*@
+    </div>
+
+    @RenderBody()
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - Ajanda - <a asp-area="" asp-controller="Home" asp-action="About">Hakkında</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/adminlte_3_2_0/plugins/select2/js/select2.full.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/lib/AdminLte_3_2_0/dist/js/adminlte.min.js"></script>
+    <script src="~/lib/sweetalert/dist/sweetalert2.all.min.js"></script>
+
+    <script>
+        $(document).ajaxError(function (event, jqxhr, settings, thrownError) {
+            let envelope = $.parseJSON(jqxhr.responseText);
+
+            if (envelope && envelope.hasError) {
+                let exceptionStackTrace = envelope.exceptionStackTrace ? envelope.exceptionStackTrace : '';
+                Swal.fire(
+                    'Hata',
+                    envelope.exceptionMessage + "<br /><br />" + exceptionStackTrace,
+                    'error'
+                );
+            }
+            else {
+                Swal.fire(
+                    'Beklenmedik Hata',
+                    jqxhr.responseText,
+                    'error'
+                );
+            }
+        });
+
+        $(document).ajaxStart(function () {
+            $(".loading").show();
+        });
+        $(document).ajaxStop(function () {
+            if (redirectStarted) {
+                return;
+            }
+
+            $(".loading").hide();
+        });
+
+        $(this).submit(function (e) {
+            $(".loading").show();
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

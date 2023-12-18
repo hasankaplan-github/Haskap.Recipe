@@ -1,0 +1,102 @@
+﻿@using Haskap.Recipe.Application.Dtos.Roles;
+@using Haskap.Recipe.Application.Dtos.Common;
+@using Haskap.DddBase.Presentation.CustomAuthorization;
+@using Haskap.DddBase.Domain.Providers;
+
+@inject ICurrentTenantProvider currentTenantProvider;
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model List<RoleOutputDto>
+
+@{
+    var tenantId = ViewBag.TenantId as Guid?;
+    var selectedRoles = (ViewBag.SelectedRoles as List<RoleOutputDto>) ?? new List<RoleOutputDto>();
+    var selected = false;
+
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+
+<div class="modal-header bg-primary">
+    <h5 class="modal-title" id="staticBackdropLabel"><i class="fa-solid fa-tags"></i> Roller</h5>
+    <button type="button" class="btn-close cancelUserUpdateRoles" @*data-bs-dismiss="modal"*@ aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="d-flex align-items-center justify-content-center">
+        <div class="row">
+            @foreach (var role in Model)
+            {
+                selected = false;
+                if (selectedRoles.Exists(x => x.Id == role.Id))
+                {
+                    selected = true;
+                }
+                <div class="custom-control custom-checkbox">
+                    <input class="custom-control-input" type="checkbox" @Html.Raw(selected ? "checked=\"checked\"" : string.Empty) id="@role.Id" value="@role.Id">
+                    <label for="@role.Id" class="custom-control-label">@role.Name</label>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary cancelUserUpdateRoles" @*data-bs-dismiss="modal"*@ id="cancelUserUpdateRolesButton">İptal</button>
+    <button type="button" class="btn btn-primary" @*data-bs-dismiss="modal"*@ id="saveUserUpdateRolesButton"><i class="fas fa-save"></i> Kaydet</button>
+</div>
+
+<script type="text/javascript">
+
+    $(".cancelUserUpdateRoles").click(function () {
+        hideUserUpdateRolesModal();
+    })
+
+    $("#saveUserUpdateRolesButton").click(function () {
+        let checkedRoles = $("input:checked").map(function () {
+            return this.value;
+        }).get();
+
+        let uncheckedRoles = $("input:checkbox:not(:checked)").map(function () {
+            return this.value;
+        }).get();
+
+
+        $.ajax({
+            type: 'POST',
+            headers: {
+                'RequestVerificationToken': '@antiforgeryToken'
+            },
+            @if (currentTenantProvider.CurrentTenantId.HasValue)
+            {
+                @:url: '@Url.Action("UpdateRoles", "Account")',
+            }
+            else
+            {
+                @:url: '@Url.Action("UpdateRolesOnHost", "Account")',
+            }
+            data: {
+                @if (!currentTenantProvider.CurrentTenantId.HasValue)
+                {
+                    @:tenantId: '@tenantId',
+                }
+                userId: '@ViewBag.UserId',
+                checkedRoles: checkedRoles,
+                uncheckedRoles: uncheckedRoles
+            }
+        }).done(function (data, status, xhr) {
+            Swal.fire(
+                'Başarılı',
+                'Roller başarıyla güncellendi.',
+                'success'
+            );
+
+            hideUserUpdateRolesModal();
+        });
+    })
+
+</script>

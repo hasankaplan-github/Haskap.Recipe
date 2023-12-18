@@ -1,0 +1,128 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    
+}
+
+<!-- Default box -->
+<div class="card">
+    <div class="card-body row">
+        <div class="d-flex align-items-center justify-content-center">
+            <div class="">
+                @*<h2>Admin<strong>LTE</strong></h2>
+                <p class="lead mb-5">
+                    123 Testing Ave, Testtown, 9876 NA<br>
+                    Phone: +1 234 56789012
+                </p>*@
+
+                <div class="d-flex align-items-stretch flex-column">
+                    <div class="card bg-light d-flex flex-fill">
+                        <div class="card-header text-muted border-bottom-0">
+                            Geliştirici Hakkında
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="row">
+                                <div @*class="col-7"*@>
+                                    <h2 class="lead"><b>Hasan Kaplan</b></h2>
+                                    <p class="text-muted text-sm">@*<b>About: </b>*@ Bu uygulama hakkında veya yeni uygulama fikirleriniz için benimle iletişime geçebilirsiniz. </p>
+                                    <ul class="ml-4 mb-0 fa-ul text-muted">
+                                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-envelope"></i></span> Email: <a href="mailto:hasankaplan.kariyer@gmail.com">hasankaplan.kariyer@gmail.com</a></li>
+                                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span> Telefon #: <a href="tel:+905050710520">0 505 071 0520</a></li>
+                                    </ul>
+                                </div>
+                                @*<div class="col-5 text-center">
+                                    <img src="../../dist/img/user1-128x128.jpg" alt="user-avatar" class="img-circle img-fluid">
+                                </div>*@
+                            </div>
+                        </div>
+                        @*<div class="card-footer">
+                            <div class="text-right">
+                                <a href="#" class="btn btn-sm bg-teal">
+                                    <i class="fas fa-comments"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-user"></i> View Profile
+                                </a>
+                            </div>
+                        </div>*@
+                    </div>
+                </div>
+            
+                <div class="d-flex align-items-stretch flex-column">
+                    <div class="card bg-light d-flex flex-fill">
+                        <div class="card-header text-muted border-bottom-0">
+                            Uygulama Hakkında
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="row">
+                                <div @*class="col-7"*@>
+                                    <h2 class="lead"><b>Yetenekler</b></h2>
+                                    <ul class="text-muted">
+                                        <li>Takvim görünümü kullanılarak rezervasyonların yönetilebilmesi sağlandı.</li>
+                                        <li>Ajandada resmi tatil günleri görülebiliyor.</li>
+                                        <li>Ajandada Ö.S.Y.M. sınav günleri görülebiliyor.</li>
+                                        <li>Gösterge Paneli sayfası ile, en az işlemle, özet bilgiye erişilebilmesi sağlandı.</li>
+                                        <li>Rezervasyon Arama sayfasında rezervasyonlara liste görünümünde erişilebilmesi sağlandı.</li>
+                                        <li>Raporlarda aylık ve yıllık olmak üzere iki period seçeneği sunuldu.</li>
+                                    </ul>
+
+                                    <h2 class="lead"><b>Teknik Yetenekler</b></h2>
+                                    <ul class="text-muted">
+                                        <li>En güncel teknolojiler kullanılmaya özen gösterildi.</li>
+                                        <li>Clean Architecture/Onion Architecture/Domain Driven Design mimarileriyle/yaklaşımlarıyla geliştirme yapıldı.</li>
+                                        <li>Clean Code teknikleri kullanıldı.</li>
+                                        <li>Kullanıcı şifresi "salt" değeriyle beraber "hash" lenerek saklanmaktadır. Açık şifre kaydedilmemektedir.</li>
+                                        <li>Framework olarak "<a href="https://dotnet.microsoft.com/en-us/download/dotnet/7.0">ASP.NET Core 7.0</a>" kullanıldı.</li>
+                                        <li>ORM olarak "<a href="https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/whatsnew">Entity Framework Core 7.0</a>" kullanıldı.</li>
+                                        <li>Veritabanı olarak "<a href="https://www.postgresql.org/">PostgreSQL</a>" kullanıldı.</li>
+                                        <li>"<a href="https://docs.fluentvalidation.net/en/latest/">Fluent Validation</a>" kullanıldı.</li>
+                                        <li>"<a href="https://github.com/ardalis/GuardClauses">Ardalis Guard Clauses</a>" kullanıldı.</li>
+                                        <li>"<a href="https://docs.automapper.org/en/stable/Getting-started.html">AutoMapper</a>" kullanıldı.</li>
+                                        <li>"<a href="https://github.com/jbogard/MediatR">MediatR</a>" kullanıldı.</li>
+                                        <li>"<a href="https://adminlte.io/">AdminLte</a>" arayüz şablonu kullanıldı.</li>
+                                        <li>"<a href="https://getbootstrap.com/">Bootstrap</a>" css kütüphanesi kullanıldı.</li>
+                                        <li>"<a href="https://jquery.com/">JQuery</a>" js kütüphanesi kullanıldı.</li>
+                                        <li>Takvim görünümü için "<a href="https://fullcalendar.io/">FullCalendar</a>" kullanıldı ve yeteneklerinden faydalanılıyor.</li>
+                                        <li>Grafikler için "<a href="https://www.chartjs.org/">Chart.js</a>" kullanıldı.</li>
+                                        <li>Liste görünümü için "<a href="https://datatables.net/">JQuery DataTables</a>" kullanıldı.</li>
+                                        <li>Resimleri görüntülemek için "<a href="https://fengyuanchen.github.io/viewerjs/">Viewer.js</a>" kullanıldı.</li>
+                                        <li>Resmi tatil günleri için "<a href="https://date.nager.at/">Nager.Date</a>" ve "<a href="https://github.com/martinjw/Holiday">Holiday</a>" kütüphanelerinden faydalanılarak özelleştirilmiş kod geliştirmesi yapıldı.</li>
+                                        <li>Ö.S.Y.M. sınav takvimi için <a href="https://www.osym.gov.tr/TR,8797/takvim.html">Ö.S.Y.M.' nin sınav takvimi sitesi</a> parse edilerek tarihlere erişildi. Parse işlemi için "<a href="https://anglesharp.github.io/">AngleSharp</a>" kullanıldı.</li>
+                                    </ul>
+
+                                    <h2 class="lead"><b>Eksiklikler</b></h2>
+                                    <ul class="text-muted mb-0">
+                                        <li>Önyüz yeteri kadar responsive değil (bilgisayar ekranlarında kullanılması amaçlandı ve ona göre tasarlandı.)</li>
+                                        <li>Önyüzde görsellik anlamında eksiklikler bulunuyor.</li>
+                                    </ul>
+                                    @*<p class="text-muted text-sm">Bu uygulama hakkında veya yeni uygulama fikirleriniz için benimle iletişime geçebilirsiniz. </p>
+                                    <ul class="ml-4 mb-0 fa-ul text-muted">
+                                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-envelope"></i></span> Email: hasankaplan.kariyer@gmail.com</li>
+                                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span> Telefon #: 0 505 071 0520</li>
+                                    </ul>*@
+                                </div>
+                                @*<div class="col-5 text-center">
+                                <img src="../../dist/img/user1-128x128.jpg" alt="user-avatar" class="img-circle img-fluid">
+                                </div>*@
+                            </div>
+                        </div>
+                        @*<div class="card-footer">
+                        <div class="text-right">
+                        <a href="#" class="btn btn-sm bg-teal">
+                        <i class="fas fa-comments"></i>
+                        </a>
+                        <a href="#" class="btn btn-sm btn-primary">
+                        <i class="fas fa-user"></i> View Profile
+                        </a>
+                        </div>
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

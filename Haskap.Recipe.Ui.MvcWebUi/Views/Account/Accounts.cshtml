@@ -1,0 +1,345 @@
+﻿@using Haskap.Recipe.Application.Dtos.Accounts;
+@using Haskap.DddBase.Domain.Providers;
+
+@inject ICurrentTenantProvider currentTenantProvider;
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    var tenantId = ViewBag.TenantId as Guid?;
+
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+
+<!-- Modal -->
+<div class="modal fade" id="userUpdatePermissionsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div id="userUpdatePermissionsModalContent" class="modal-content">
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="userUpdateRolesModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div id="userUpdateRolesModalContent" class="modal-content">
+        </div>
+    </div>
+</div>
+
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <h5 class="card-title">Kullanıcı Arama Parametreleri</h5>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <label for="searchUserFirstNameInput" class="form-label">Adı</label>
+                <input type="text" maxlength="100" class="form-control" id="searchUserFirstNameInput" aria-describedby="Adı">
+            </div>
+
+            <div class="col-md-3">
+                <label for="searchUserLastNameInput" class="form-label">Soyadı</label>
+                <input type="text" maxlength="100" class="form-control" id="searchUserLastNameInput" aria-describedby="Soyadı">
+            </div>
+
+            <div class="col-md-3">
+                <label for="searchUserUserNameInput" class="form-label">Kullanıcı Adı</label>
+                <input type="text" maxlength="100" class="form-control" id="searchUserUserNameInput" aria-describedby="Kullanıcı Adı">
+            </div>
+
+            <div class="col-md-3">
+                <label for="searchUserIsActiveSelect" class="form-label">Aktiflik</label>
+                <select id="searchUserIsActiveSelect" class="form-control select2" style="width: 100%;">
+                    <option value=""></option>
+                    <option value="true">Aktif</option>
+                    <option value="false">Pasif</option>
+                </select>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.card-body -->
+
+    <div class="card-footer">
+        <button id="searchButton" type="button" class="btn btn-primary float-right">Ara</button>
+    </div>
+    <!-- /.card-footer -->
+</div>
+<!-- /.card -->
+
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Arama Sonucu</h3>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <table id="searchResultTable" class="table table-bordered table-striped compact">
+            </table>
+        </div>
+    </div>
+    <!-- /.card-body -->
+</div>
+<!-- /.card -->
+@section StylesBeforeTheme {
+    <link href="~/lib/adminlte_3_2_0/plugins/select2/css/select2.min.css" rel="stylesheet" />
+}
+
+
+@section Styles{
+    <link href='~/lib/jquery-dataTables/dist/css/datatables.min.css' rel='stylesheet' />
+}
+
+@section Scripts{
+    <script src="~/lib/jquery-dataTables/dist/js/datatables.min.js"></script>
+
+    <script src="~/lib/adminlte_3_2_0/plugins/select2/js/select2.full.min.js"></script>
+
+    <script src="~/js/modalOperations.js" asp-append-version="true"></script>
+    <script src="~/js/accountOperations.js" asp-append-version="true"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            $('.select2').select2();
+        })
+
+        $(document).ready(function () {
+            searchResultTable = $("#searchResultTable").DataTable({
+                responsive: true,
+                //"lengthChange": true,
+                lengthMenu: [
+                    [10, 25, 50, 100],
+                    ['10', '25', '50', '100']
+                ],
+                //"autoWidth": false,
+
+                //dom: 'Bfrtip',
+                //dom: "lBfrtip",
+                dom: "ltip",
+                //"buttons": ["excelHtml5", "pdfHtml5"],
+                //buttons: [
+                //    {
+                //        extend: 'colvis',
+                //        text: 'Sütun Göster-Gizle',
+                //        titleAttr: 'Sütun Göster-Gizle'
+                //    },
+                //    {
+                //        extend: 'collection',
+                //        text: 'Dışarı Aktar',
+                //        buttons: [
+                //            {
+                //                extend: "copy",
+                //                text: "Kopyala",
+                //                exportOptions: {
+                //                    columns: ":visible" //[2,3,4,5,6,7,8,9,10,11,12]
+                //                },
+                //            },
+                //            {
+                //                extend: 'excelHtml5',
+                //                text: '<i class="fa fa-file-excel-o text-success"> Excel</i>',
+                //                exportOptions: {
+                //                    columns: ":visible" //[2,3,4,5,6,7,8,9,10,11,12]
+                //                },
+                //                //action: function(e, dt, button, config) {
+                //                //    //alert(JSON.stringify(e));
+                //                //}
+                //                //buttons: [
+                //                //    'copy',
+                //                //    'excel',
+                //                //    'csv',
+                //                //    'pdf',
+                //                //    'print'
+                //                //]
+                //            },
+                //            {
+                //                extend: 'pdfHtml5',
+                //                text: '<i class="fa fa-file-pdf-o text-danger"> PDF</i>',
+                //                titleAttr: 'PDF-e Aktar',
+                //                //message: 'Liste', //PDF Mesajı=Başlığın altında soldan başlıktan küçük fontla görünür
+                //                //title: 'Veriler',// Save File Name
+                //                //download: 'open',//PDF'i Browserda Yeni Sekmede  Pencere açar
+                //                'orientation': 'landscape',
+                //                //'pageSize':  'LETTER',
+                //                exportOptions: {
+                //                    columns: ":visible" //[2,3,4,5,6,7,8,9,10,11,12] //columns: [ 0, 1, 2, 5 ] //= Columnları sabitlemek her halukarda görntülenmesini sağlamak için
+                //                },
+                //                customize: function (doc) {
+                //                    doc.pageMargins = [10, 10, 10, 10];
+                //                }
+                //            },
+                //            'print'
+                //        ]
+                //    }
+                //],
+                "processing": true,
+                "serverSide": true,
+                "deferLoading": 0,
+                rowId: 'id',
+                //"ajax": "/CreditCardTypeManagement/G",
+                "ajax": {
+                    type: 'POST',
+                    headers: {
+                        'RequestVerificationToken': '@antiforgeryToken'
+                    },
+                    @if (currentTenantProvider.CurrentTenantId.HasValue)
+                    {
+                        @:url: "@Url.Action("Search", "Account")",
+                    }
+                    else
+                    {
+                        @:url: "@Url.Action("SearchOnHost", "Account")",
+                    }
+                    data: function (d) {
+                        @if (!currentTenantProvider.CurrentTenantId.HasValue)
+                        {
+                            @:d.tenantId = '@tenantId';
+                        }
+                        d.firstName = $("#searchUserFirstNameInput").val();
+                        d.lastName = $("#searchUserLastNameInput").val();
+                        d.userName = $("#searchUserUserNameInput").val();
+                        d.isActive = $("#searchUserIsActiveSelect").val();
+
+                        return d;
+                    }
+                    //contentType: "application/json"
+                },
+                columns: [
+                    { title: 'Adı', searchable: false, visible: true, data: "firstName" },
+                    { title: 'Soyadı', data: "lastName" },
+                    { title: 'User Name', data: "userName" },
+                    { title: 'System Time Zone Id', data: "systemTimeZoneId" },
+                    { title: 'Aktiflik', data: "isActive",
+                        render: function (data, type){
+                            let isActive = new Boolean(data);
+
+                            return isActive == true ? "Aktif" : "Pasif";
+                        }
+                    },
+                    { title: 'Firma Adı', data: "tenantName", orderable: false },
+                    {
+                        title: 'İşlemler', orderable: false,
+                        data: "id",
+                        render: function (data, type, row, meta) {
+                            if (type === 'display') {
+                                let toggleActiveStatusText = row.isActive == true ? "Pasifleştir" : "Aktifleştir";
+                                return '<div class="dropdown">' +
+                                    '<button type="button" class="btn btn-primary btn-sm dropdown-toggle dropdown-icon" data-bs-toggle="dropdown">İşlemler</button>' +
+                                    '<ul class="dropdown-menu">' +
+                                    '<li><a class="btn-danger dropdown-item" href="#" onclick="deleteUser(\'' + data + '\');"><i class="fa-solid fa-trash-can"></i> Sil</a></li>' +
+                                    '<li><a class="btn-danger dropdown-item" href="#" onclick="toggleActiveStatus(\'' + data + '\');"><i class="fa-solid fa-wave-square"></i> ' + toggleActiveStatusText + '</a></li>' +
+                                    @if (currentTenantProvider.CurrentTenantId.HasValue)
+                                    {
+                                        @:'<li><a class="btn-primary dropdown-item" href="#" onclick="showUpdatePermissionsModal(\'' + data + '\');"><i class="fa-solid fa-shield-halved"></i> Yetkiler</a></li>' +
+                                        @:'<li><a class="btn-primary dropdown-item" href="#" onclick="showUpdateRolesModal(\'' + data + '\');"><i class="fa-solid fa-user-tag"></i> Roller</a></li>' +
+                                    }
+                                    else
+                                    {
+                                        @:'<li><a class="btn-primary dropdown-item" href="#" onclick="showUpdatePermissionsModalOnHost(\'@tenantId\', \'' + data + '\');"><i class="fa-solid fa-shield-halved"></i> Yetkiler</a></li>' +
+                                        @:'<li><a class="btn-primary dropdown-item" href="#" onclick="showUpdateRolesModalOnHost(\'@tenantId\', \'' + data + '\');"><i class="fa-solid fa-user-tag"></i> Roller</a></li>' +
+                                    }
+                                    '</ul>' +
+                                    '</div>';
+                            }
+
+                            return data;
+                        }
+                    }
+                ],
+                "language": {
+                    "url": "/lib/jquery-dataTables/plugins/language/Turkish.json"
+                }
+                //,
+                //"columnDefs": [
+                //    {
+                //        "targets": [ 0 ],
+                //        "visible": false,
+                //        "searchable": false
+                //    }
+                //]
+            });
+        })
+
+        $("#searchButton").click(function () {
+            searchResultTable.draw();
+        })
+
+        function deleteUser(userId) {
+            Swal.fire({
+                icon: 'question',
+                title: 'Kullanıcıyı silmek istediğinizden emin misiniz?',
+                //showDenyButton: true,
+                showCancelButton: true,
+                cancelButtonText: 'İptal',
+                confirmButtonText: 'Sil',
+                //denyButtonText: `Don't save`,
+            }).then((confirmation) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (confirmation.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        headers: {
+                            'RequestVerificationToken': '@antiforgeryToken'
+                        },
+                        @if (currentTenantProvider.CurrentTenantId.HasValue)
+                        {
+                            @:url: "@Url.Action("Delete", "Account")",
+                        }
+                        else
+                        {
+                            @:url: "@Url.Action("DeleteOnHost", "Account")",
+                        }
+                        data: {
+                            @if (!currentTenantProvider.CurrentTenantId.HasValue)
+                            {
+                                @:tenantId: '@tenantId',
+                            }
+                            userId: userId
+                        }
+                    }).done(function (result, status, xhr) {
+                        Swal.fire('Başarıyla silindi.', '', 'success');
+
+                        searchResultTable.draw();
+                    });
+                }
+            });
+        }
+
+        function toggleActiveStatus(userId) { 
+            $.ajax({
+                type: "PUT",
+                headers: {
+                    'RequestVerificationToken': '@antiforgeryToken'
+                },
+                @if (currentTenantProvider.CurrentTenantId.HasValue)
+                {
+                    @:url: "@Url.Action("ToggleActiveStatus", "Account")",
+                }
+                else
+                {
+                    @:url: "@Url.Action("ToggleActiveStatusOnHost", "Account")",
+                }
+                data: {
+                    @if (!currentTenantProvider.CurrentTenantId.HasValue)
+                    {
+                        @:tenantId: '@tenantId',
+                    }
+                    userId: userId
+                }
+            }).done(function (result, status, xhr) {
+                Swal.fire('Başarıyla değiştirildi.', '', 'success');
+
+                searchResultTable.draw();
+            });
+        }
+
+    </script>
+}

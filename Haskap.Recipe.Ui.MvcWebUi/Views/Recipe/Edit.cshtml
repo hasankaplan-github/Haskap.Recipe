@@ -1,0 +1,129 @@
+﻿@using Haskap.Recipe.Application.Dtos.Recipies;
+@using Haskap.Recipe.Domain.Shared.Consts;
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model RecipeOutputDto
+
+@{
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+
+
+<ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="pills-basic-info-tab" data-bs-toggle="pill" data-bs-target="#pills-basic-info" type="button" role="tab" aria-controls="pills-basic-info" aria-selected="true">Temel Bilgiler</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pills-ingredients-tab" data-bs-toggle="pill" data-bs-target="#pills-ingredients" type="button" role="tab" aria-controls="pills-ingredients" aria-selected="false">Malzemeler</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pills-steps-tab" data-bs-toggle="pill" data-bs-target="#pills-steps" type="button" role="tab" aria-controls="pills-steps" aria-selected="false">Adımlar</button>
+    </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-basic-info" role="tabpanel" aria-labelledby="pills-basic-info-tab">
+        <div class="row">
+            <div class="col-md-12">
+                <label for="nameInput" class="form-label">Tarif Adı</label>
+                <input id="nameInput" type="text" maxlength="@RecipeConsts.MaxNameLength" required class="form-control" aria-describedby="Tarif Adı" value="@Model.Name" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <label for="descriptionTextarea" class="form-label">Açıklama</label>
+                <textarea id="descriptionTextarea" class="form-control" maxlength="@RecipeConsts.MaxDescriptionLength" aria-describedby="Açıklama" rows="7">@Model.Description</textarea>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <label for="categorySelect">Kategori</label>
+                <select id="categorySelect" class="select2" multiple="multiple" data-placeholder="Kategori seçiniz" style="width: 100%;" asp-items="ViewBag.Categories">
+                </select>
+            </div>
+        </div>
+
+        <br />
+
+        <div class="row">
+            <div class="col-md-12 d-flex justify-content-end">
+                <button class="btn btn-primary mr-2" id="activateButton">Aktifleştir</button>
+                <button class="btn btn-primary" id="saveButton">Kaydet</button>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="pills-ingredients" role="tabpanel" aria-labelledby="pills-ingredients-tab">...</div>
+    <div class="tab-pane fade" id="pills-steps" role="tabpanel" aria-labelledby="pills-steps-tab">...</div>
+</div>
+
+
+@section StylesBeforeTheme {
+    <link href="~/lib/adminlte_3_2_0/plugins/select2/css/select2.min.css" rel="stylesheet" />
+}
+
+@section Scripts{
+    <script src="~/lib/adminlte_3_2_0/plugins/select2/js/select2.full.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2();
+
+            $("#categorySelect").val(@Json.Serialize(Model.Categories.Select(x=>x.CategoryId))).change();
+        })
+
+        $("#activateButton").click(function () {
+            $.ajax({
+                type: "PUT",
+                url: '@Url.Action("Activate", "Recipe")',
+                headers: {
+                    'RequestVerificationToken': '@antiforgeryToken'
+                },
+                data: {
+                    id: "@Model.Id"
+                }
+            }).done(function (result, status, xhr) {
+                Swal.fire(
+                    'Başarılı',
+                    'Tarif başarıyla aktifleştirildi.',
+                    'success'
+                );
+            });
+        })
+
+        $("#saveButton").click(function () {
+            let unselectedCategoryIds = $("#categorySelect option:not(:selected)").map(function () {
+                return this.value;
+            }).get();
+
+            let selectedCategoryIds = $("#categorySelect").val();
+
+            $.ajax({
+                type: "PUT",
+                url: '@Url.Action("Update", "Recipe")',
+                headers: {
+                    'RequestVerificationToken': '@antiforgeryToken'
+                },
+                data: {
+                    id: "@Model.Id",
+                    name: $("#nameInput").val(),
+                    description: $("#descriptionTextarea").val(),
+                    selectedCategoryIds: selectedCategoryIds,
+                    unselectedCategoryIds: unselectedCategoryIds
+                }
+            }).done(function (result, status, xhr) {
+                Swal.fire(
+                    'Başarılı',
+                    'Tarif başarıyla güncellendi.',
+                    'success'
+                );
+            });
+        })
+    </script>
+}

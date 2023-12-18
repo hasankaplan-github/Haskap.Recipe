@@ -1,0 +1,380 @@
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+
+<!-- Modal -->
+<div class="modal fade" id="addNewRoleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="addNewRoleModalContent" class="modal-content">
+
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title" id="staticBackdropLabel"><i class="fas fa-save"></i> Rol Oluştur</h5>
+                <button type="button" class="btn-close cancelAddNewRole" @*data-bs-dismiss="modal"*@ aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="addNewRoleNameInput" class="form-label">Rol Adı</label>
+                        <input type="text" required maxlength="100" class="form-control" id="addNewRoleNameInput" aria-describedby="Rol Adı">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary cancelAddNewRole" @*data-bs-dismiss="modal"*@ id="cancelAddNewRoleButton">İptal</button>
+                <button type="button" class="btn btn-primary" @*data-bs-dismiss="modal"*@ id="saveNewRoleButton"><i class="fas fa-save"></i> Kaydet</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="updateRoleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="updateRoleModalContent" class="modal-content">
+
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title" id="staticBackdropLabel"><i class="fa-solid fa-pen"></i> Rol Güncelle</h5>
+                <button type="button" class="btn-close cancelUpdateRole" @*data-bs-dismiss="modal"*@ aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" id="updateRoleRoleId" />
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="updateRoleNameInput" class="form-label">Rol Adı</label>
+                        <input type="text" required maxlength="100" class="form-control" id="updateRoleNameInput" aria-describedby="Rol Adı">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary cancelUpdateRole" @*data-bs-dismiss="modal"*@ id="updateRoleCancelButton">İptal</button>
+                <button type="button" class="btn btn-primary" @*data-bs-dismiss="modal"*@ id="updateRoleSaveButton"><i class="fas fa-save"></i> Kaydet</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="roleUpdatePermissionsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+        <div id="roleUpdatePermissionsModalContent" class="modal-content">
+
+            
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-body">
+
+        <div class="row">
+            <h5 class="card-title">Rol Arama Parametreleri</h5>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <label for="searchRoleNameInput" class="form-label">Rol Adı</label>
+                <input type="text" required maxlength="100" class="form-control" id="searchRoleNameInput" aria-describedby="Rol Adı">
+            </div>
+        </div>
+
+    </div>
+    <!-- /.card-body -->
+
+    <div class="card-footer">
+        <button id="searchButton" type="button" class="btn btn-primary float-right">Ara</button>
+    </div>
+    <!-- /.card-footer -->
+</div>
+<!-- /.card -->
+
+
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Arama Sonucu</h3>
+
+        <div class="card-tools">
+            <button id="addNewRoleButton" type="button" class="btn btn-primary btn-sm">Yeni Rol Ekle</button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <table id="rolesTable" class="table table-bordered table-striped compact">
+            </table>
+        </div>
+    </div>
+    <!-- /.card-body -->
+</div>
+<!-- /.card -->
+
+
+@section Styles {
+    <link href='~/lib/jquery-dataTables/dist/css/datatables.min.css' rel='stylesheet' />
+}
+
+@section Scripts{
+    <script src="~/lib/jquery-dataTables/dist/js/datatables.min.js"></script>
+
+    <script src="~/js/modalOperations.js" asp-append-version="true"></script>
+    <script src="~/js/roleOperations.js" asp-append-version="true"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            roleTable = $("#rolesTable").DataTable({
+                responsive: true,
+                //"lengthChange": true,
+                lengthMenu: [
+                    [10, 25, 50, 100],
+                    ['10', '25', '50', '100']
+                ],
+                //"autoWidth": false,
+
+                //dom: 'Bfrtip',
+                //dom: "lBfrtip",
+                dom: "ltip",
+                //"buttons": ["excelHtml5", "pdfHtml5"],
+                //buttons: [
+                //    {
+                //        extend: 'colvis',
+                //        text: 'Sütun Göster-Gizle',
+                //        titleAttr: 'Sütun Göster-Gizle'
+                //    },
+                //    {
+                //        extend: 'collection',
+                //        text: 'Dışarı Aktar',
+                //        buttons: [
+                //            {
+                //                extend: "copy",
+                //                text: "Kopyala",
+                //                exportOptions: {
+                //                    columns: ":visible" //[2,3,4,5,6,7,8,9,10,11,12]
+                //                },
+                //            },
+                //            {
+                //                extend: 'excelHtml5',
+                //                text: '<i class="fa fa-file-excel-o text-success"> Excel</i>',
+                //                exportOptions: {
+                //                    columns: ":visible" //[2,3,4,5,6,7,8,9,10,11,12]
+                //                },
+                //                //action: function(e, dt, button, config) {
+                //                //    //alert(JSON.stringify(e));
+                //                //}
+                //                //buttons: [
+                //                //    'copy',
+                //                //    'excel',
+                //                //    'csv',
+                //                //    'pdf',
+                //                //    'print'
+                //                //]
+                //            },
+                //            {
+                //                extend: 'pdfHtml5',
+                //                text: '<i class="fa fa-file-pdf-o text-danger"> PDF</i>',
+                //                titleAttr: 'PDF-e Aktar',
+                //                //message: 'Liste', //PDF Mesajı=Başlığın altında soldan başlıktan küçük fontla görünür
+                //                //title: 'Veriler',// Save File Name
+                //                //download: 'open',//PDF'i Browserda Yeni Sekmede  Pencere açar
+                //                'orientation': 'landscape',
+                //                //'pageSize':  'LETTER',
+                //                exportOptions: {
+                //                    columns: ":visible" //[2,3,4,5,6,7,8,9,10,11,12] //columns: [ 0, 1, 2, 5 ] //= Columnları sabitlemek her halukarda görntülenmesini sağlamak için
+                //                },
+                //                customize: function (doc) {
+                //                    doc.pageMargins = [10, 10, 10, 10];
+                //                }
+                //            },
+                //            'print'
+                //        ]
+                //    }
+                //],
+                "processing": true,
+                "serverSide": true,
+                "deferLoading": 0,
+                rowId: 'id',
+                //"ajax": "/CreditCardTypeManagement/G",
+                "ajax": {
+                    type: 'POST',
+                    headers: {
+                        'RequestVerificationToken': '@antiforgeryToken'
+                    },
+                    url: "@Url.Action("Search", "Role")",
+                    data: function (inputDto) {
+                        inputDto.name = $("#searchRoleNameInput").val();
+
+                        return inputDto;
+                    }
+                    //contentType: "application/json"
+                },
+                columns: [
+                    { title: 'Rol Adı', searchable: true, visible: true, data: "name" },
+                    {
+                        title: 'İşlemler', orderable: false,
+                        data: "id",
+                        render: function (data, type) {
+                            if (type === 'display') {
+                                return '<div class="dropdown">' +
+                                    '<button type="button" class="btn btn-primary btn-sm dropdown-toggle dropdown-icon" data-bs-toggle="dropdown">İşlemler</button>' +
+                                    '<ul class="dropdown-menu">' +
+                                    '<li><a class="btn-danger dropdown-item" href="#" onclick="deleteRole(\'' + data + '\');"><i class="fa-solid fa-trash-can"></i> Sil</a></li>' +
+                                    '<li><a class="btn-primary dropdown-item" href="#" onclick="showUpdateRoleModal(\'' + data + '\');"><i class="fa-solid fa-pen"></i> Güncelle</a></li>' +
+                                    '<li><a class="btn-primary dropdown-item" href="#" onclick="showRoleUpdatePermissionsModal(\'' + data + '\');"><i class="fa-solid fa-shield-halved"></i> Yetkiler</a></li>' +
+                                    '</ul>' +
+                                    '</div>';
+                            }
+
+                            return data;
+                        }
+                    }
+                ],
+                "language": {
+                    "url": "/lib/jquery-dataTables/plugins/language/Turkish.json"
+                }
+                //,
+                //"columnDefs": [
+                //    {
+                //        "targets": [ 0 ],
+                //        "visible": false,
+                //        "searchable": false
+                //    }
+                //]
+            });
+
+            roleTable.draw();
+        })
+
+
+        $("#searchButton").click(function () {
+            roleTable.draw();
+        })
+
+        $("#addNewRoleButton").click(function () {
+            addNewRoleModal = new bootstrap.Modal(document.getElementById(modal.addNewRoleModalId), wizardModalOptions);
+            addNewRoleModal.show();
+        })
+
+        $(".cancelAddNewRole").click(function () {
+            addNewRoleModal.hide();
+        })
+
+        $("#saveNewRoleButton").click(function () {
+            $.ajax({
+                type: "POST",
+                headers: {
+                    'RequestVerificationToken': '@antiforgeryToken'
+                },
+                url: '@Url.Action("SaveNew", "Role")',
+                data: {
+                    name: $("#addNewRoleNameInput").val()
+                }
+            }).done(function (result, status, xhr) {
+                Swal.fire(
+                    'Başarılı',
+                    'Rol başarıyla kaydedildi.',
+                    'success'
+                );
+
+                $("#addNewRoleNameInput").val('');
+
+                roleTable.draw();
+
+                addNewRoleModal.hide();
+            });
+        })
+
+        function deleteRole(roleId) {
+            Swal.fire({
+                icon: 'question',
+                title: 'Rolü silmek istediğinizden emin misiniz?',
+                //showDenyButton: true,
+                showCancelButton: true,
+                cancelButtonText: 'İptal',
+                confirmButtonText: 'Sil',
+                //denyButtonText: `Don't save`,
+            }).then((confirmation) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (confirmation.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        headers: {
+                            'RequestVerificationToken': '@antiforgeryToken'
+                        },
+                        url: '@Url.Action("Delete", "Role")',
+                        data: {
+                            roleId: roleId
+                        }
+                    }).done(function (result, status, xhr) {
+                        Swal.fire('Başarıyla silindi.', '', 'success');
+
+                        roleTable.draw();
+                    });
+                }
+            });
+        }
+
+        function showUpdateRoleModal(roleId) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetById", "Role")',
+                data: {
+                    roleId: roleId
+                }
+            }).done(function (result, status, xhr) {
+                $("#updateRoleNameInput").val(result.name);
+                $("#updateRoleRoleId").val(roleId);
+
+                updateRoleModal = new bootstrap.Modal(document.getElementById(modal.updateRoleModalId), wizardModalOptions);
+                updateRoleModal.show();
+            });
+        }
+
+        $(".cancelUpdateRole").click(function () {
+            updateRoleModal.hide();
+        })
+
+        $("#updateRoleSaveButton").click(function () {
+            let roleId = $("#updateRoleRoleId").val();
+            let newName = $("#updateRoleNameInput").val();
+
+            $.ajax({
+                type: "PUT",
+                headers: {
+                    'RequestVerificationToken': '@antiforgeryToken'
+                },
+                url: '@Url.Action("Update", "Role")',
+                data: {
+                    roleId: roleId,
+                    newName: newName
+                }
+            }).done(function (result, status, xhr) {
+                Swal.fire('Başarıyla güncellendi.', '', 'success');
+                
+                $("#updateRoleNameInput").val('');
+                $("#updateRoleRoleId").val('');
+
+                roleTable.draw();
+
+                updateRoleModal.hide();
+            });
+        })
+
+    </script>
+}

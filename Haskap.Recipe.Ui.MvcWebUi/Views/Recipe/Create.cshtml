@@ -1,0 +1,91 @@
+﻿@using Haskap.Recipe.Domain.Shared.Consts
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <label for="nameInput" class="form-label">Tarif Adı</label>
+        <input id="nameInput" type="text" maxlength="@RecipeConsts.MaxNameLength" required class="form-control" aria-describedby="Tarif Adı" />
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <label for="descriptionTextarea" class="form-label">Açıklama</label>
+        <textarea id="descriptionTextarea" class="form-control" maxlength="@RecipeConsts.MaxDescriptionLength" aria-describedby="Açıklama" rows="7"></textarea>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <label for="categorySelect">Kategori</label>
+        <select id="categorySelect" class="select2" multiple="multiple" data-placeholder="Kategori seçiniz" style="width: 100%;" asp-items="ViewBag.Categories">
+        </select>
+    </div>
+</div>
+
+<br />
+
+<div class="row justify-content-center">
+    <div class="col-md-12">
+        <button class="btn btn-primary float-end" id="createAsDraftButton">Taslak Olarak Kaydet ve Devam Et</button>
+    </div>
+</div>
+
+
+
+@section StylesBeforeTheme {
+    <link href="~/lib/adminlte_3_2_0/plugins/select2/css/select2.min.css" rel="stylesheet" />
+}
+
+@section Scripts{
+    <script src="~/lib/adminlte_3_2_0/plugins/select2/js/select2.full.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2();
+        })
+
+        $("#createAsDraftButton").click(function () {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CreateAsDraft", "Recipe")',
+                headers: {
+                    'RequestVerificationToken': '@antiforgeryToken'
+                },
+                data: {
+                    name: $("#nameInput").val(),
+                    description: $("#descriptionTextarea").val(),
+                    categoryIds: $("#categorySelect").val()
+                }
+            }).done(function (result, status, xhr) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Tarifiniz taslak olarak başarıyla kaydedildi. Malzemeleri ve adımları ekleyeceğiniz sayfaya yönlendirileceksiniz.',
+                    //showDenyButton: true,
+                    showCancelButton: false,
+                    cancelButtonText: 'İptal',
+                    confirmButtonText: 'Tamam',
+                    //denyButtonText: `Don't save`,
+                }).then((confirmation) => {
+                    window.location.href = "@Url.Action("Edit")" + "?recipeId=" + result.id;
+
+                    /* Read more about isConfirmed, isDenied below */
+                    if (confirmation.isConfirmed) {
+                        
+                    }
+                });
+            });
+        })
+
+    </script>
+}

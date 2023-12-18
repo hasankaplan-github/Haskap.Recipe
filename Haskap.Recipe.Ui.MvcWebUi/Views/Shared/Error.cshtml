@@ -1,0 +1,19 @@
+﻿@using Haskap.Recipe.Application.Dtos.ViewLevelExceptions;
+
+@model ViewLevelExceptionOutputDto
+@{
+    ViewData["Title"] = "Error";
+}
+
+<h1 class="text-danger">Hata.</h1>
+<h2 class="text-danger">İsteğiniz gerçekleştirilirken bir hata oluştu.</h2>
+
+<p>
+    <strong><code>@(Model?.Message ?? string.Empty)</code></strong>
+</p>
+
+<br />
+
+<p>
+    @(Model?.StackTrace ?? string.Empty)
+</p>

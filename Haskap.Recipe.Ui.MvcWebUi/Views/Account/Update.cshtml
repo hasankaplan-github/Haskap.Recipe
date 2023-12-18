@@ -1,0 +1,104 @@
+﻿@using Haskap.Recipe.Application.Dtos.Accounts;
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model UpdateAccountOutputDto
+
+
+@{
+    var systemTimeZoneIds = (ViewBag.SystemTimeZoneIds as List<string>) ?? Enumerable.Empty<string>();
+
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <label for="firstNameInput" class="form-label">İsim</label>
+        <input type="text" required class="form-control" id="firstNameInput" aria-describedby="İsim" value="@Model?.FirstName" />
+    </div>
+
+    <div class="col-md-4">
+        <label for="lastNameInput" class="form-label">Soyad</label>
+        <input type="text" required class="form-control" id="lastNameInput" aria-describedby="Soyad" value="@Model?.LastName" />
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <label for="userNameInput" class="form-label">Kullanıcı Adı</label>
+        <input type="text" required class="form-control" id="userNameInput" aria-describedby="Kullanıcı Adı" value="@Model?.UserName" />
+    </div>
+
+    <div class="col-md-4">
+        <label for="systemTimeZoneIdInput" class="form-label">System Time Zone Id</label>
+        <select id="systemTimeZoneIdInput" class="form-control select2" style="width: 100%;">
+            <option value="">Seçiniz...</option>
+            @foreach (var systemTimeZoneId in systemTimeZoneIds)
+            {
+                <option value="@systemTimeZoneId">@systemTimeZoneId</option>
+            }
+        </select>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <label for="currentPasswordInput" class="form-label">Şu Anki Şifre</label>
+        <input type="password" required class="form-control" id="currentPasswordInput" aria-describedby="Şu Anki Şifre" />
+    </div>
+</div>
+
+<br />
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <button class="btn btn-primary float-end" id="saveButton">Kaydet</button>
+    </div>
+</div>
+
+
+@section StylesBeforeTheme{
+
+    <link href="~/lib/adminlte_3_2_0/plugins/select2/css/select2.min.css" rel="stylesheet" />
+
+}
+
+
+
+@section Scripts{
+
+    <script src="~/lib/adminlte_3_2_0/plugins/select2/js/select2.full.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            $('.select2').select2();
+            $('.select2').val('@Model?.SystemTimeZoneId').trigger('change');
+        });
+
+        $("#saveButton").click(function () {
+            $.ajax({
+                type: "PUT",
+                headers: {
+                    'RequestVerificationToken': '@antiforgeryToken'
+                },
+                url: '@Url.Action("Update", "Account")',
+                data: {
+                    firstName: $("#firstNameInput").val(),
+                    lastName: $("#lastNameInput").val(),
+                    userName: $("#userNameInput").val(),
+                    systemTimeZoneId: $("#systemTimeZoneIdInput").val(),
+                    currentPassword: $("#currentPasswordInput").val()
+                }
+            }).done(function (result, status, xhr) {
+                Swal.fire('Başarıyla güncellendi.', '', 'success');
+            });
+        })
+
+    </script>
+
+}

@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="MediatR" Version="12.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Haskap.Recipe.Application.Contracts\Haskap.Recipe.Application.Contracts.csproj" />
+    <ProjectReference Include="..\Haskap.Recipe.Domain\Haskap.Recipe.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Haskap.DddBase.Application.Contracts">
+      <HintPath>..\References\Haskap.DddBase.Application.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="Haskap.DddBase.Application.UseCaseServices">
+      <HintPath>..\References\Haskap.DddBase.Application.UseCaseServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Haskap.DddBase.Domain">
+      <HintPath>..\References\Haskap.DddBase.Domain.dll</HintPath>
+    </Reference>
+    <Reference Include="Haskap.DddBase.Infra.Db.Contexts.EfCoreContext">
+      <HintPath>..\References\Haskap.DddBase.Infra.Db.Contexts.EfCoreContext.dll</HintPath>
+    </Reference>
+    <Reference Include="Haskap.DddBase.Infra.Db.Contexts.NpgsqlDbContext">
+      <HintPath>..\References\Haskap.DddBase.Infra.Db.Contexts.NpgsqlDbContext.dll</HintPath>
+    </Reference>
+    <Reference Include="Haskap.DddBase.Utilities">
+      <HintPath>..\References\Haskap.DddBase.Utilities.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
