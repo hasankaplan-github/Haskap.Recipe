@@ -1,0 +1,108 @@
+﻿@using Haskap.Recipe.Application.Dtos.Recipies;
+@using Haskap.Recipe.Domain.Shared.Consts;
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model IngredientOutputDto
+
+@{
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+<div class="modal-header bg-primary">
+    <h5 class="modal-title" id="staticBackdropLabel"><i class="fa-solid fa-shield-halved"></i> Yeni Malzeme</h5>
+    <button type="button" class="btn-close cancelUpdateIngredient" @*data-bs-dismiss="modal"*@ aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-4">
+            <label for="updateIngredientIngredientGroupSelect">Malzeme Grubu</label>
+            <select id="updateIngredientIngredientGroupSelect" class="select2" data-placeholder="Malzeme grubu seçiniz" style="width: 100%;" asp-items="ViewBag.IngredientGroups">
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label for="updateIngredientNewIngredientGroupInput">Yeni Malzeme Grubu</label>
+            <input id="updateIngredientNewIngredientGroupInput" type="text" maxlength="@IngredientGroupConsts.MaxNameLength" required class="form-control" aria-describedby="Yeni Malzeme Grubu" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label for="updateIngredientAmountInput">Miktar</label>
+            <input id="updateIngredientAmountInput" type="number" required class="form-control" aria-describedby="Miktar" value="@Model.Amount.Value" />
+        </div>
+
+        <div class="col-md-4">
+            <label for="updateIngredientUnitSelect">Birim</label>
+            <select id="updateIngredientUnitSelect" class="select2" data-placeholder="Birim seçiniz" style="width: 100%;" asp-items="ViewBag.Units">
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label for="updateIngredientNewUnitInput">Yeni Birim</label>
+            <input id="updateIngredientNewUnitInput" type="text" maxlength="@UnitConsts.MaxNameLength" required class="form-control" aria-describedby="Yeni Birim" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label for="updateIngredientNameInput">Malzeme Adı</label>
+            <input id="updateIngredientNameInput" type="text" maxlength="@IngredientConsts.MaxNameLength" required class="form-control" aria-describedby="Malzeme Adı" value="@Model.Name" />
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary cancelUpdateIngredient" @*data-bs-dismiss="modal"*@ id="cancelUpdateIngredientButton">İptal</button>
+    <button type="button" class="btn btn-primary" @*data-bs-dismiss="modal"*@ id="saveUpdateIngredientButton"><i class="fas fa-save"></i> Kaydet</button>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $('.select2').select2({
+            dropdownParent: $('#updateIngredientModal')
+        });
+    })
+
+    $(".cancelUpdateIngredient").click(function () {
+        updateIngredientModal.hide();
+    })
+
+    $("#saveUpdateIngredientButton").click(function () {
+        $.ajax({
+            type: "PUT",
+            url: '@Url.Action("UpdateIngredient", "Recipe")',
+            headers: {
+                'RequestVerificationToken': '@antiforgeryToken'
+            },
+            data: {
+                recipeId: "@ViewBag.RecipeId",
+                ingredientId: "@Model.Id",
+                ingredientGroupId: $('#updateIngredientIngredientGroupSelect').val(),
+                newIngredientGroupName: $('#updateIngredientNewIngredientGroupInput').val(),
+                amount: $('#updateIngredientAmountInput').val(),
+                unitId: $('#updateIngredientUnitSelect').val(),
+                newUnitName: $('#updateIngredientNewUnitInput').val(),
+                name: $('#updateIngredientNameInput').val()
+            }
+        }).done(function (result, status, xhr) {
+            Swal.fire(
+                'Başarılı',
+                'Malzeme başarıyla güncellendi.',
+                'success'
+            );
+
+            loadIngredientsViewComponent();
+
+            updateIngredientModal.hide();
+        });
+    })
+
+</script>

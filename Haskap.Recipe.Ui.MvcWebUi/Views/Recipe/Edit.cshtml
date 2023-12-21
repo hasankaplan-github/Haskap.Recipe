@@ -14,6 +14,24 @@
 }
 
 
+<!-- Modal -->
+<div class="modal fade" id="newIngredientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div id="newIngredientModalContent" class="modal-content">
+            
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="updateIngredientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div id="updateIngredientModalContent" class="modal-content">
+            
+        </div>
+    </div>
+</div>
+
 
 <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
     <li class="nav-item" role="presentation">
@@ -26,7 +44,9 @@
         <button class="nav-link" id="pills-steps-tab" data-bs-toggle="pill" data-bs-target="#pills-steps" type="button" role="tab" aria-controls="pills-steps" aria-selected="false">Adımlar</button>
     </li>
 </ul>
+
 <div class="tab-content" id="pills-tabContent">
+
     <div class="tab-pane fade show active" id="pills-basic-info" role="tabpanel" aria-labelledby="pills-basic-info-tab">
         <div class="row">
             <div class="col-md-12">
@@ -67,7 +87,16 @@
             </div>
         </div>
     </div>
-    <div class="tab-pane fade" id="pills-ingredients" role="tabpanel" aria-labelledby="pills-ingredients-tab">...</div>
+
+    <div class="tab-pane fade" id="pills-ingredients" role="tabpanel" aria-labelledby="pills-ingredients-tab">
+        <div class="d-flex justify-content-center mb-2 mt-2">
+            <button class="btn btn-primary" id="newIngredientButton">Yeni Malzeme Ekle</button>
+        </div>
+        <div id="ingredients-content">
+
+        </div>
+    </div>
+
     <div class="tab-pane fade" id="pills-steps" role="tabpanel" aria-labelledby="pills-steps-tab">...</div>
 </div>
 
@@ -79,12 +108,28 @@
 @section Scripts{
     <script src="~/lib/adminlte_3_2_0/plugins/select2/js/select2.full.min.js"></script>
 
+    <script src="~/js/modalOperations.js" asp-append-version="true"></script>
+
     <script>
         $(document).ready(function () {
             $('.select2').select2();
 
             $("#categorySelect").val(@Json.Serialize(Model.Categories.Select(x=>x.CategoryId))).change();
+
+            loadIngredientsViewComponent();
         })
+
+        function loadIngredientsViewComponent() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("LoadIngredientsViewComponent", "Recipe")',
+                data: {
+                    recipeId: "@Model.Id"
+                }
+            }).done(function (result, status, xhr) {
+                $("#ingredients-content").html(result);
+            });
+        }
 
         $("#activateButton").click(function () {
             $.ajax({
@@ -152,5 +197,72 @@
                 );
             });
         })
+
+        function deleteIngredient(recipeId, ingredientId) {
+            Swal.fire({
+                icon: 'question',
+                title: 'Malzemeyi silmek istediğinizden emin misiniz?',
+                //showDenyButton: true,
+                showCancelButton: true,
+                cancelButtonText: 'İptal',
+                confirmButtonText: 'Sil',
+                //denyButtonText: `Don't save`,
+            }).then((confirmation) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (confirmation.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: '@Url.Action("DeleteIngredient", "Recipe")',
+                        headers: {
+                            'RequestVerificationToken': '@antiforgeryToken'
+                        },
+                        data: {
+                            recipeId: recipeId,
+                            ingredientId: ingredientId
+                        }
+                    }).done(function (result, status, xhr) {
+                        Swal.fire(
+                            'Başarılı',
+                            'Malzeme başarıyla silindi.',
+                            'success'
+                        );
+
+                        loadIngredientsViewComponent();
+                    });
+                }
+            });
+        }
+
+        $("#newIngredientButton").click(function () {
+            $.ajax({
+                type: "GET",
+                url: '/Recipe/LoadNewIngredientModalContentViewComponent', //'@Url.Action("LoadCreateReservationViewComponent", "Schedule")',
+                data: {
+                    recipeId: "@Model.Id"
+                }
+            }).done(function (result, status, xhr) {
+                $("#newIngredientModalContent").html(result);
+            });
+
+            newIngredientModal = new bootstrap.Modal(document.getElementById(modal.newIngredientModalId), wizardModalOptions);
+            newIngredientModal.show();
+        })
+
+        function showUpdateIngredientModal(recipeId, ingredientId) {
+            $.ajax({
+                type: "GET",
+                url: '/Recipe/LoadUpdateIngredientModalContentViewComponent', //'@Url.Action("LoadCreateReservationViewComponent", "Schedule")',
+                data: {
+                    recipeId: recipeId,
+                    ingredientId: ingredientId
+                }
+            }).done(function (result, status, xhr) {
+                $("#updateIngredientModalContent").html(result);
+            });
+
+            updateIngredientModal = new bootstrap.Modal(document.getElementById(modal.updateIngredientModalId), wizardModalOptions);
+            updateIngredientModal.show();
+        }
+
     </script>
 }

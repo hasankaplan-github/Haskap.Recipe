@@ -14,6 +14,8 @@ using Haskap.Recipe.Domain.UserAggregate;
 using Haskap.Recipe.Application.UseCaseServices.Roles;
 using Haskap.Recipe.Application.UseCaseServices.Categories;
 using Haskap.Recipe.Application.UseCaseServices.Recipies;
+using Haskap.Recipe.Application.UseCaseServices.Units;
+using Haskap.Recipe.Application.UseCaseServices.IngredientGroups;
 
 namespace Haskap.Recipe.Ui.MvcWebUi;
 
@@ -31,6 +33,8 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IRoleService, RoleService>();
         services.AddTransient<ICategoryService, CategoryService>();
         services.AddTransient<IRecipeService, RecipeService>();
+        services.AddTransient<IUnitService, UnitService>();
+        services.AddTransient<IIngredientGroupService, IngredientGroupService>();
     }
 
     public static void AddProviders(this IServiceCollection services)

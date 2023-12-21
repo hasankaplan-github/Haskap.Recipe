@@ -3,7 +3,9 @@ using Haskap.DddBase.Utilities.Guids;
 using Haskap.Recipe.Application.Contracts;
 using Haskap.Recipe.Application.Dtos.Recipies;
 using Haskap.Recipe.Domain;
+using Haskap.Recipe.Domain.IngredientGroupAggregate;
 using Haskap.Recipe.Domain.RecipeAggregate;
+using Haskap.Recipe.Domain.UnitAggregate;
 using Haskap.Recipe.Domain.UserAggregate;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -74,6 +76,9 @@ public class RecipeService : IRecipeService
         var recipe = await _recipeDbContext.Recipe
             .Include(x => x.Categories)
             .Include(x => x.Ingredients)
+            .ThenInclude(x => x.IngredientGroup)
+            .Include(x => x.Ingredients)
+            .ThenInclude(x => x.Amount.Unit)
             .Include(x => x.Steps)
             .Where(x => x.Id == id)
             .FirstOrDefaultAsync(cancellationToken);
@@ -110,4 +115,93 @@ public class RecipeService : IRecipeService
         await _recipeDbContext.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task DeleteIngredientAsync(Guid recipeId, Guid ingredientId, CancellationToken cancellationToken)
+    {
+        var recipe = await _recipeDbContext.Recipe
+            .Include(x => x.Ingredients.Where(y => y.Id == ingredientId))
+            .Where(x => x.Id == recipeId)
+            .FirstAsync(cancellationToken);
+
+        recipe.RemoveIngredient(recipe.Ingredients.First());
+
+        await _recipeDbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task SaveNewIngredientAsync(SaveNewIngredientInputDto inputDto, CancellationToken cancellationToken)
+    {
+        var ingredientGroup = await _recipeDbContext.IngredientGroup
+            .Where(x => x.Id == inputDto.IngredientGroupId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (ingredientGroup is null)
+        {
+            ingredientGroup = new IngredientGroup(GuidGenerator.CreateSimpleGuid(), inputDto.NewIngredientGroupName);
+            await _recipeDbContext.IngredientGroup.AddAsync(ingredientGroup, cancellationToken);
+        }
+
+        var unit = await _recipeDbContext.Unit
+            .Where(x => x.Id == inputDto.UnitId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (unit is null)
+        {
+            unit = new Unit(GuidGenerator.CreateSimpleGuid(), inputDto.NewUnitName);
+            await _recipeDbContext.Unit.AddAsync(unit, cancellationToken);
+        }
+
+        var amount = new Amount(inputDto.Amount, unit);
+
+        var newIngredient = new Ingredient(
+            GuidGenerator.CreateSimpleGuid(),
+            inputDto.Name,
+            null,
+            amount,
+            ingredientGroup);
+
+        var recipe = await _recipeDbContext.Recipe
+            .Where(x => x.Id == inputDto.RecipeId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        recipe.AddIngredient(newIngredient);
+
+        await _recipeDbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateIngredientAsync(UpdateIngredientInputDto inputDto, CancellationToken cancellationToken)
+    {
+        var ingredientGroup = await _recipeDbContext.IngredientGroup
+            .Where(x => x.Id == inputDto.IngredientGroupId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (ingredientGroup is null)
+        {
+            ingredientGroup = new IngredientGroup(GuidGenerator.CreateSimpleGuid(), inputDto.NewIngredientGroupName);
+            await _recipeDbContext.IngredientGroup.AddAsync(ingredientGroup, cancellationToken);
+        }
+
+        var unit = await _recipeDbContext.Unit
+            .Where(x => x.Id == inputDto.UnitId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (unit is null)
+        {
+            unit = new Unit(GuidGenerator.CreateSimpleGuid(), inputDto.NewUnitName);
+            await _recipeDbContext.Unit.AddAsync(unit, cancellationToken);
+        }
+
+        var amount = new Amount(inputDto.Amount, unit);
+
+        var recipe = await _recipeDbContext.Recipe
+            .Include(x => x.Ingredients.Where(y => y.Id == inputDto.IngredientId))
+            .Where(x => x.Id == inputDto.RecipeId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var ingredientToBeUpdated = recipe.Ingredients.First();
+
+        ingredientToBeUpdated.SetName(inputDto.Name);
+        ingredientToBeUpdated.SetAmount(amount);
+        ingredientToBeUpdated.SetIngredientGroup(ingredientGroup);
+
+        await _recipeDbContext.SaveChangesAsync(cancellationToken);
+    }
 }

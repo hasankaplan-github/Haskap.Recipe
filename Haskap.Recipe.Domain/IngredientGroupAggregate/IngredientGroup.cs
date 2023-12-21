@@ -8,16 +8,18 @@ using System.Threading.Tasks;
 namespace Haskap.Recipe.Domain.IngredientGroupAggregate;
 public class IngredientGroup : AggregateRoot
 {
-    public string? Name { get; set; }
+    public string Name { get; set; }
 
     private IngredientGroup()
     {
 
     }
 
-    public IngredientGroup(Guid id, string? name = null)
+    public IngredientGroup(Guid id, string name)
         : base(id)
     {
+        Guard.Against.NullOrWhiteSpace(name);
+
         Name = name;
     }
 }

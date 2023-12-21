@@ -73,4 +73,40 @@ public class RecipeController : Controller
     {
         await _recipeService.UpdateAsync(id, inputDto, cancellationToken);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> LoadIngredientsViewComponent(Guid recipeId, CancellationToken cancellationToken)
+    {
+        return ViewComponent(typeof(ViewComponents.Recipe.IngredientsViewComponent), new { recipeId });
+    }
+
+    [HttpDelete]
+    public async Task DeleteIngredient(Guid recipeId, Guid ingredientId, CancellationToken cancellationToken = default)
+    {
+        await _recipeService.DeleteIngredientAsync(recipeId, ingredientId, cancellationToken);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> LoadNewIngredientModalContentViewComponent(Guid recipeId, CancellationToken cancellationToken = default)
+    {
+        return ViewComponent(typeof(ViewComponents.Recipe.NewIngredientModalContentViewComponent), new { recipeId });
+    }
+
+    [HttpPost]
+    public async Task SaveNewIngredient(SaveNewIngredientInputDto inputDto, CancellationToken cancellationToken = default)
+    {
+        await _recipeService.SaveNewIngredientAsync(inputDto, cancellationToken);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> LoadUpdateIngredientModalContentViewComponent(Guid recipeId, Guid ingredientId, CancellationToken cancellationToken = default)
+    {
+        return ViewComponent(typeof(ViewComponents.Recipe.UpdateIngredientModalContentViewComponent), new { recipeId, ingredientId });
+    }
+
+    [HttpPut]
+    public async Task UpdateIngredient(UpdateIngredientInputDto inputDto, CancellationToken cancellationToken = default)
+    {
+        await _recipeService.UpdateIngredientAsync(inputDto, cancellationToken);
+    }
 }

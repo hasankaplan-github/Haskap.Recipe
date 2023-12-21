@@ -13,19 +13,19 @@ public class Ingredient : Entity
     public string Name { get; private set; }
     public string? Description { get; set; }
     public Amount Amount { get; private set; }
-    public Guid IngredientGroupId { get; set; }
-    public IngredientGroup IngredientGroup { get; set; }
+    public Guid IngredientGroupId { get; private set; }
+    public IngredientGroup IngredientGroup { get; private set; }
 
 
     private Ingredient() { }
 
-    public Ingredient(Guid id, string name, string? description, Amount amount, Guid ingredientGroupId)
+    public Ingredient(Guid id, string name, string? description, Amount amount, IngredientGroup ingredientGroup)
     {
         Id = id;
         SetName(name);
         Description = description;
         SetAmount(amount);
-        IngredientGroupId = ingredientGroupId;
+        SetIngredientGroup(ingredientGroup);
     }
 
     public void SetName(string name)
@@ -40,5 +40,13 @@ public class Ingredient : Entity
         Guard.Against.Null(amount);
 
         Amount = amount;
+    }
+
+    public void SetIngredientGroup(IngredientGroup ingredientGroup)
+    {
+        Guard.Against.Null(ingredientGroup);
+
+        IngredientGroup = ingredientGroup;
+        IngredientGroupId = ingredientGroup.Id;
     }
 }

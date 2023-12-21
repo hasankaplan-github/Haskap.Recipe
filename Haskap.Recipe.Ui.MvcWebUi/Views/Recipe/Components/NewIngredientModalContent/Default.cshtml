@@ -1,0 +1,107 @@
+﻿@using Haskap.Recipe.Application.Dtos.Recipies;
+@using Haskap.Recipe.Domain.Shared.Consts;
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model RecipeOutputDto
+
+@{
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+<div class="modal-header bg-primary">
+    <h5 class="modal-title" id="staticBackdropLabel"><i class="fa-solid fa-shield-halved"></i> Yeni Malzeme</h5>
+    <button type="button" class="btn-close cancelNewIngredient" @*data-bs-dismiss="modal"*@ aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-4">
+            <label for="newIngredientIngredientGroupSelect">Malzeme Grubu</label>
+            <select id="newIngredientIngredientGroupSelect" class="select2" data-placeholder="Malzeme grubu seçiniz" style="width: 100%;" asp-items="ViewBag.IngredientGroups">
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label for="newIngredientNewIngredientGroupInput">Yeni Malzeme Grubu</label>
+            <input id="newIngredientNewIngredientGroupInput" type="text" maxlength="@IngredientGroupConsts.MaxNameLength" required class="form-control" aria-describedby="Yeni Malzeme Grubu" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label for="newIngredientAmountInput">Miktar</label>
+            <input id="newIngredientAmountInput" type="number" required class="form-control" aria-describedby="Miktar" />
+        </div>
+
+        <div class="col-md-4">
+            <label for="newIngredientUnitSelect">Birim</label>
+            <select id="newIngredientUnitSelect" class="select2" data-placeholder="Birim seçiniz" style="width: 100%;" asp-items="ViewBag.Units">
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label for="newIngredientNewUnitInput">Yeni Birim</label>
+            <input id="newIngredientNewUnitInput" type="text" maxlength="@UnitConsts.MaxNameLength" required class="form-control" aria-describedby="Yeni Birim" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label for="newIngredientNameInput">Malzeme Adı</label>
+            <input id="newIngredientNameInput" type="text" maxlength="@IngredientConsts.MaxNameLength" required class="form-control" aria-describedby="Malzeme Adı" />
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary cancelNewIngredient" @*data-bs-dismiss="modal"*@ id="cancelNewIngredientButton">İptal</button>
+    <button type="button" class="btn btn-primary" @*data-bs-dismiss="modal"*@ id="saveNewIngredientButton"><i class="fas fa-save"></i> Kaydet</button>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $('.select2').select2({
+            dropdownParent: $('#newIngredientModal')
+        });
+    })
+
+    $(".cancelNewIngredient").click(function () {
+        newIngredientModal.hide();
+    })
+
+    $("#saveNewIngredientButton").click(function () {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveNewIngredient", "Recipe")',
+            headers: {
+                'RequestVerificationToken': '@antiforgeryToken'
+            },
+            data: {
+                recipeId: "@ViewBag.RecipeId",
+                ingredientGroupId: $('#newIngredientIngredientGroupSelect').val(),
+                newIngredientGroupName: $('#newIngredientNewIngredientGroupInput').val(),
+                amount: $('#newIngredientAmountInput').val(),
+                unitId: $('#newIngredientUnitSelect').val(),
+                newUnitName: $('#newIngredientNewUnitInput').val(),
+                name: $('#newIngredientNameInput').val()
+            }
+        }).done(function (result, status, xhr) {
+            Swal.fire(
+                'Başarılı',
+                'Malzeme başarıyla kaydedildi.',
+                'success'
+            );
+
+            loadIngredientsViewComponent();
+
+            newIngredientModal.hide();
+        });
+    })
+
+</script>

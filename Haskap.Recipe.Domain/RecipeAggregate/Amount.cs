@@ -20,12 +20,14 @@ public class Amount : ValueObject
         
     }
 
-    public Amount(decimal value, Guid unitId)
+    public Amount(decimal value, Unit unit)
     {
         Guard.Against.NegativeOrZero(value);
+        Guard.Against.Null(unit);
 
         Value = value;
-        UnitId = unitId;
+        Unit = unit;
+        UnitId = unit.Id;
     }
 
     protected override IEnumerable<object> GetEqualityComponents()

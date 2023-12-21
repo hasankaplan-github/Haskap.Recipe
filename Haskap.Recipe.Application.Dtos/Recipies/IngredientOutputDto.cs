@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Haskap.Recipe.Application.Dtos.IngredientGroups;
 
 namespace Haskap.Recipe.Application.Dtos.Recipies;
 public class IngredientOutputDto
@@ -13,4 +14,5 @@ public class IngredientOutputDto
     public string? Description { get; set; }
     public AmountOutputDto Amount { get; set; }
     public Guid IngredientGroupId { get; set; }
+    public IngredientGroupOutputDto IngredientGroup { get; set; }
 }
