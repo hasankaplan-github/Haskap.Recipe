@@ -169,4 +169,44 @@ public class Recipe : AggregateRoot, IAuditable
 
         stepsToBeReordered.ForEach(x => x.SetStepOrder(x.StepOrder - 1));
     }
+
+    public void IncreaseStepOrder(Step step)
+    {
+        Guard.Against.Null(step);
+
+        var currentStepOrder = step.StepOrder;
+
+        if (_steps.Count == currentStepOrder)
+        {
+            return;
+        }
+
+        var stepToBeDecreased = _steps
+            .Where(x => x.StepOrder == currentStepOrder + 1)
+            .First();
+
+        step.SetStepOrder(currentStepOrder + 1);
+
+        stepToBeDecreased.SetStepOrder(currentStepOrder);
+    }
+
+    public void DecreaseStepOrder(Step step) 
+    { 
+        Guard.Against.Null(step);
+
+        var currentStepOrder = step.StepOrder;
+
+        if (currentStepOrder == 1)
+        {
+            return;
+        }
+
+        var stepToBeIncreased = _steps
+            .Where(x => x.StepOrder == currentStepOrder - 1)
+            .First();
+
+        step.SetStepOrder(currentStepOrder - 1);
+
+        stepToBeIncreased.SetStepOrder(currentStepOrder);
+    }
 }

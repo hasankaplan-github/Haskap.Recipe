@@ -263,21 +263,8 @@ public class RecipeService : IRecipeService
             .Where(x => x.Id == inputDto.StepId)
             .First();
 
-        var currentStepOrder = stepToBeIncreased.StepOrder;
-
-        if (recipe.Steps.Count == currentStepOrder)
-        {
-            return;
-        }
-
-        var stepToBeDecreased = recipe.Steps
-            .Where(x => x.StepOrder == currentStepOrder + 1)
-            .First();
-
-        stepToBeIncreased.SetStepOrder(currentStepOrder + 1);
-
-        stepToBeDecreased.SetStepOrder(currentStepOrder);
-
+        recipe.IncreaseStepOrder(stepToBeIncreased);
+        
         await _recipeDbContext.SaveChangesAsync(cancellationToken);
     }
 
@@ -292,20 +279,7 @@ public class RecipeService : IRecipeService
             .Where(x => x.Id == inputDto.StepId)
             .First();
 
-        var currentStepOrder = stepToBeDecreased.StepOrder;
-
-        if (currentStepOrder == 1)
-        {
-            return;
-        }
-
-        var stepToBeIncreased = recipe.Steps
-            .Where(x => x.StepOrder == currentStepOrder - 1)
-            .First();
-
-        stepToBeDecreased.SetStepOrder(currentStepOrder - 1);
-
-        stepToBeIncreased.SetStepOrder(currentStepOrder);
+        recipe.DecreaseStepOrder(stepToBeDecreased);
 
         await _recipeDbContext.SaveChangesAsync(cancellationToken);
     }
