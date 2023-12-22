@@ -84,11 +84,11 @@
             <div class="col-md-12 d-flex justify-content-end">
                 @if (Model.IsDraft)
                 {
-                    <button class="btn btn-primary mr-2" id="activateButton">Aktifleştir</button>
+                    <button class="btn btn-danger me-2" id="activateButton">Aktifleştir</button>
                 }
                 else
                 {
-                    <button class="btn btn-primary mr-2" id="markAsDraftButton">Taslak Olarak İşaretle</button>
+                    <button class="btn btn-danger me-2" id="markAsDraftButton">Taslak Olarak İşaretle</button>
                 }
 
                 <button class="btn btn-primary" id="saveButton">Kaydet</button>
@@ -228,41 +228,6 @@
             });
         })
 
-        function deleteIngredient(recipeId, ingredientId) {
-            Swal.fire({
-                icon: 'question',
-                title: 'Malzemeyi silmek istediğinizden emin misiniz?',
-                //showDenyButton: true,
-                showCancelButton: true,
-                cancelButtonText: 'İptal',
-                confirmButtonText: 'Sil',
-                //denyButtonText: `Don't save`,
-            }).then((confirmation) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (confirmation.isConfirmed) {
-                    $.ajax({
-                        type: "DELETE",
-                        url: '@Url.Action("DeleteIngredient", "Recipe")',
-                        headers: {
-                            'RequestVerificationToken': '@antiforgeryToken'
-                        },
-                        data: {
-                            recipeId: recipeId,
-                            ingredientId: ingredientId
-                        }
-                    }).done(function (result, status, xhr) {
-                        Swal.fire(
-                            'Başarılı',
-                            'Malzeme başarıyla silindi.',
-                            'success'
-                        );
-
-                        loadIngredientsViewComponent();
-                    });
-                }
-            });
-        }
-
         $("#newIngredientButton").click(function () {
             $.ajax({
                 type: "GET",
@@ -277,22 +242,6 @@
             newIngredientModal = new bootstrap.Modal(document.getElementById(modal.newIngredientModalId), wizardModalOptions);
             newIngredientModal.show();
         })
-
-        function showUpdateIngredientModal(recipeId, ingredientId) {
-            $.ajax({
-                type: "GET",
-                url: '/Recipe/LoadUpdateIngredientModalContentViewComponent', //'@Url.Action("LoadCreateReservationViewComponent", "Schedule")',
-                data: {
-                    recipeId: recipeId,
-                    ingredientId: ingredientId
-                }
-            }).done(function (result, status, xhr) {
-                $("#updateIngredientModalContent").html(result);
-            });
-
-            updateIngredientModal = new bootstrap.Modal(document.getElementById(modal.updateIngredientModalId), wizardModalOptions);
-            updateIngredientModal.show();
-        }
 
         $("#newStepButton").click(function () {
             $.ajax({

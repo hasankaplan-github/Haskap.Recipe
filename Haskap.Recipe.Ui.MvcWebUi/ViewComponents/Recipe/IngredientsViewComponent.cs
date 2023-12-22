@@ -16,6 +16,6 @@ public class IngredientsViewComponent : ViewComponent
     {
         var recipeOutputDto = await _recipeService.GetByIdAsync(recipeId, cancellationToken);
 
-        return View(recipeOutputDto);
+        return View(recipeOutputDto.Ingredients);
     }
 }
