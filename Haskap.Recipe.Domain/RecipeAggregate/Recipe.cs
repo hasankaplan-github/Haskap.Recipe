@@ -159,6 +159,14 @@ public class Recipe : AggregateRoot, IAuditable
     {
         Guard.Against.Null(step);
 
+        var stepOrder = step.StepOrder;
+
         _steps.Remove(step);
+
+        var stepsToBeReordered = _steps
+            .Where(x => x.StepOrder > stepOrder)
+            .ToList();
+
+        stepsToBeReordered.ForEach(x => x.SetStepOrder(x.StepOrder - 1));
     }
 }

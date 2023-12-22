@@ -169,4 +169,10 @@ public class RecipeController : Controller
     {
         await _recipeService.DecreaseStepOrderAsync(inputDto, cancellationToken);
     }
+
+    [HttpDelete]
+    public async Task DeleteStep(DeleteStepInputDto inputDto, CancellationToken cancellationToken = default)
+    {
+        await _recipeService.DeleteStepAsync(inputDto, _webHostEnvironment.WebRootPath, cancellationToken);
+    }
 }

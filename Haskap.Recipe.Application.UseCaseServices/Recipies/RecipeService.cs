@@ -309,4 +309,22 @@ public class RecipeService : IRecipeService
 
         await _recipeDbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task DeleteStepAsync(DeleteStepInputDto inputDto, string webRootPath, CancellationToken cancellationToken)
+    {
+        var recipe = await _recipeDbContext.Recipe
+            .Include(x => x.Steps)
+            .Where(x => x.Id == inputDto.RecipeId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var stepToBeRemoved = recipe.Steps
+            .Where(x => x.Id == inputDto.StepId)
+            .First();
+
+        recipe.RemoveStep(stepToBeRemoved);
+
+        await _recipeDbContext.SaveChangesAsync(cancellationToken);
+
+        await MediatorWrapper.Publish(new StepDeletedDomainEvent(inputDto.RecipeId, inputDto.StepId, webRootPath), cancellationToken);
+    }
 }
