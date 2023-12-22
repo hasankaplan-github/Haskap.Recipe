@@ -12,7 +12,7 @@ public class StepPicture : ValueObject
 {
     public Guid Id { get; init; }
 
-    public Common.File Picture { get; private set; }
+    public Common.File File { get; private set; }
 
 
     private StepPicture()
@@ -24,7 +24,7 @@ public class StepPicture : ValueObject
     {
         Guard.Against.NullOrWhiteSpace(originalName);
 
-        Picture = new Common.File(originalName);
+        File = new Common.File(originalName);
     }
 
     public StepPicture(string originalName, string newName, string? extension)
@@ -32,11 +32,11 @@ public class StepPicture : ValueObject
         Guard.Against.NullOrWhiteSpace(originalName);
         Guard.Against.NullOrWhiteSpace(newName);
 
-        Picture = new Common.File(originalName, newName, extension);
+        File = new Common.File(originalName, newName, extension);
     }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return Picture;
+        yield return File;
     }
 }

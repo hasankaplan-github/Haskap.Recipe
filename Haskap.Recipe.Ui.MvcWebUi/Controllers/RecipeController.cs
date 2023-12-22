@@ -1,5 +1,7 @@
 ﻿using Haskap.Recipe.Application.Contracts;
+using Haskap.Recipe.Application.Dtos.Common;
 using Haskap.Recipe.Application.Dtos.Recipies;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -8,13 +10,16 @@ public class RecipeController : Controller
 {
     private readonly ICategoryService _categoryService;
     private readonly IRecipeService _recipeService;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
     public RecipeController(
         ICategoryService categoryService,
-        IRecipeService recipeService)
+        IRecipeService recipeService,
+        IWebHostEnvironment webHostEnvironment)
     {
         _categoryService = categoryService;
         _recipeService = recipeService;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     public IActionResult Index()
@@ -108,5 +113,48 @@ public class RecipeController : Controller
     public async Task UpdateIngredient(UpdateIngredientInputDto inputDto, CancellationToken cancellationToken = default)
     {
         await _recipeService.UpdateIngredientAsync(inputDto, cancellationToken);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> LoadStepsViewComponent(Guid recipeId, CancellationToken cancellationToken)
+    {
+        return ViewComponent(typeof(ViewComponents.Recipe.StepsViewComponent), new { recipeId });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> LoadNewStepModalContentViewComponent(Guid recipeId, CancellationToken cancellationToken = default)
+    {
+        return ViewComponent(typeof(ViewComponents.Recipe.NewStepModalContentViewComponent), new { recipeId });
+    }
+
+    [HttpPost]
+    public async Task SaveNewStep(SaveNewStepInputDto inputDto, List<IFormFile> formFiles, CancellationToken cancellationToken = default)
+    {
+        var pictureFiles = new List<FileInputDto>();
+
+        if (formFiles?.Any() == true)
+        {
+            var picturesTasks = formFiles.AsParallel()
+                .Select(async x =>
+                {
+                    var fileInputDto = new FileInputDto
+                    {
+                        ContentLength = x.Length,
+                        OriginalName = x.FileName
+                    };
+
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await x.CopyToAsync(memoryStream);
+                        fileInputDto.Content = memoryStream.ToArray();
+                    }
+
+                    return fileInputDto;
+                });
+
+            pictureFiles = (await Task.WhenAll(picturesTasks)).ToList();
+        }
+
+        await _recipeService.SaveNewStepAsync(inputDto, pictureFiles, _webHostEnvironment.WebRootPath, cancellationToken);
     }
 }

@@ -73,8 +73,8 @@ public class StepPictureProfile : Profile
     public StepPictureProfile()
     {
         CreateMap<StepPicture, StepPictureOutputDto>()
-            .ForMember(x => x.Extension, x => x.MapFrom(y => y.Picture.Extension))
-            .ForMember(x => x.OriginalName, x => x.MapFrom(y => y.Picture.OriginalName))
-            .ForMember(x => x.NewName, x => x.MapFrom(y => y.Picture.NewName));
+            .ForMember(x => x.Extension, x => x.MapFrom(y => y.File.Extension))
+            .ForMember(x => x.OriginalName, x => x.MapFrom(y => y.File.OriginalName))
+            .ForMember(x => x.NewName, x => x.MapFrom(y => y.File.NewName));
     }
 }

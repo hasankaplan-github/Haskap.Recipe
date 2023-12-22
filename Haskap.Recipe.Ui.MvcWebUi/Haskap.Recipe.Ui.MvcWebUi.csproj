@@ -64,7 +64,7 @@
 
   <ItemGroup>
     <Folder Include="ViewComponents\Shared\" />
-    <Folder Include="wwwroot\CateringPhoto\" />
+    <Folder Include="wwwroot\StepPictures\" />
   </ItemGroup>
 
   <ItemGroup>

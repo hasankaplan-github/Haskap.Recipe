@@ -27,7 +27,7 @@ public class StepEntityTypeConfiguration : BaseEntityTypeConfiguration<Step>
             x.HasKey(y => y.Id);
             x.WithOwner().HasForeignKey("StepId");
 
-            x.OwnsOne(y => y.Picture, y =>
+            x.OwnsOne(y => y.File, y =>
             {
                 y.Ignore(z => z.Id);
             });

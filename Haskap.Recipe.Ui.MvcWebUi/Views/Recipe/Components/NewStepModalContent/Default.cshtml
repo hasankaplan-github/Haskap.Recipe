@@ -1,0 +1,88 @@
+﻿@using Haskap.Recipe.Application.Dtos.Recipies;
+@using Haskap.Recipe.Domain.Shared.Consts;
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model RecipeOutputDto
+
+@{
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+<div class="modal-header bg-primary">
+    <h5 class="modal-title" id="staticBackdropLabel"><i class="fa-solid fa-shield-halved"></i> Yeni Adım (@(ViewBag.StepCount + 1). Adım)</h5>
+    <button type="button" class="btn-close cancelNewStep" @*data-bs-dismiss="modal"*@ aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <label for="instructionTextarea" class="form-label">Adım</label>
+            <textarea id="instructionTextarea" class="form-control" maxlength="@StepConsts.MaxInstructionLength" aria-describedby="Adım" rows="7"></textarea>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <label class="form-label">Resim Seç</label>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="stepPictures" multiple>
+                <label class="custom-file-label" for="stepPictures">Dosya</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary cancelNewStep" @*data-bs-dismiss="modal"*@ id="cancelNewStepButton">İptal</button>
+    <button type="button" class="btn btn-primary" @*data-bs-dismiss="modal"*@ id="saveNewStepButton"><i class="fas fa-save"></i> Kaydet</button>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        bsCustomFileInput.init();
+    })
+
+    $(".cancelNewStep").click(function () {
+        newStepModal.hide();
+    })
+
+    $("#saveNewStepButton").click(function () {
+        let formData = new FormData();
+        let stepPictures = $('#stepPictures')[0].files;
+
+        for (let i = 0; i < stepPictures.length; i++) {
+            formData.append('formFiles', stepPictures[i]);
+        }
+
+        formData.append('recipeId', "@ViewBag.RecipeId");
+        formData.append('instruction', $("#instructionTextarea").val());
+
+        $.ajax({
+            type: "POST",
+            headers: {
+                'RequestVerificationToken': '@antiforgeryToken'
+            },
+            url: '@Url.Action("SaveNewStep", "Recipe")',
+            data: formData,
+            processData: false,  // tell jQuery not to process the data
+            contentType: false  // tell jQuery not to set contentType
+        }).done(function (result, status, xhr) {
+            Swal.fire(
+                'Başarılı',
+                'Adım başarıyla kaydedildi.',
+                'success'
+            );
+
+            loadStepsViewComponent();
+
+            newStepModal.hide();
+        });
+    })
+
+</script>

@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Haskap.Recipe.Domain.Common;
-public class StepPictureSettings
+public class StepPicturesSettings
 {
-    public const string SectionName = "StepPictureSettings";
+    public const string SectionName = "StepPicturesSettings";
     
     public string FolderName { get; init; }
 }

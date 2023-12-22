@@ -1,15 +1,13 @@
-﻿using System;
+﻿using Haskap.Recipe.Application.Dtos.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Haskap.Recipe.Application.Dtos.Recipies;
-public class StepOutputDto
+public class SaveNewStepInputDto
 {
-    public Guid Id { get; set; }
     public Guid RecipeId { get; set; }
     public string Instruction { get; set; }
-    public int StepOrder { get; set; }
-    public List<StepPictureOutputDto> Pictures { get; set; }
 }

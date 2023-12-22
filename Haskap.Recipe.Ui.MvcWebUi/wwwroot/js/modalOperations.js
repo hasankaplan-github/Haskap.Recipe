@@ -6,6 +6,7 @@ let userUpdatePermissionsModal;
 let userUpdateRolesModal;
 let newIngredientModal;
 let updateIngredientModal;
+let newStepModal;
 
 
 const modal = {
@@ -15,7 +16,8 @@ const modal = {
     userUpdatePermissionsModalId: 'userUpdatePermissionsModal',
     userUpdateRolesModalId: 'userUpdateRolesModal',
     newIngredientModalId: 'newIngredientModal',
-    updateIngredientModalId: 'updateIngredientModal'
+    updateIngredientModalId: 'updateIngredientModal',
+    newStepModalId: 'newStepModal'
 }
 
 const wizardModalOptions = {

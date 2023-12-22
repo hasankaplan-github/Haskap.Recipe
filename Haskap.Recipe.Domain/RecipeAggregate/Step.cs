@@ -33,7 +33,12 @@ public class Step : Entity
         AddPictures(pictures);
     }
 
-    public void AddPictures(IEnumerable<StepPicture> pictures) => _pictures.AddRange(pictures);
+    public void AddPictures(IEnumerable<StepPicture> pictures)
+    {
+        Guard.Against.Null(pictures);
+
+        _pictures.AddRange(pictures);
+    }
 
     public void AddPicture(StepPicture picture) => _pictures.Add(picture);
 

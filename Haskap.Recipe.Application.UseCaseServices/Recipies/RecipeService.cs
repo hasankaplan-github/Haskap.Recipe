@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Haskap.DddBase.Utilities.Guids;
 using Haskap.Recipe.Application.Contracts;
+using Haskap.Recipe.Application.Dtos.Common;
 using Haskap.Recipe.Application.Dtos.Recipies;
 using Haskap.Recipe.Domain;
 using Haskap.Recipe.Domain.IngredientGroupAggregate;
 using Haskap.Recipe.Domain.RecipeAggregate;
+using Haskap.Recipe.Domain.RecipeAggregate.Events;
 using Haskap.Recipe.Domain.UnitAggregate;
 using Haskap.Recipe.Domain.UserAggregate;
 using Microsoft.EntityFrameworkCore;
@@ -203,5 +205,49 @@ public class RecipeService : IRecipeService
         ingredientToBeUpdated.SetIngredientGroup(ingredientGroup);
 
         await _recipeDbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<int> GetStepCountAsync(Guid recipeId, CancellationToken cancellationToken)
+    {
+        var recipe = await _recipeDbContext.Recipe
+            .Include(x => x.Steps)
+            .Where(x => x.Id == recipeId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var stepCount = recipe.Steps.Count();
+
+        return stepCount;
+    }
+
+    public async Task SaveNewStepAsync(SaveNewStepInputDto inputDto, List<FileInputDto> pictureFiles, string webRootPath, CancellationToken cancellationToken)
+    {
+        var stepPictures = new List<StepPicture>();
+
+        foreach (var pictureFile in pictureFiles)
+        {
+            var stepPicture = new StepPicture(pictureFile.OriginalName);
+            stepPictures.Add(stepPicture);
+
+            pictureFile.NewName = stepPicture.File.NewName;
+            pictureFile.Extension = stepPicture.File.Extension;
+        }
+
+        var newStepOrder = (await GetStepCountAsync(inputDto.RecipeId, cancellationToken)) + 1;
+
+        var newStep = new Step(
+            GuidGenerator.CreateSimpleGuid(),
+            inputDto.Instruction,
+            newStepOrder,
+            stepPictures);
+
+        var recipe = await _recipeDbContext.Recipe
+            .Where(x => x.Id == inputDto.RecipeId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        recipe.AddStep(newStep);
+
+        await _recipeDbContext.SaveChangesAsync(cancellationToken);
+
+        await MediatorWrapper.Publish(new StepCreatedDomainEvent(inputDto.RecipeId, newStep.Id, pictureFiles, webRootPath), cancellationToken);
     }
 }

@@ -46,7 +46,7 @@ var builder = WebApplication.CreateBuilder(options);
 //builder.WebHost.UseUrls("http://localhost:5050");
 
 // Add services to the container.
-builder.Services.Configure<StepPictureSettings>(builder.Configuration.GetSection(StepPictureSettings.SectionName));
+builder.Services.Configure<StepPicturesSettings>(builder.Configuration.GetSection(StepPicturesSettings.SectionName));
 
 
 builder.Services.AddPersistance(builder.Configuration);
