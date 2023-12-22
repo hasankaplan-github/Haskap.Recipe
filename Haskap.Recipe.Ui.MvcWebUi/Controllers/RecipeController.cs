@@ -157,4 +157,16 @@ public class RecipeController : Controller
 
         await _recipeService.SaveNewStepAsync(inputDto, pictureFiles, _webHostEnvironment.WebRootPath, cancellationToken);
     }
+
+    [HttpPut]
+    public async Task IncreaseStepOrder(IncreaseStepOrderInputDto inputDto, CancellationToken cancellationToken = default)
+    {
+        await _recipeService.IncreaseStepOrderAsync(inputDto, cancellationToken);
+    }
+
+    [HttpPut]
+    public async Task DecreaseStepOrder(DecreaseStepOrderInputDto inputDto, CancellationToken cancellationToken = default)
+    {
+        await _recipeService.DecreaseStepOrderAsync(inputDto, cancellationToken);
+    }
 }

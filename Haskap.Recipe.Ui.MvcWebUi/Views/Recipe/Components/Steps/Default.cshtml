@@ -57,6 +57,50 @@
 
 <script>
 
+    function increaseStepOrder(recipeId, stepId) {
+        $.ajax({
+            type: "PUT",
+            url: '@Url.Action("IncreaseStepOrder", "Recipe")',
+            headers: {
+                'RequestVerificationToken': '@antiforgeryToken'
+            },
+            data: {
+                recipeId: recipeId,
+                stepId: stepId
+            }
+        }).done(function (result, status, xhr) {
+            Swal.fire(
+                'Başarılı',
+                'Adım sırası başarıyla artırıldı.',
+                'success'
+            );
+
+            loadStepsViewComponent();
+        });
+    }
+
+    function decreaseStepOrder(recipeId, stepId) {
+        $.ajax({
+            type: "PUT",
+            url: '@Url.Action("DecreaseStepOrder", "Recipe")',
+            headers: {
+                'RequestVerificationToken': '@antiforgeryToken'
+            },
+            data: {
+                recipeId: recipeId,
+                stepId: stepId
+            }
+        }).done(function (result, status, xhr) {
+            Swal.fire(
+                'Başarılı',
+                'Adım sırası başarıyla azaltıldı.',
+                'success'
+            );
+
+            loadStepsViewComponent();
+        });
+    }
+
     function deleteStep(recipeId, stepId) {
         Swal.fire({
             icon: 'question',

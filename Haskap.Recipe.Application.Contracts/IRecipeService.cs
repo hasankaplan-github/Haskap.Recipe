@@ -19,4 +19,6 @@ public interface IRecipeService
     Task UpdateIngredientAsync(UpdateIngredientInputDto inputDto, CancellationToken cancellationToken);
     Task<int> GetStepCountAsync(Guid recipeId, CancellationToken cancellationToken);
     Task SaveNewStepAsync(SaveNewStepInputDto inputDto, List<FileInputDto> pictureFiles, string webRootPath, CancellationToken cancellationToken);
+    Task IncreaseStepOrderAsync(IncreaseStepOrderInputDto inputDto, CancellationToken cancellationToken);
+    Task DecreaseStepOrderAsync(DecreaseStepOrderInputDto inputDto, CancellationToken cancellationToken);
 }

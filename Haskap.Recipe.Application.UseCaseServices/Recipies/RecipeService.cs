@@ -9,6 +9,7 @@ using Haskap.Recipe.Domain.RecipeAggregate;
 using Haskap.Recipe.Domain.RecipeAggregate.Events;
 using Haskap.Recipe.Domain.UnitAggregate;
 using Haskap.Recipe.Domain.UserAggregate;
+using Haskap.Recipe.Domain.UserAggregate.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -249,5 +250,63 @@ public class RecipeService : IRecipeService
         await _recipeDbContext.SaveChangesAsync(cancellationToken);
 
         await MediatorWrapper.Publish(new StepCreatedDomainEvent(inputDto.RecipeId, newStep.Id, pictureFiles, webRootPath), cancellationToken);
+    }
+
+    public async Task IncreaseStepOrderAsync(IncreaseStepOrderInputDto inputDto, CancellationToken cancellationToken)
+    {
+        var recipe = await _recipeDbContext.Recipe
+            .Include(x => x.Steps)
+            .Where(x => x.Id == inputDto.RecipeId)
+            .FirstAsync(cancellationToken);
+
+        var stepToBeIncreased = recipe.Steps
+            .Where(x => x.Id == inputDto.StepId)
+            .First();
+
+        var currentStepOrder = stepToBeIncreased.StepOrder;
+
+        if (recipe.Steps.Count == currentStepOrder)
+        {
+            return;
+        }
+
+        var stepToBeDecreased = recipe.Steps
+            .Where(x => x.StepOrder == currentStepOrder + 1)
+            .First();
+
+        stepToBeIncreased.SetStepOrder(currentStepOrder + 1);
+
+        stepToBeDecreased.SetStepOrder(currentStepOrder);
+
+        await _recipeDbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DecreaseStepOrderAsync(DecreaseStepOrderInputDto inputDto, CancellationToken cancellationToken)
+    {
+        var recipe = await _recipeDbContext.Recipe
+            .Include(x => x.Steps)
+            .Where(x => x.Id == inputDto.RecipeId)
+            .FirstAsync(cancellationToken);
+
+        var stepToBeDecreased = recipe.Steps
+            .Where(x => x.Id == inputDto.StepId)
+            .First();
+
+        var currentStepOrder = stepToBeDecreased.StepOrder;
+
+        if (currentStepOrder == 1)
+        {
+            return;
+        }
+
+        var stepToBeIncreased = recipe.Steps
+            .Where(x => x.StepOrder == currentStepOrder - 1)
+            .First();
+
+        stepToBeDecreased.SetStepOrder(currentStepOrder - 1);
+
+        stepToBeIncreased.SetStepOrder(currentStepOrder);
+
+        await _recipeDbContext.SaveChangesAsync(cancellationToken);
     }
 }

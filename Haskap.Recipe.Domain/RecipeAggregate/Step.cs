@@ -25,11 +25,9 @@ public class Step : Entity
         Guard.Against.NullOrWhiteSpace(instruction);
         Guard.Against.InvalidInput(instruction, nameof(instruction), x => x.Length <= StepConsts.MaxInstructionLength);
 
-        Guard.Against.NegativeOrZero(stepOrder);
-
         Id = id;
         Instruction = instruction;
-        StepOrder = stepOrder;
+        SetStepOrder(stepOrder);
         AddPictures(pictures);
     }
 
@@ -43,4 +41,11 @@ public class Step : Entity
     public void AddPicture(StepPicture picture) => _pictures.Add(picture);
 
     public void RemovePicture(StepPicture picture) => _pictures.Remove(picture);
+
+    public void SetStepOrder(int stepOrder)
+    {
+        Guard.Against.NegativeOrZero(stepOrder);
+
+        StepOrder = stepOrder;
+    }
 }
