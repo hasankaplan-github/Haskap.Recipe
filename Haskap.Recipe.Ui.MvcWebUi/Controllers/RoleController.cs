@@ -12,14 +12,10 @@ namespace Haskap.Recipe.Ui.MvcWebUi.Controllers;
 public class RoleController : Controller
 {
     private readonly IRoleService _roleService;
-    private readonly ICurrentTenantProvider _currentTenantProvider;
 
-    public RoleController(
-        IRoleService roleService,
-        ICurrentTenantProvider currentTenantProvider)
+    public RoleController(IRoleService roleService)
     {
         _roleService = roleService;
-        _currentTenantProvider = currentTenantProvider;
     }
 
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
@@ -69,12 +65,6 @@ public class RoleController : Controller
     [HttpPost]
     public async Task UpdatePermissions(UpdatePermissionsInputDto inputDto, CancellationToken cancellationToken)
     {
-        if (_currentTenantProvider.IsHost == false)
-        {
-            inputDto.UncheckedPermissions?.RemoveAll(x => x.StartsWith("Permissions.Tenants"));
-            inputDto.CheckedPermissions?.RemoveAll(x => x.StartsWith("Permissions.Tenants"));
-        }
-
         await _roleService.UpdatePermissionsAsync(inputDto, cancellationToken);
     }
 

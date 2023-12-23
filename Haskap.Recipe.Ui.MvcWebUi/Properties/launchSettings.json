@@ -1,14 +1,5 @@
 {
   "profiles": {
-    "Haskap.DugunSalonu.Ui.MvcWebUi": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7139;http://localhost:5139"
-    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
@@ -25,6 +16,15 @@
         "ASPNETCORE_URLS": "https://localhost:7139;http://localhost:5139"
       },
       "distributionName": ""
+    },
+    "Haskap.Recipe.Ui.MvcWebUi": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7139;http://localhost:5139"
     }
   },
   "iisSettings": {

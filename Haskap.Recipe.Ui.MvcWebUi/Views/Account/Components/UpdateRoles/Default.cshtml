@@ -3,7 +3,6 @@
 @using Haskap.DddBase.Presentation.CustomAuthorization;
 @using Haskap.DddBase.Domain.Providers;
 
-@inject ICurrentTenantProvider currentTenantProvider;
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 @*
@@ -13,7 +12,6 @@
 @model List<RoleOutputDto>
 
 @{
-    var tenantId = ViewBag.TenantId as Guid?;
     var selectedRoles = (ViewBag.SelectedRoles as List<RoleOutputDto>) ?? new List<RoleOutputDto>();
     var selected = false;
 
@@ -71,19 +69,8 @@
             headers: {
                 'RequestVerificationToken': '@antiforgeryToken'
             },
-            @if (currentTenantProvider.CurrentTenantId.HasValue)
-            {
-                @:url: '@Url.Action("UpdateRoles", "Account")',
-            }
-            else
-            {
-                @:url: '@Url.Action("UpdateRolesOnHost", "Account")',
-            }
+            url: '@Url.Action("UpdateRoles", "Account")',
             data: {
-                @if (!currentTenantProvider.CurrentTenantId.HasValue)
-                {
-                    @:tenantId: '@tenantId',
-                }
                 userId: '@ViewBag.UserId',
                 checkedRoles: checkedRoles,
                 uncheckedRoles: uncheckedRoles

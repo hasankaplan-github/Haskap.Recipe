@@ -1,7 +1,6 @@
 ﻿@using Haskap.Recipe.Application.Dtos.Accounts;
 @using Haskap.DddBase.Domain.Providers;
 
-@inject ICurrentTenantProvider currentTenantProvider;
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 @*
@@ -9,8 +8,6 @@
 *@
 
 @{
-    var tenantId = ViewBag.TenantId as Guid?;
-
     var antiforgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
@@ -190,19 +187,8 @@
                     headers: {
                         'RequestVerificationToken': '@antiforgeryToken'
                     },
-                    @if (currentTenantProvider.CurrentTenantId.HasValue)
-                    {
-                        @:url: "@Url.Action("Search", "Account")",
-                    }
-                    else
-                    {
-                        @:url: "@Url.Action("SearchOnHost", "Account")",
-                    }
+                    url: "@Url.Action("Search", "Account")",
                     data: function (d) {
-                        @if (!currentTenantProvider.CurrentTenantId.HasValue)
-                        {
-                            @:d.tenantId = '@tenantId';
-                        }
                         d.firstName = $("#searchUserFirstNameInput").val();
                         d.lastName = $("#searchUserLastNameInput").val();
                         d.userName = $("#searchUserUserNameInput").val();
@@ -236,16 +222,8 @@
                                     '<ul class="dropdown-menu">' +
                                     '<li><a class="btn-danger dropdown-item" href="#" onclick="deleteUser(\'' + data + '\');"><i class="fa-solid fa-trash-can"></i> Sil</a></li>' +
                                     '<li><a class="btn-danger dropdown-item" href="#" onclick="toggleActiveStatus(\'' + data + '\');"><i class="fa-solid fa-wave-square"></i> ' + toggleActiveStatusText + '</a></li>' +
-                                    @if (currentTenantProvider.CurrentTenantId.HasValue)
-                                    {
-                                        @:'<li><a class="btn-primary dropdown-item" href="#" onclick="showUpdatePermissionsModal(\'' + data + '\');"><i class="fa-solid fa-shield-halved"></i> Yetkiler</a></li>' +
-                                        @:'<li><a class="btn-primary dropdown-item" href="#" onclick="showUpdateRolesModal(\'' + data + '\');"><i class="fa-solid fa-user-tag"></i> Roller</a></li>' +
-                                    }
-                                    else
-                                    {
-                                        @:'<li><a class="btn-primary dropdown-item" href="#" onclick="showUpdatePermissionsModalOnHost(\'@tenantId\', \'' + data + '\');"><i class="fa-solid fa-shield-halved"></i> Yetkiler</a></li>' +
-                                        @:'<li><a class="btn-primary dropdown-item" href="#" onclick="showUpdateRolesModalOnHost(\'@tenantId\', \'' + data + '\');"><i class="fa-solid fa-user-tag"></i> Roller</a></li>' +
-                                    }
+                                    '<li><a class="btn-primary dropdown-item" href="#" onclick="showUpdatePermissionsModal(\'' + data + '\');"><i class="fa-solid fa-shield-halved"></i> Yetkiler</a></li>' +
+                                    '<li><a class="btn-primary dropdown-item" href="#" onclick="showUpdateRolesModal(\'' + data + '\');"><i class="fa-solid fa-user-tag"></i> Roller</a></li>' +
                                     '</ul>' +
                                     '</div>';
                             }
@@ -289,19 +267,8 @@
                         headers: {
                             'RequestVerificationToken': '@antiforgeryToken'
                         },
-                        @if (currentTenantProvider.CurrentTenantId.HasValue)
-                        {
-                            @:url: "@Url.Action("Delete", "Account")",
-                        }
-                        else
-                        {
-                            @:url: "@Url.Action("DeleteOnHost", "Account")",
-                        }
+                        url: "@Url.Action("Delete", "Account")",
                         data: {
-                            @if (!currentTenantProvider.CurrentTenantId.HasValue)
-                            {
-                                @:tenantId: '@tenantId',
-                            }
                             userId: userId
                         }
                     }).done(function (result, status, xhr) {
@@ -319,19 +286,8 @@
                 headers: {
                     'RequestVerificationToken': '@antiforgeryToken'
                 },
-                @if (currentTenantProvider.CurrentTenantId.HasValue)
-                {
-                    @:url: "@Url.Action("ToggleActiveStatus", "Account")",
-                }
-                else
-                {
-                    @:url: "@Url.Action("ToggleActiveStatusOnHost", "Account")",
-                }
+                url: "@Url.Action("ToggleActiveStatus", "Account")",
                 data: {
-                    @if (!currentTenantProvider.CurrentTenantId.HasValue)
-                    {
-                        @:tenantId: '@tenantId',
-                    }
                     userId: userId
                 }
             }).done(function (result, status, xhr) {

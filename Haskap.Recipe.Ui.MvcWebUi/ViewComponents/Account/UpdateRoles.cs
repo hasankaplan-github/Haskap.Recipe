@@ -24,12 +24,9 @@ public class UpdateRoles : ViewComponent
         _currentTenantProvider = currentTenantProvider;
     }
 
-    public async Task<IViewComponentResult> InvokeAsync(Guid? tenantId, Guid userId, CancellationToken cancellationToken)
+    public async Task<IViewComponentResult> InvokeAsync(Guid userId, CancellationToken cancellationToken)
     {
-        using var _ = _currentTenantProvider.ChangeCurrentTenant(tenantId);
-
         ViewBag.UserId = userId;
-        ViewBag.TenantId = tenantId;
 
         var roles = await _accountService.GetRolesAsync(new GetRolesInputDto{ UserId = userId }, cancellationToken);
 

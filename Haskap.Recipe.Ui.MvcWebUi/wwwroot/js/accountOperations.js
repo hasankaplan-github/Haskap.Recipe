@@ -16,22 +16,6 @@ function showUpdatePermissionsModal(userId) {
     userUpdatePermissionsModal.show();
 }
 
-function showUpdatePermissionsModalOnHost(tenantId, userId) {
-    $.ajax({
-        type: "GET",
-        url: '/Account/LoadUpdatePermissionsViewComponentOnHost', //'@Url.Action("LoadCreateReservationViewComponent", "Schedule")',
-        data: {
-            tenantId: tenantId,
-            userId: userId
-        }
-    }).done(function (result, status, xhr) {
-        $("#userUpdatePermissionsModalContent").html(result);
-    });
-
-    userUpdatePermissionsModal = new bootstrap.Modal(document.getElementById(modal.userUpdatePermissionsModalId), wizardModalOptions);
-    userUpdatePermissionsModal.show();
-}
-
 function hideUserUpdatePermissionsModal() {
     userUpdatePermissionsModal.hide();
 }
@@ -41,22 +25,6 @@ function showUpdateRolesModal(userId) {
         type: "GET",
         url: '/Account/LoadUpdateRolesViewComponent', //'@Url.Action("LoadCreateReservationViewComponent", "Schedule")',
         data: {
-            userId: userId
-        }
-    }).done(function (result, status, xhr) {
-        $("#userUpdateRolesModalContent").html(result);
-    });
-
-    userUpdateRolesModal = new bootstrap.Modal(document.getElementById(modal.userUpdateRolesModalId), wizardModalOptions);
-    userUpdateRolesModal.show();
-}
-
-function showUpdateRolesModalOnHost(tenantId, userId) {
-    $.ajax({
-        type: "GET",
-        url: '/Account/LoadUpdateRolesViewComponentOnHost', //'@Url.Action("LoadCreateReservationViewComponent", "Schedule")',
-        data: {
-            tenantId: tenantId,
             userId: userId
         }
     }).done(function (result, status, xhr) {

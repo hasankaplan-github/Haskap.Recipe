@@ -18,16 +18,13 @@ namespace Haskap.Recipe.Ui.MvcWebUi.Controllers;
 public class AccountController : Controller
 {
     private readonly IAccountService _accountService;
-    private readonly ICurrentTenantProvider _currentTenantProvider;
     private readonly ICurrentUserIdProvider _currentUserIdProvider;
 
     public AccountController(
         IAccountService accountService,
-        ICurrentTenantProvider currentTenantProvider,
         ICurrentUserIdProvider currentUserIdProvider)
     {
         _accountService = accountService;
-        _currentTenantProvider = currentTenantProvider;
         _currentUserIdProvider = currentUserIdProvider;
     }
 
@@ -137,46 +134,21 @@ public class AccountController : Controller
         await _accountService.UpdateAsync(inputDto, cancellationToken);
     }
 
+    [Authorize(Permissions.Recipe.Admin)]
     [HttpGet]
     public async Task<IActionResult> Accounts(CancellationToken cancellationToken)
     {
         return View();
     }
 
-    [HttpGet]
-    public async Task<IActionResult> TenantAccounts(Guid? tenantId, CancellationToken cancellationToken)
-    {
-        if (_currentTenantProvider.IsHost == false)
-        {
-            throw new InvalidOperationException("Yetkisiz giriş!");
-        }
-
-        using var _ = _currentTenantProvider.ChangeCurrentTenant(tenantId);
-
-        ViewBag.TenantId = tenantId;
-
-        return View("Accounts");
-    }
-
+    [Authorize(Permissions.Recipe.Admin)]
     [HttpDelete]
     public async Task Delete(Guid userId, CancellationToken cancellationToken)
     {
         await _accountService.DeleteAsync(userId, cancellationToken);
     }
 
-    [HttpDelete]
-    public async Task DeleteOnHost(Guid? tenantId, Guid userId, CancellationToken cancellationToken)
-    {
-        if (_currentTenantProvider.IsHost == false)
-        {
-            throw new InvalidOperationException("Yetkisiz giriş!");
-        }
-
-        using var _ = _currentTenantProvider.ChangeCurrentTenant(tenantId);
-
-        await _accountService.DeleteAsync(userId, cancellationToken);
-    }
-
+    [Authorize(Permissions.Recipe.Admin)]
     [HttpPost]
     public async Task<JsonResult> Search(SearchParamsInputDto inputDto, JqueryDataTableParam jqueryDataTableParam, CancellationToken cancellationToken = default)
     {
@@ -184,99 +156,31 @@ public class AccountController : Controller
         return Json(result);
     }
 
-    [HttpPost]
-    public async Task<JsonResult> SearchOnHost(SearchParamsInputDto inputDto, Guid? tenantId, JqueryDataTableParam jqueryDataTableParam, CancellationToken cancellationToken = default)
-    {
-        if (_currentTenantProvider.IsHost == false)
-        {
-            throw new InvalidOperationException("Yetkisiz giriş!");
-        }
-
-        using var _ = _currentTenantProvider.ChangeCurrentTenant(tenantId);
-
-        var result = await _accountService.SearchAsync(inputDto, jqueryDataTableParam, cancellationToken);
-        return Json(result);
-    }
-
+    [Authorize(Permissions.Recipe.Admin)]
     [HttpGet]
     public async Task<IActionResult> LoadUpdatePermissionsViewComponent(Guid userId, CancellationToken cancellationToken)
     {
-        return ViewComponent(typeof(ViewComponents.Account.UpdatePermissions), new { TenantId = _currentTenantProvider.CurrentTenantId, userId });
+        return ViewComponent(typeof(ViewComponents.Account.UpdatePermissions), new { userId });
     }
 
-    [HttpGet]
-    public async Task<IActionResult> LoadUpdatePermissionsViewComponentOnHost(Guid? tenantId, Guid userId, CancellationToken cancellationToken)
-    {
-        if (_currentTenantProvider.IsHost == false)
-        {
-            throw new InvalidOperationException("Yetkisiz giriş!");
-        }
-
-        using var _ = _currentTenantProvider.ChangeCurrentTenant(tenantId);
-
-        return ViewComponent(typeof(ViewComponents.Account.UpdatePermissions), new { TenantId = _currentTenantProvider.CurrentTenantId, userId });
-    }
-
+    [Authorize(Permissions.Recipe.Admin)]
     [HttpPost]
     public async Task UpdatePermissions(UpdatePermissionsInputDto inputDto, CancellationToken cancellationToken)
     {
-        if (_currentTenantProvider.IsHost == false)
-        {
-            inputDto.UncheckedPermissions?.RemoveAll(x => x.StartsWith("Permissions.Tenants"));
-            inputDto.CheckedPermissions?.RemoveAll(x => x.StartsWith("Permissions.Tenants"));
-        }
-
         await _accountService.UpdatePermissionsAsync(inputDto, cancellationToken);
     }
 
-    [HttpPost]
-    public async Task UpdatePermissionsOnHost(UpdatePermissionsInputDto inputDto, Guid? tenantId, CancellationToken cancellationToken)
-    {
-        if (_currentTenantProvider.IsHost == false)
-        {
-            throw new InvalidOperationException("Yetkisiz giriş!");
-        }
-
-        using var _ = _currentTenantProvider.ChangeCurrentTenant(tenantId);
-
-        await _accountService.UpdatePermissionsAsync(inputDto, cancellationToken);
-    }
-
+    [Authorize(Permissions.Recipe.Admin)]
     [HttpGet]
     public async Task<IActionResult> LoadUpdateRolesViewComponent(Guid userId, CancellationToken cancellationToken)
     {
-        return ViewComponent(typeof(ViewComponents.Account.UpdateRoles), new { TenantId = _currentTenantProvider.CurrentTenantId, userId });
+        return ViewComponent(typeof(ViewComponents.Account.UpdateRoles), new { userId });
     }
 
-    [HttpGet]
-    public async Task<IActionResult> LoadUpdateRolesViewComponentOnHost(Guid? tenantId, Guid userId, CancellationToken cancellationToken)
-    {
-        if (_currentTenantProvider.IsHost == false)
-        {
-            throw new InvalidOperationException("Yetkisiz giriş!");
-        }
-
-        using var _ = _currentTenantProvider.ChangeCurrentTenant(tenantId);
-
-        return ViewComponent(typeof(ViewComponents.Account.UpdateRoles), new { TenantId = _currentTenantProvider.CurrentTenantId, userId });
-    }
-
+    [Authorize(Permissions.Recipe.Admin)]
     [HttpPost]
     public async Task UpdateRoles(UpdateRolesInputDto inputDto, CancellationToken cancellationToken)
     {
-        await _accountService.UpdateRolesAsync(inputDto, cancellationToken);
-    }
-
-    [HttpPost]
-    public async Task UpdateRolesOnHost(UpdateRolesInputDto inputDto, Guid? tenantId, CancellationToken cancellationToken)
-    {
-        if (_currentTenantProvider.IsHost == false)
-        {
-            throw new InvalidOperationException("Yetkisiz giriş!");
-        }
-
-        using var _ = _currentTenantProvider.ChangeCurrentTenant(tenantId);
-
         await _accountService.UpdateRolesAsync(inputDto, cancellationToken);
     }
 }

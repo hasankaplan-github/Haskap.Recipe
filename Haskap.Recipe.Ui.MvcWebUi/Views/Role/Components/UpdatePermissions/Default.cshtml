@@ -4,7 +4,6 @@
 @using Haskap.Recipe.Ui.MvcWebUi.CustomAuthorization;
 @using Haskap.DddBase.Domain.Providers;
 
-@inject ICurrentTenantProvider currentTenantProvider;
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 
@@ -34,11 +33,6 @@
             <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                 @foreach (var groupKey in Model.Keys)
                 {
-                    if (currentTenantProvider.IsHost == false)
-                    {
-                        continue;
-                    }
-
                     <button class="nav-link @Html.Raw(isFirstPermissionGroup ? "active" : string.Empty)" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-@groupKey" type="button" role="tab" aria-controls="v-pills-@groupKey" aria-selected="true">@groupKey</button>
 
                     isFirstPermissionGroup = false;
@@ -51,11 +45,6 @@
                 @foreach (var permissions in Model)
                 {
                     var groupKey = permissions.Key;
-
-                    if (currentTenantProvider.IsHost == false)
-                    {
-                        continue;
-                    }
 
                     <div class="tab-pane fade @Html.Raw(isFirstPermissionGroup ? "show active" : string.Empty)" id="v-pills-@groupKey" role="tabpanel" aria-labelledby="v-pills-@(groupKey)-tab">
                         @foreach (var permission in permissions.Value)
