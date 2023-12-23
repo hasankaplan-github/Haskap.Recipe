@@ -78,9 +78,9 @@ public class AppDbContext : BaseEfCoreNpgsqlDbContext, IRecipeDbContext
             expression = expression == null ? isDraftFilterExpression : CombineExpressions(expression, isDraftFilterExpression);
         }
 
-        if (typeof(IHasMultiUser).IsAssignableFrom(typeof(TEntity)) && _currentUserId.HasValue)
+        if (typeof(IHasMultiUser).IsAssignableFrom(typeof(TEntity)))
         {
-            Expression<Func<TEntity, bool>>? multiUserExpression = x => !_multiUserFilterIsEnabled || (x as IHasMultiUser).OwnerUserId == _currentUserId.Value;
+            Expression<Func<TEntity, bool>>? multiUserExpression = x => !_multiUserFilterIsEnabled || (x as IHasMultiUser).OwnerUserId == _currentUserId;
             expression = expression == null ? multiUserExpression : CombineExpressions(expression, multiUserExpression);
         }
 
