@@ -206,6 +206,49 @@
             });
         })
 
+        $("#deleteButton").click(function () {
+            Swal.fire({
+                icon: 'question',
+                title: 'Tarifinizi silmek istediğinizden emin misiniz?',
+                //showDenyButton: true,
+                showCancelButton: true,
+                cancelButtonText: 'İptal',
+                confirmButtonText: 'Sil',
+                //denyButtonText: `Don't save`,
+            }).then((confirmation) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (confirmation.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: '@Url.Action("Delete", "Recipe")',
+                        headers: {
+                            'RequestVerificationToken': '@antiforgeryToken'
+                        },
+                        data: {
+                            id: "@Model.Id"
+                        }
+                    }).done(function (result, status, xhr) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Tarifiniz başarıyla silindi.',
+                            //showDenyButton: true,
+                            showCancelButton: false,
+                            cancelButtonText: 'İptal',
+                            confirmButtonText: 'Tamam',
+                            //denyButtonText: `Don't save`,
+                        }).then((confirmation) => {
+                            window.location.href = "@Url.Action("EditorSearch")";
+
+                            /* Read more about isConfirmed, isDenied below */
+                            if (confirmation.isConfirmed) {
+
+                            }
+                        });
+                    });
+                }
+            });
+        })
+
         $("#saveButton").click(function () {
             let unselectedCategoryIds = $("#categorySelect option:not(:selected)").map(function () {
                 return this.value;

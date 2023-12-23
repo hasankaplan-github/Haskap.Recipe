@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Haskap.Recipe.Domain.RecipeAggregate;
-public class Recipe : AggregateRoot, IAuditable
+public class Recipe : AggregateRoot, IAuditable, ISoftDeletable
 {
     public string Name { get; private set; }
     public string? Description { get; private set; }
@@ -30,6 +30,7 @@ public class Recipe : AggregateRoot, IAuditable
     public DateTime? CreatedOn { get; set; }
     public Guid? ModifiedUserId { get; set; }
     public DateTime? ModifiedOn { get; set; }
+    public bool IsDeleted { get; set; }
 
     private Recipe() { }
 
@@ -84,6 +85,10 @@ public class Recipe : AggregateRoot, IAuditable
         IsDraft = true; 
     }
 
+    public void MarkAsDeleted()
+    {
+        IsDeleted = true;
+    }
 
     public void AddCategory(Category category)
     {

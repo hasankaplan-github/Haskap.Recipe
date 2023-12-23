@@ -301,4 +301,15 @@ public class RecipeService : IRecipeService
 
         await MediatorWrapper.Publish(new StepDeletedDomainEvent(inputDto.RecipeId, inputDto.StepId, webRootPath), cancellationToken);
     }
+
+    public async Task MarkAsDeletedAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var recipe = await _recipeDbContext.Recipe
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        recipe.MarkAsDeleted();
+
+        await _recipeDbContext.SaveChangesAsync(cancellationToken);
+    }
 }

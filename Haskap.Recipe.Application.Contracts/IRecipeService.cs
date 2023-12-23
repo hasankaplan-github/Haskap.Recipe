@@ -22,4 +22,5 @@ public interface IRecipeService
     Task IncreaseStepOrderAsync(IncreaseStepOrderInputDto inputDto, CancellationToken cancellationToken);
     Task DecreaseStepOrderAsync(DecreaseStepOrderInputDto inputDto, CancellationToken cancellationToken);
     Task DeleteStepAsync(DeleteStepInputDto inputDto, string webRootPath, CancellationToken cancellationToken);
+    Task MarkAsDeletedAsync(Guid id, CancellationToken cancellationToken);
 }
