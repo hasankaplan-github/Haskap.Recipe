@@ -70,6 +70,8 @@ public class RecipeController : Controller
     [HttpPut]
     public async Task Activate(Guid id, CancellationToken cancellationToken = default)
     {
+        using var _ = _isDraftFilter.Disable();
+
         await _recipeService.ActivateAsync(id, cancellationToken);
     }
 
@@ -206,5 +208,11 @@ public class RecipeController : Controller
         using var _ = _isDraftFilter.Disable();
 
         await _recipeService.DeleteStepAsync(inputDto, _webHostEnvironment.WebRootPath, cancellationToken);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> LoadToolbarViewComponent(Guid recipeId, CancellationToken cancellationToken = default)
+    {
+        return ViewComponent(typeof(ViewComponents.Recipe.ToolbarViewComponent), new { recipeId });
     }
 }

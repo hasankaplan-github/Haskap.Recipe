@@ -1,0 +1,119 @@
+﻿@using Haskap.Recipe.Application.Dtos.Recipies;
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model RecipeOutputDto
+
+@{
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+
+<div class="col-md-12 d-flex justify-content-center">
+    @if (Model.IsDraft)
+    {
+        <button class="btn btn-app bg-info" id="activateButton"><i class="fas fa-wave-square"></i> Aktifleştir</button>
+    }
+    else
+    {
+        <button class="btn btn-app bg-info" id="markAsDraftButton"><i class="fas fa-wave-square"></i> Taslak Olarak İşaretle</button>
+    }
+    <button class="btn btn-app bg-danger" id="deleteButton"><i class="fa-solid fa-trash-can"></i> Sil</button>
+</div>
+
+
+
+<script>
+
+
+    $("#activateButton").click(function () {
+        $.ajax({
+            type: "PUT",
+            url: '@Url.Action("Activate", "Recipe")',
+            headers: {
+                'RequestVerificationToken': '@antiforgeryToken'
+            },
+            data: {
+                id: "@Model.Id"
+            }
+        }).done(function (result, status, xhr) {
+            Swal.fire(
+                'Başarılı',
+                'Tarif başarıyla aktifleştirildi.',
+                'success'
+            );
+
+            loadToolbarViewComponent();
+        });
+    })
+
+    $("#markAsDraftButton").click(function () {
+        $.ajax({
+            type: "PUT",
+            url: '@Url.Action("MarkAsDraft", "Recipe")',
+            headers: {
+                'RequestVerificationToken': '@antiforgeryToken'
+            },
+            data: {
+                id: "@Model.Id"
+            }
+        }).done(function (result, status, xhr) {
+            Swal.fire(
+                'Başarılı',
+                'Tarif başarıyla taslak olarak işaretlendi.',
+                'success'
+            );
+
+            loadToolbarViewComponent();
+        });
+    })
+
+    $("#deleteButton").click(function () {
+        Swal.fire({
+            icon: 'question',
+            title: 'Tarifinizi silmek istediğinizden emin misiniz?',
+            //showDenyButton: true,
+            showCancelButton: true,
+            cancelButtonText: 'İptal',
+            confirmButtonText: 'Sil',
+            //denyButtonText: `Don't save`,
+        }).then((confirmation) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (confirmation.isConfirmed) {
+                $.ajax({
+                    type: "DELETE",
+                    url: '@Url.Action("Delete", "Recipe")',
+                    headers: {
+                        'RequestVerificationToken': '@antiforgeryToken'
+                    },
+                    data: {
+                        id: "@Model.Id"
+                    }
+                }).done(function (result, status, xhr) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Tarifiniz başarıyla silindi.',
+                        //showDenyButton: true,
+                        showCancelButton: false,
+                        cancelButtonText: 'İptal',
+                        confirmButtonText: 'Tamam',
+                        //denyButtonText: `Don't save`,
+                    }).then((confirmation) => {
+                        window.location.href = "@Url.Action("EditorSearch")";
+
+                        /* Read more about isConfirmed, isDenied below */
+                        if (confirmation.isConfirmed) {
+
+                        }
+                    });
+                });
+            }
+        });
+    })
+
+
+</script>

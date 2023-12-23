@@ -41,18 +41,8 @@
 </div>
 
 
-<div class="row">
-    <div class="col-md-12 d-flex justify-content-center">
-        @if (Model.IsDraft)
-        {
-            <button class="btn btn-app bg-info" id="activateButton"><i class="fas fa-wave-square"></i> Aktifleştir</button>
-        }
-        else
-        {
-            <button class="btn btn-app bg-info" id="markAsDraftButton"><i class="fas fa-wave-square"></i> Taslak Olarak İşaretle</button>
-        }
-        <button class="btn btn-app bg-danger" id="deleteButton"><i class="fa-solid fa-trash-can"></i> Sil</button>
-    </div>
+<div class="row" id="toolbar">
+    
 </div>
 
 
@@ -139,6 +129,8 @@
 
             $("#categorySelect").val(@Json.Serialize(Model.Categories.Select(x=>x.CategoryId))).change();
 
+            loadToolbarViewComponent();
+
             loadIngredientsViewComponent();
 
             loadStepsViewComponent();
@@ -168,86 +160,17 @@
             });
         }
 
-        $("#activateButton").click(function () {
+        function loadToolbarViewComponent() {
             $.ajax({
-                type: "PUT",
-                url: '@Url.Action("Activate", "Recipe")',
-                headers: {
-                    'RequestVerificationToken': '@antiforgeryToken'
-                },
+                type: "GET",
+                url: '@Url.Action("LoadToolbarViewComponent", "Recipe")',
                 data: {
-                    id: "@Model.Id"
+                    recipeId: "@Model.Id"
                 }
             }).done(function (result, status, xhr) {
-                Swal.fire(
-                    'Başarılı',
-                    'Tarif başarıyla aktifleştirildi.',
-                    'success'
-                );
+                $("#toolbar").html(result);
             });
-        })
-
-        $("#markAsDraftButton").click(function () {
-            $.ajax({
-                type: "PUT",
-                url: '@Url.Action("MarkAsDraft", "Recipe")',
-                headers: {
-                    'RequestVerificationToken': '@antiforgeryToken'
-                },
-                data: {
-                    id: "@Model.Id"
-                }
-            }).done(function (result, status, xhr) {
-                Swal.fire(
-                    'Başarılı',
-                    'Tarif başarıyla taslak olarak işaretlendi.',
-                    'success'
-                );
-            });
-        })
-
-        $("#deleteButton").click(function () {
-            Swal.fire({
-                icon: 'question',
-                title: 'Tarifinizi silmek istediğinizden emin misiniz?',
-                //showDenyButton: true,
-                showCancelButton: true,
-                cancelButtonText: 'İptal',
-                confirmButtonText: 'Sil',
-                //denyButtonText: `Don't save`,
-            }).then((confirmation) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (confirmation.isConfirmed) {
-                    $.ajax({
-                        type: "DELETE",
-                        url: '@Url.Action("Delete", "Recipe")',
-                        headers: {
-                            'RequestVerificationToken': '@antiforgeryToken'
-                        },
-                        data: {
-                            id: "@Model.Id"
-                        }
-                    }).done(function (result, status, xhr) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Tarifiniz başarıyla silindi.',
-                            //showDenyButton: true,
-                            showCancelButton: false,
-                            cancelButtonText: 'İptal',
-                            confirmButtonText: 'Tamam',
-                            //denyButtonText: `Don't save`,
-                        }).then((confirmation) => {
-                            window.location.href = "@Url.Action("EditorSearch")";
-
-                            /* Read more about isConfirmed, isDenied below */
-                            if (confirmation.isConfirmed) {
-
-                            }
-                        });
-                    });
-                }
-            });
-        })
+        }
 
         $("#saveButton").click(function () {
             let unselectedCategoryIds = $("#categorySelect option:not(:selected)").map(function () {
