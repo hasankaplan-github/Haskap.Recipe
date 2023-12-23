@@ -16,6 +16,7 @@ using Haskap.Recipe.Domain.IngredientGroupAggregate;
 namespace Haskap.Recipe.Infra.Db.Contexts.RecipeDbContext;
 public class AppDbContext : BaseEfCoreNpgsqlDbContext, IRecipeDbContext
 {
+    private bool _isDraftFilterIsEnabled => GlobalQueryFilterGenericProvider.IsEnabled<IIsDraft>();
     public AppDbContext(
         DbContextOptions<AppDbContext> options, 
         ICurrentTenantProvider currentTenantProvider,
@@ -41,9 +42,33 @@ public class AppDbContext : BaseEfCoreNpgsqlDbContext, IRecipeDbContext
     public DbSet<IngredientGroup> IngredientGroup { get; set; }
     public DbSet<User> User { get; set; }
     public DbSet<UserRole> UserRole { get; set; }
-
-
-
     public DbSet<ViewLevelException> ViewLevelException { get; set; }
-    
+
+
+    protected override bool ShouldFilterEntity<TEntity>(IMutableEntityType mutableEntityType)
+    {
+        if (typeof(IIsDraft).IsAssignableFrom(typeof(TEntity)))
+        {
+            return true;
+        }
+
+        return base.ShouldFilterEntity<TEntity>(mutableEntityType);
+    }
+
+    protected override Expression<Func<TEntity, bool>>? CreateFilterExpression<TEntity>()
+    {
+        var expression = base.CreateFilterExpression<TEntity>();
+
+        if (typeof(IIsDraft).IsAssignableFrom(typeof(TEntity)))
+        {
+            Expression<Func<TEntity, bool>> isDraftFilterExpression =
+                e => !_isDraftFilterIsEnabled || (e as IIsDraft).IsDraft == false; // EF.Property<bool>(e, "IsActive");
+            expression = expression == null
+                ? isDraftFilterExpression
+                : CombineExpressions(expression, isDraftFilterExpression);
+        }
+
+        return expression;
+    }
+
 }

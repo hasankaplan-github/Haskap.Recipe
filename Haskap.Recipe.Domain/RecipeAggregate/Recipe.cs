@@ -2,6 +2,7 @@
 using Haskap.DddBase.Domain;
 using Haskap.DddBase.Utilities.Guids;
 using Haskap.Recipe.Domain.CategoryAggregate;
+using Haskap.Recipe.Domain.Common;
 using Haskap.Recipe.Domain.RecipeAggregate.Exceptions;
 using Haskap.Recipe.Domain.Shared.Consts;
 using System;
@@ -11,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Haskap.Recipe.Domain.RecipeAggregate;
-public class Recipe : AggregateRoot, IAuditable, ISoftDeletable
+public class Recipe : AggregateRoot, IAuditable, ISoftDeletable, IIsDraft
 {
     public string Name { get; private set; }
     public string? Description { get; private set; }

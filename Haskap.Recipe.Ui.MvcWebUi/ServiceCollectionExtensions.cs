@@ -16,6 +16,8 @@ using Haskap.Recipe.Application.UseCaseServices.Categories;
 using Haskap.Recipe.Application.UseCaseServices.Recipies;
 using Haskap.Recipe.Application.UseCaseServices.Units;
 using Haskap.Recipe.Application.UseCaseServices.IngredientGroups;
+using Haskap.Recipe.Domain.Providers;
+using Haskap.Recipe.Infra.Providers;
 
 namespace Haskap.Recipe.Ui.MvcWebUi;
 
@@ -40,6 +42,7 @@ public static class ServiceCollectionExtensions
     public static void AddProviders(this IServiceCollection services)
     {
         services.AddSingleton<ILocalDateTimeProvider, LocalDateTimeProvider>();
+        services.AddScoped<IIsDraftGlobalQueryFilterProvider, IsDraftGlobalQueryFilterProvider>();
         //services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         //services.AddSingleton<IJwtProvider, JwtProvider>();
     }

@@ -23,6 +23,7 @@ using Haskap.Recipe.Application.Dtos.ViewLevelExceptions;
 using Haskap.Recipe.Ui.MvcWebUi.GlobalExceptionHandling;
 using Microsoft.AspNetCore.Mvc;
 using Haskap.Recipe.Application.UseCaseServices.Accounts;
+using Haskap.Recipe.Ui.MvcWebUi.IsDraftFilter;
 
 //CultureInfo ci = new CultureInfo(Thread.CurrentThread.CurrentCulture.Name);
 CultureInfo cultureInfo = new CultureInfo("tr-tr"); //Thread.CurrentThread.CurrentCulture.Clone() as CultureInfo;
@@ -130,7 +131,7 @@ app.UseSoftDelete();
 app.UseLocalDateTimeProvider();
 app.UseCurrentUserIdProvider();
 app.UseVisitIdProvider();
-
+app.UseMiddleware<IsDraftMiddleware>();
 
 //app.UseRequestLocalization("tr-TR");
 app.UseRequestLocalization(x =>

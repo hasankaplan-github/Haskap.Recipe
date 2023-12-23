@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="ExternalServices\" />
-    <Folder Include="Providers\" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,7 @@
 ﻿using Haskap.Recipe.Application.Contracts;
 using Haskap.Recipe.Application.Dtos.Common;
 using Haskap.Recipe.Application.Dtos.Recipies;
+using Haskap.Recipe.Domain.Providers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,15 +12,18 @@ public class RecipeController : Controller
     private readonly ICategoryService _categoryService;
     private readonly IRecipeService _recipeService;
     private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly IIsDraftGlobalQueryFilterProvider _isDraftFilter;
 
     public RecipeController(
         ICategoryService categoryService,
         IRecipeService recipeService,
-        IWebHostEnvironment webHostEnvironment)
+        IWebHostEnvironment webHostEnvironment,
+        IIsDraftGlobalQueryFilterProvider isDraftFilter)
     {
         _categoryService = categoryService;
         _recipeService = recipeService;
         _webHostEnvironment = webHostEnvironment;
+        _isDraftFilter = isDraftFilter;
     }
 
     public IActionResult Index()
@@ -56,6 +60,8 @@ public class RecipeController : Controller
             })
             .ToList();
 
+        using var _ = _isDraftFilter.Disable();
+        
         var recipeOutputDto = await _recipeService.GetByIdAsync(recipeId, cancellationToken);
 
         return View(recipeOutputDto);
@@ -70,18 +76,24 @@ public class RecipeController : Controller
     [HttpPut]
     public async Task MarkAsDraft(Guid id, CancellationToken cancellationToken = default)
     {
+        using var _ = _isDraftFilter.Disable();
+
         await _recipeService.MarkAsDraftAsync(id, cancellationToken);
     }
 
     [HttpDelete]
     public async Task Delete(Guid id, CancellationToken cancellationToken = default)
     {
+        using var _ = _isDraftFilter.Disable();
+
         await _recipeService.MarkAsDeletedAsync(id, cancellationToken);
     }
 
     [HttpPut]
     public async Task Update(Guid id, UpdateInputDto inputDto, CancellationToken cancellationToken = default)
     {
+        using var _ = _isDraftFilter.Disable();
+
         await _recipeService.UpdateAsync(id, inputDto, cancellationToken);
     }
 
@@ -94,6 +106,8 @@ public class RecipeController : Controller
     [HttpDelete]
     public async Task DeleteIngredient(Guid recipeId, Guid ingredientId, CancellationToken cancellationToken = default)
     {
+        using var _ = _isDraftFilter.Disable();
+
         await _recipeService.DeleteIngredientAsync(recipeId, ingredientId, cancellationToken);
     }
 
@@ -106,6 +120,8 @@ public class RecipeController : Controller
     [HttpPost]
     public async Task SaveNewIngredient(SaveNewIngredientInputDto inputDto, CancellationToken cancellationToken = default)
     {
+        using var _ = _isDraftFilter.Disable();
+
         await _recipeService.SaveNewIngredientAsync(inputDto, cancellationToken);
     }
 
@@ -118,6 +134,8 @@ public class RecipeController : Controller
     [HttpPut]
     public async Task UpdateIngredient(UpdateIngredientInputDto inputDto, CancellationToken cancellationToken = default)
     {
+        using var _ = _isDraftFilter.Disable();
+
         await _recipeService.UpdateIngredientAsync(inputDto, cancellationToken);
     }
 
@@ -161,24 +179,32 @@ public class RecipeController : Controller
             pictureFiles = (await Task.WhenAll(picturesTasks)).ToList();
         }
 
+        using var _ = _isDraftFilter.Disable();
+
         await _recipeService.SaveNewStepAsync(inputDto, pictureFiles, _webHostEnvironment.WebRootPath, cancellationToken);
     }
 
     [HttpPut]
     public async Task IncreaseStepOrder(IncreaseStepOrderInputDto inputDto, CancellationToken cancellationToken = default)
     {
+        using var _ = _isDraftFilter.Disable();
+
         await _recipeService.IncreaseStepOrderAsync(inputDto, cancellationToken);
     }
 
     [HttpPut]
     public async Task DecreaseStepOrder(DecreaseStepOrderInputDto inputDto, CancellationToken cancellationToken = default)
     {
+        using var _ = _isDraftFilter.Disable();
+
         await _recipeService.DecreaseStepOrderAsync(inputDto, cancellationToken);
     }
 
     [HttpDelete]
     public async Task DeleteStep(DeleteStepInputDto inputDto, CancellationToken cancellationToken = default)
     {
+        using var _ = _isDraftFilter.Disable();
+
         await _recipeService.DeleteStepAsync(inputDto, _webHostEnvironment.WebRootPath, cancellationToken);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Haskap.Recipe.Application.Contracts;
 using Haskap.Recipe.Application.UseCaseServices.Units;
+using Haskap.Recipe.Domain.Providers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -10,19 +11,24 @@ public class UpdateIngredientModalContentViewComponent : ViewComponent
     private readonly IUnitService _unitService;
     private readonly IIngredientGroupService _ingredientGroupService;
     private readonly IRecipeService _recipeService;
+    private readonly IIsDraftGlobalQueryFilterProvider _isDraftFilter;
 
     public UpdateIngredientModalContentViewComponent(
         IUnitService unitService,
         IIngredientGroupService ingredientGroupService,
-        IRecipeService recipeService)
+        IRecipeService recipeService,
+        IIsDraftGlobalQueryFilterProvider isDraftFilter)
     {
         _unitService = unitService;
         _ingredientGroupService = ingredientGroupService;
         _recipeService = recipeService;
+        _isDraftFilter = isDraftFilter;
     }
 
     public async Task<IViewComponentResult> InvokeAsync(Guid recipeId, Guid ingredientId, CancellationToken cancellationToken = default)
     {
+        using var _ = _isDraftFilter.Disable();
+
         var recipe = await _recipeService.GetByIdAsync(recipeId, cancellationToken);
 
         var ingredient = recipe.Ingredients
