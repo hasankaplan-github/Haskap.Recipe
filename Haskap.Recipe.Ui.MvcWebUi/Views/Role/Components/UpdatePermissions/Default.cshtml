@@ -34,7 +34,7 @@
             <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                 @foreach (var groupKey in Model.Keys)
                 {
-                    if (currentTenantProvider.IsHost == false && groupKey == nameof(Permissions.Tenants))
+                    if (currentTenantProvider.IsHost == false)
                     {
                         continue;
                     }
@@ -52,7 +52,7 @@
                 {
                     var groupKey = permissions.Key;
 
-                    if (currentTenantProvider.IsHost == false && groupKey == nameof(Permissions.Tenants))
+                    if (currentTenantProvider.IsHost == false)
                     {
                         continue;
                     }

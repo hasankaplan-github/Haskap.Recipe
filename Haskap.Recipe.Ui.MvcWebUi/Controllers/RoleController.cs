@@ -8,7 +8,7 @@ using Haskap.Recipe.Application.Dtos.Common.DataTable;
 
 namespace Haskap.Recipe.Ui.MvcWebUi.Controllers;
 
-[Authorize(Permissions.Tenants.Host)]
+[Authorize(Permissions.Recipe.Admin)]
 public class RoleController : Controller
 {
     private readonly IRoleService _roleService;

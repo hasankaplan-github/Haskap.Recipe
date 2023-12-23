@@ -3,11 +3,14 @@ using Haskap.Recipe.Application.Dtos.Common;
 using Haskap.Recipe.Application.Dtos.Common.DataTable;
 using Haskap.Recipe.Application.Dtos.Recipies;
 using Haskap.Recipe.Domain.Providers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Haskap.Recipe.Ui.MvcWebUi.Controllers;
+
+[Authorize]
 public class RecipeController : Controller
 {
     private readonly ICategoryService _categoryService;
@@ -264,6 +267,8 @@ public class RecipeController : Controller
     [HttpPost]
     public async Task<JsonResult> EditorSearch(EditorSearchInputDto inputDto, JqueryDataTableParam jqueryDataTableParam, CancellationToken cancellationToken = default)
     {
+        using var _ = _isDraftFilter.Disable();
+
         var result = await _recipeService.EditorSearchAsync(inputDto, jqueryDataTableParam, cancellationToken);
         return Json(result);
     }

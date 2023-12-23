@@ -254,30 +254,20 @@
                         <!-- Add icons to the links using the .nav-icon class
                              with font-awesome or any other icon font library -->
                         <li class="nav-item">
-                            <a asp-action="Index" asp-controller="Dashboard" class="nav-link">
-                                <i class="nav-icon fa-solid fa-gauge-high"></i>
-                                <p>
-                                    Gösterge Paneli
-                                    @*<span class="right badge badge-danger">New</span>*@
-                                </p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a asp-action="Index" asp-controller="Schedule" class="nav-link">
-                                <i class="nav-icon fa-regular fa-calendar-days"></i>
-                                <p>
-                                    Ajanda
-                                    @*<span class="right badge badge-danger">New</span>*@
-                                </p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a asp-action="SearchReservation" asp-controller="Schedule" class="nav-link">
+                            <a asp-action="EditorSearch" asp-controller="Recipe" class="nav-link">
                                 <i class="nav-icon fa-solid fa-magnifying-glass"></i>
                                 <p>
-                                    Rezervasyon Ara
+                                    Tarif ara
+                                    @*<span class="right badge badge-danger">New</span>*@
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a asp-action="Create" asp-controller="Recipe" class="nav-link">
+                                <i class="nav-icon fa-solid fa-plus"></i>
+                                <p>
+                                    Yeni Tarif Oluştur
                                     @*<span class="right badge badge-danger">New</span>*@
                                 </p>
                             </a>
@@ -311,60 +301,6 @@
                                         </p>
                                     </a>
                                 </li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="Ayarlar" class="nav-link">
-                                <i class="nav-icon fa-solid fa-gear"></i>
-                                <p>
-                                    Ayarlar
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-action="Index" asp-controller="Catering" class="nav-link">
-                                        <i class="nav-icon fa-solid fa-sliders"></i>
-                                        <p>
-                                            İkram/Hizmet Ayarları
-                                            @*<span class="right badge badge-danger">New</span>*@
-                                        </p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a asp-action="Index" asp-controller="Saloon" class="nav-link">
-                                        <i class="nav-icon fa-solid fa-bars"></i>
-                                        <p>
-                                            Salon Ayarları
-                                            @*<span class="right badge badge-danger">New</span>*@
-                                        </p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="Özel Gün Ayarları" class="nav-link">
-                                        <i class="nav-icon fa-solid fa-snowman"></i>
-                                        <p>
-                                            Özel Gün Ayarları
-                                            <i class="right fas fa-angle-left"></i>
-                                        </p>
-                                    </a>
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a asp-action="Index" asp-controller="OsymSpecialDay" class="nav-link">
-                                                <i class="nav-icon fa-solid fa-calendar-check"></i>
-                                                <p>
-                                                    ÖSYM Sınav Takvimi Ayarları
-                                                    @*<span class="right badge badge-danger">New</span>*@
-                                                </p>
-                                            </a>
-                                        </li>
-
-                                    </ul>
-                                </li>
-
                             </ul>
                         </li>
 
@@ -419,36 +355,6 @@
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a asp-action="Index" asp-controller="Tenant" class="nav-link">
-                                <i class="nav-icon fa-solid fa-building"></i>
-                                <p>
-                                    Firma İşlemleri
-                                    @*<span class="right badge badge-danger">New</span>*@
-                                </p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a asp-action="About" asp-controller="Home" class="nav-link">
-                                <i class="nav-icon fa-solid fa-address-card"></i>
-                                <p>
-                                    Hakkında
-                                    @*<span class="right badge badge-danger">New</span>*@
-                                </p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a asp-action="Index" asp-controller="DiagnosticsTests" class="nav-link">
-                                <i class="nav-icon fa-solid fa-stethoscope"></i>
-                                <p>
-                                    Diagnostics Tests
-                                    @*<span class="right badge badge-danger">New</span>*@
-                                </p>
-                            </a>
-                        </li>
-
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
@@ -489,7 +395,7 @@
             <div class="float-right d-none d-sm-block">
                 <b>Version</b> 1.0.0
             </div>
-            <strong>Copyright &copy; 2022 - Ajanda - <a asp-area="" asp-controller="Home" asp-action="About">Hakkında</a></strong>
+            <strong>Copyright &copy; 2023 - Yemek Tarifleri</strong>
         </footer>
 
         @*<footer class="border-top footer text-muted">

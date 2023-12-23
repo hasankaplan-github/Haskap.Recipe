@@ -137,15 +137,12 @@ public class AccountController : Controller
         await _accountService.UpdateAsync(inputDto, cancellationToken);
     }
 
-    [Authorize(Permissions.Tenants.Admin)]
     [HttpGet]
     public async Task<IActionResult> Accounts(CancellationToken cancellationToken)
     {
         return View();
     }
 
-    [Authorize(Permissions.Tenants.Admin)]
-    [Authorize(Permissions.Tenants.Host)]
     [HttpGet]
     public async Task<IActionResult> TenantAccounts(Guid? tenantId, CancellationToken cancellationToken)
     {
@@ -161,15 +158,12 @@ public class AccountController : Controller
         return View("Accounts");
     }
 
-    [Authorize(Permissions.Tenants.Admin)]
     [HttpDelete]
     public async Task Delete(Guid userId, CancellationToken cancellationToken)
     {
         await _accountService.DeleteAsync(userId, cancellationToken);
     }
 
-    [Authorize(Permissions.Tenants.Admin)]
-    [Authorize(Permissions.Tenants.Host)]
     [HttpDelete]
     public async Task DeleteOnHost(Guid? tenantId, Guid userId, CancellationToken cancellationToken)
     {
@@ -183,7 +177,6 @@ public class AccountController : Controller
         await _accountService.DeleteAsync(userId, cancellationToken);
     }
 
-    [Authorize(Permissions.Tenants.Admin)]
     [HttpPost]
     public async Task<JsonResult> Search(SearchParamsInputDto inputDto, JqueryDataTableParam jqueryDataTableParam, CancellationToken cancellationToken = default)
     {
@@ -191,8 +184,6 @@ public class AccountController : Controller
         return Json(result);
     }
 
-    [Authorize(Permissions.Tenants.Admin)]
-    [Authorize(Permissions.Tenants.Host)]
     [HttpPost]
     public async Task<JsonResult> SearchOnHost(SearchParamsInputDto inputDto, Guid? tenantId, JqueryDataTableParam jqueryDataTableParam, CancellationToken cancellationToken = default)
     {
@@ -207,15 +198,12 @@ public class AccountController : Controller
         return Json(result);
     }
 
-    [Authorize(Permissions.Tenants.Admin)]
     [HttpGet]
     public async Task<IActionResult> LoadUpdatePermissionsViewComponent(Guid userId, CancellationToken cancellationToken)
     {
         return ViewComponent(typeof(ViewComponents.Account.UpdatePermissions), new { TenantId = _currentTenantProvider.CurrentTenantId, userId });
     }
 
-    [Authorize(Permissions.Tenants.Admin)]
-    [Authorize(Permissions.Tenants.Host)]
     [HttpGet]
     public async Task<IActionResult> LoadUpdatePermissionsViewComponentOnHost(Guid? tenantId, Guid userId, CancellationToken cancellationToken)
     {
@@ -229,7 +217,6 @@ public class AccountController : Controller
         return ViewComponent(typeof(ViewComponents.Account.UpdatePermissions), new { TenantId = _currentTenantProvider.CurrentTenantId, userId });
     }
 
-    [Authorize(Permissions.Tenants.Admin)]
     [HttpPost]
     public async Task UpdatePermissions(UpdatePermissionsInputDto inputDto, CancellationToken cancellationToken)
     {
@@ -242,8 +229,6 @@ public class AccountController : Controller
         await _accountService.UpdatePermissionsAsync(inputDto, cancellationToken);
     }
 
-    [Authorize(Permissions.Tenants.Admin)]
-    [Authorize(Permissions.Tenants.Host)]
     [HttpPost]
     public async Task UpdatePermissionsOnHost(UpdatePermissionsInputDto inputDto, Guid? tenantId, CancellationToken cancellationToken)
     {
@@ -257,15 +242,12 @@ public class AccountController : Controller
         await _accountService.UpdatePermissionsAsync(inputDto, cancellationToken);
     }
 
-    [Authorize(Permissions.Tenants.Admin)]
     [HttpGet]
     public async Task<IActionResult> LoadUpdateRolesViewComponent(Guid userId, CancellationToken cancellationToken)
     {
         return ViewComponent(typeof(ViewComponents.Account.UpdateRoles), new { TenantId = _currentTenantProvider.CurrentTenantId, userId });
     }
 
-    [Authorize(Permissions.Tenants.Admin)]
-    [Authorize(Permissions.Tenants.Host)]
     [HttpGet]
     public async Task<IActionResult> LoadUpdateRolesViewComponentOnHost(Guid? tenantId, Guid userId, CancellationToken cancellationToken)
     {
@@ -279,15 +261,12 @@ public class AccountController : Controller
         return ViewComponent(typeof(ViewComponents.Account.UpdateRoles), new { TenantId = _currentTenantProvider.CurrentTenantId, userId });
     }
 
-    [Authorize(Permissions.Tenants.Admin)]
     [HttpPost]
     public async Task UpdateRoles(UpdateRolesInputDto inputDto, CancellationToken cancellationToken)
     {
         await _accountService.UpdateRolesAsync(inputDto, cancellationToken);
     }
 
-    [Authorize(Permissions.Tenants.Admin)]
-    [Authorize(Permissions.Tenants.Host)]
     [HttpPost]
     public async Task UpdateRolesOnHost(UpdateRolesInputDto inputDto, Guid? tenantId, CancellationToken cancellationToken)
     {
