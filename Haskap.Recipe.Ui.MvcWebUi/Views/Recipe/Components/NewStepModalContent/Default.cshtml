@@ -12,14 +12,14 @@
 }
 
 <div class="modal-header bg-primary">
-    <h5 class="modal-title" id="staticBackdropLabel"><i class="fa-solid fa-shield-halved"></i> Yeni Adım (@(ViewBag.StepCount + 1). Adım)</h5>
+    <h5 class="modal-title" id="staticBackdropLabel"><i class="fa-solid fa-plus"></i> Yeni Adım (@(ViewBag.StepCount + 1). Adım)</h5>
     <button type="button" class="btn-close cancelNewStep" @*data-bs-dismiss="modal"*@ aria-label="Close"></button>
 </div>
 
 <div class="modal-body">
     <div class="row">
         <div class="col-md-12">
-            <label for="instructionTextarea" class="form-label">Adım</label>
+            <label for="instructionTextarea" class="form-label">Adım Metni</label>
             <textarea id="instructionTextarea" class="form-control" maxlength="@StepConsts.MaxInstructionLength" aria-describedby="Adım" rows="7"></textarea>
         </div>
     </div>
@@ -29,14 +29,14 @@
             <label class="form-label">Resim Seç</label>
             <div class="custom-file">
                 <input type="file" class="custom-file-input" id="stepPictures" multiple>
-                <label class="custom-file-label" for="stepPictures">Dosya</label>
+                <label class="custom-file-label" for="stepPictures">Resim Seç</label>
             </div>
         </div>
     </div>
 </div>
 
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary cancelNewStep" @*data-bs-dismiss="modal"*@ id="cancelNewStepButton">İptal</button>
+    <button type="button" class="btn btn-secondary cancelNewStep" @*data-bs-dismiss="modal"*@ id="cancelNewStepButton"><i class="fa-solid fa-xmark"></i> İptal</button>
     <button type="button" class="btn btn-primary" @*data-bs-dismiss="modal"*@ id="saveNewStepButton"><i class="fas fa-save"></i> Kaydet</button>
 </div>
 

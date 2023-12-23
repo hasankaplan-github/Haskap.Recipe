@@ -38,8 +38,8 @@
                             <div class="info-box-content">
                                 <span class="info-box-text">@ingredient.Amount.Value @ingredient.Amount.Unit.Name @ingredient.Name</span>
                                 <span class="info-box-number">
-                                    <button class="btn btn-primary" id="updateIngredientButton" onclick="showUpdateIngredientModal('@ingredient.RecipeId', '@ingredient.Id');">Güncelle</button>
-                                    <button class="btn btn-danger" id="deleteIngredientButton" onclick="deleteIngredient('@ingredient.RecipeId', '@ingredient.Id');">Sil</button>
+                                    <button class="btn btn-primary" id="updateIngredientButton" onclick="showUpdateIngredientModal('@ingredient.RecipeId', '@ingredient.Id');"><i class="fa-solid fa-pen-to-square"></i> Güncelle</button>
+                                    <button class="btn btn-danger" id="deleteIngredientButton" onclick="deleteIngredient('@ingredient.RecipeId', '@ingredient.Id');"><i class="fa-solid fa-trash-can"></i> Sil</button>
                                 </span>
                             </div>
                             <!-- /.info-box-content -->
