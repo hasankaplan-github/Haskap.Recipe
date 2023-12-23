@@ -2,6 +2,7 @@
 using Haskap.DddBase.Utilities.Guids;
 using Haskap.Recipe.Application.Contracts;
 using Haskap.Recipe.Application.Dtos.Common;
+using Haskap.Recipe.Application.Dtos.Common.DataTable;
 using Haskap.Recipe.Application.Dtos.Recipies;
 using Haskap.Recipe.Domain;
 using Haskap.Recipe.Domain.IngredientGroupAggregate;
@@ -353,5 +354,83 @@ public class RecipeService : IRecipeService
         await _recipeDbContext.SaveChangesAsync(cancellationToken);
 
         await MediatorWrapper.Publish(new StepUpdatedDomainEvent(inputDto.RecipeId, inputDto.StepId, deletedPictureFiles, pictureFiles, webRootPath), cancellationToken);
+    }
+
+    public async Task<JqueryDataTableResult> EditorSearchAsync(EditorSearchInputDto inputDto, JqueryDataTableParam jqueryDataTableParam, CancellationToken cancellationToken)
+    {
+        var query = (from recipe in _recipeDbContext.Recipe
+                     join user in _recipeDbContext.User on recipe.OwnerUserId equals user.Id
+                     select new EditorSearchOutputDto
+                     {
+                         OwnerUserId = recipe.OwnerUserId,
+                         OwnerUserUsername = user.Credentials.UserName,
+                         RecipeId = recipe.Id,
+                         RecipeName = recipe.Name
+                     });
+            
+        var totalCount = await query.CountAsync(cancellationToken);
+        var filteredCount = totalCount;
+
+        var filtered = false;
+        if (inputDto.Keywords is not null)
+        {
+            filtered = true;
+            query = query.Where(x => x.RecipeName.ToLower().Contains(inputDto.Keywords.ToLower()));
+        }
+
+        if (filtered)
+        {
+            filteredCount = await query.CountAsync(cancellationToken);
+        }
+
+        if (jqueryDataTableParam.Order.Any())
+        {
+            var direction = jqueryDataTableParam.Order[0].Dir;
+            var columnIndex = jqueryDataTableParam.Order[0].Column;
+
+            if (columnIndex == 0)
+            {
+                if (direction == "asc")
+                {
+                    query = query.OrderBy(x => x.RecipeName);
+                }
+                else
+                {
+                    query = query.OrderByDescending(x => x.RecipeName);
+                }
+            }
+            else if (columnIndex == 1)
+            {
+                if (direction == "asc")
+                {
+                    query = query.OrderBy(x => x.OwnerUserUsername);
+                }
+                else
+                {
+                    query = query.OrderByDescending(x => x.OwnerUserUsername);
+                }
+            }
+        }
+        else
+        {
+            query = query.OrderBy(x => x.RecipeName);
+        }
+
+        var skip = jqueryDataTableParam.Start;
+        var take = jqueryDataTableParam.Length;
+
+        var recipies = await query
+            .Skip(skip)
+            .Take(take)
+            .ToListAsync(cancellationToken);
+
+        return new JqueryDataTableResult
+        {
+            // this is what datatables wants sending back
+            draw = jqueryDataTableParam.Draw,
+            recordsTotal = totalCount,
+            recordsFiltered = filteredCount,
+            data = recipies
+        };
     }
 }

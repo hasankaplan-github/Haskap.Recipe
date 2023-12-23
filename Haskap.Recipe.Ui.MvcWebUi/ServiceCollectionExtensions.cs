@@ -44,6 +44,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<ILocalDateTimeProvider, LocalDateTimeProvider>();
         services.AddScoped<IIsDraftGlobalQueryFilterProvider, IsDraftGlobalQueryFilterProvider>();
+        services.AddScoped<IMultiUserGlobalQueryFilterProvider, MultiUserGlobalQueryFilterProvider>();
         //services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         //services.AddSingleton<IJwtProvider, JwtProvider>();
     }

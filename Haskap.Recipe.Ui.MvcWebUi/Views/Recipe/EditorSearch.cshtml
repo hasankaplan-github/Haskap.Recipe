@@ -1,0 +1,179 @@
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+
+<div class="container-fluid">
+    <h2 class="text-center display-4">Tarif Ara</h2>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            @* <form action="simple-results.html"> *@
+                <div class="input-group">
+                    <input id="searchInput" type="search" class="form-control form-control-lg" placeholder="Aramak istediğiniz kelimeleri yazın" />
+                    <div class="input-group-append">
+                        <button id="searchButton" type="button" class="btn btn-lg btn-default">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            @* </form> *@
+        </div>
+    </div>
+</div>
+
+
+<div class="row mt-3">
+    <div class="col-md-10 offset-md-1">
+        <table id="searchResultTable" class="table table-bordered table-striped compact">
+        </table>
+    </div>
+</div>
+
+
+@section Styles {
+    <link href='~/lib/jquery-dataTables/dist/css/datatables.min.css' rel='stylesheet' />
+}
+
+@section Scripts{
+    <script src="~/lib/jquery-dataTables/dist/js/datatables.min.js"></script>
+
+    <script>
+
+        let searchResultTable = {};
+
+        $(document).ready(function () {
+            searchResultTable = $("#searchResultTable").DataTable({
+                responsive: true,
+                //"lengthChange": true,
+                lengthMenu: [
+                    [10, 25, 50, 100],
+                    ['10', '25', '50', '100']
+                ],
+                //"autoWidth": false,
+
+                //dom: 'Bfrtip',
+                //dom: "lBfrtip",
+                dom: "ltip",
+                //"buttons": ["excelHtml5", "pdfHtml5"],
+                //buttons: [
+                //    {
+                //        extend: 'colvis',
+                //        text: 'Sütun Göster-Gizle',
+                //        titleAttr: 'Sütun Göster-Gizle'
+                //    },
+                //    {
+                //        extend: 'collection',
+                //        text: 'Dışarı Aktar',
+                //        buttons: [
+                //            {
+                //                extend: "copy",
+                //                text: "Kopyala",
+                //                exportOptions: {
+                //                    columns: ":visible" //[2,3,4,5,6,7,8,9,10,11,12]
+                //                },
+                //            },
+                //            {
+                //                extend: 'excelHtml5',
+                //                text: '<i class="fa fa-file-excel-o text-success"> Excel</i>',
+                //                exportOptions: {
+                //                    columns: ":visible" //[2,3,4,5,6,7,8,9,10,11,12]
+                //                },
+                //                //action: function(e, dt, button, config) {
+                //                //    //alert(JSON.stringify(e));
+                //                //}
+                //                //buttons: [
+                //                //    'copy',
+                //                //    'excel',
+                //                //    'csv',
+                //                //    'pdf',
+                //                //    'print'
+                //                //]
+                //            },
+                //            {
+                //                extend: 'pdfHtml5',
+                //                text: '<i class="fa fa-file-pdf-o text-danger"> PDF</i>',
+                //                titleAttr: 'PDF-e Aktar',
+                //                //message: 'Liste', //PDF Mesajı=Başlığın altında soldan başlıktan küçük fontla görünür
+                //                //title: 'Veriler',// Save File Name
+                //                //download: 'open',//PDF'i Browserda Yeni Sekmede  Pencere açar
+                //                'orientation': 'landscape',
+                //                //'pageSize':  'LETTER',
+                //                exportOptions: {
+                //                    columns: ":visible" //[2,3,4,5,6,7,8,9,10,11,12] //columns: [ 0, 1, 2, 5 ] //= Columnları sabitlemek her halukarda görntülenmesini sağlamak için
+                //                },
+                //                customize: function (doc) {
+                //                    doc.pageMargins = [10, 10, 10, 10];
+                //                }
+                //            },
+                //            'print'
+                //        ]
+                //    }
+                //],
+                "processing": true,
+                "serverSide": true,
+                "deferLoading": 0,
+                rowId: 'recipeId',
+                //"ajax": "/CreditCardTypeManagement/G",
+                "ajax": {
+                    type: 'POST',
+                    headers: {
+                        'RequestVerificationToken': '@antiforgeryToken'
+                    },
+                    url: "@Url.Action("EditorSearch", "Recipe")",
+                    data: function (inputDto) {
+                        inputDto.keywords = $("#searchInput").val();
+
+                        return inputDto;
+                    }
+                    //contentType: "application/json"
+                },
+                columns: [
+                    { title: 'Tarif Adı', searchable: true, visible: true, data: "recipeName" },
+                    { title: 'Tarif Sahibi', searchable: true, visible: true, data: "ownerUserUsername" },
+                    {
+                        title: 'İşlemler', orderable: false,
+                        data: "recipeId",
+                        render: function (data, type) {
+                            if (type === 'display') {
+                                return '<div class="dropdown">' +
+                                    '<button type="button" class="btn btn-primary btn-sm dropdown-toggle dropdown-icon" data-bs-toggle="dropdown">İşlemler</button>' +
+                                    '<ul class="dropdown-menu">' +
+                                    '<li><a class="btn-primary dropdown-item" href="#" onclick="redirectToEditPage(\'' + data + '\');"><i class="fa-solid fa-pen"></i> Güncelle</a></li>' +
+                                    '</ul>' +
+                                    '</div>';
+                            }
+
+                            return data;
+                        }
+                    }
+                ],
+                "language": {
+                    "url": "/lib/jquery-dataTables/plugins/language/Turkish.json"
+                }
+                //,
+                //"columnDefs": [
+                //    {
+                //        "targets": [ 0 ],
+                //        "visible": false,
+                //        "searchable": false
+                //    }
+                //]
+            });
+        })
+
+        $("#searchButton").click(function () {
+            searchResultTable.draw();
+        })
+
+        function redirectToEditPage(recipeId) {
+            window.location.href = "@Url.Action("Edit")" + "?recipeId=" + recipeId;
+        }
+
+    </script>
+
+}

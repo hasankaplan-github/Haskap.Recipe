@@ -1,4 +1,5 @@
 ﻿using Haskap.Recipe.Application.Dtos.Common;
+using Haskap.Recipe.Application.Dtos.Common.DataTable;
 using Haskap.Recipe.Application.Dtos.Recipies;
 using System;
 using System.Collections.Generic;
@@ -24,4 +25,5 @@ public interface IRecipeService
     Task DeleteStepAsync(DeleteStepInputDto inputDto, string webRootPath, CancellationToken cancellationToken);
     Task MarkAsDeletedAsync(Guid id, CancellationToken cancellationToken);
     Task UpdateStepAsync(UpdateStepInputDto inputDto, List<FileInputDto> pictureFiles, string webRootPath, CancellationToken cancellationToken);
+    Task<JqueryDataTableResult> EditorSearchAsync(EditorSearchInputDto inputDto, JqueryDataTableParam jqueryDataTableParam, CancellationToken cancellationToken);
 }

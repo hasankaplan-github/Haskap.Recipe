@@ -1,5 +1,6 @@
 ﻿using Haskap.Recipe.Application.Contracts;
 using Haskap.Recipe.Application.Dtos.Common;
+using Haskap.Recipe.Application.Dtos.Common.DataTable;
 using Haskap.Recipe.Application.Dtos.Recipies;
 using Haskap.Recipe.Domain.Providers;
 using Microsoft.AspNetCore.Hosting;
@@ -253,5 +254,17 @@ public class RecipeController : Controller
         using var _ = _isDraftFilter.Disable();
 
         await _recipeService.UpdateStepAsync(inputDto, pictureFiles, _webHostEnvironment.WebRootPath, cancellationToken);
+    }
+
+    public async Task<IActionResult> EditorSearch(CancellationToken cancellationToken = default)
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<JsonResult> EditorSearch(EditorSearchInputDto inputDto, JqueryDataTableParam jqueryDataTableParam, CancellationToken cancellationToken = default)
+    {
+        var result = await _recipeService.EditorSearchAsync(inputDto, jqueryDataTableParam, cancellationToken);
+        return Json(result);
     }
 }
