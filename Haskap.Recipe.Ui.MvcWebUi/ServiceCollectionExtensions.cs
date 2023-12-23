@@ -18,6 +18,7 @@ using Haskap.Recipe.Application.UseCaseServices.Units;
 using Haskap.Recipe.Application.UseCaseServices.IngredientGroups;
 using Haskap.Recipe.Domain.Providers;
 using Haskap.Recipe.Infra.Providers;
+using Haskap.Recipe.Infra.Db.Interceptors;
 
 namespace Haskap.Recipe.Ui.MvcWebUi;
 
@@ -52,6 +53,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AuditSaveChangesInterceptor>();
         services.AddScoped<AuditHistoryLogSaveChangesInterceptor>();
         services.AddScoped<MultiTenancySaveChangesInterceptor>();
+        services.AddScoped<MultiUserSaveChangesInterceptor>();
     }
 
     public static void AddExternalServices(this IServiceCollection services)
@@ -69,6 +71,7 @@ public static class ServiceCollectionExtensions
             options.UseSnakeCaseNamingConvention();
             options.AddInterceptors(
                 serviceProvider.GetRequiredService<MultiTenancySaveChangesInterceptor>(),
+                serviceProvider.GetRequiredService<MultiUserSaveChangesInterceptor>(),
                 serviceProvider.GetRequiredService<AuditHistoryLogSaveChangesInterceptor>(),
                 serviceProvider.GetRequiredService<AuditSaveChangesInterceptor>());
         });

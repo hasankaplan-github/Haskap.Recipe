@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Haskap.Recipe.Domain.RecipeAggregate;
-public class Recipe : AggregateRoot, IAuditable, ISoftDeletable, IIsDraft
+public class Recipe : AggregateRoot, IAuditable, ISoftDeletable, IIsDraft, IHasMultiUser
 {
     public string Name { get; private set; }
     public string? Description { get; private set; }
@@ -32,6 +32,7 @@ public class Recipe : AggregateRoot, IAuditable, ISoftDeletable, IIsDraft
     public Guid? ModifiedUserId { get; set; }
     public DateTime? ModifiedOn { get; set; }
     public bool IsDeleted { get; set; }
+    public Guid OwnerUserId { get; set; }
 
     private Recipe() { }
 

@@ -12,20 +12,28 @@ using Haskap.Recipe.Domain.RecipeAggregate;
 using Haskap.Recipe.Domain.CategoryAggregate;
 using Haskap.Recipe.Domain.UnitAggregate;
 using Haskap.Recipe.Domain.IngredientGroupAggregate;
+using Haskap.DddBase.Domain;
 
 namespace Haskap.Recipe.Infra.Db.Contexts.RecipeDbContext;
 public class AppDbContext : BaseEfCoreNpgsqlDbContext, IRecipeDbContext
 {
+    private ICurrentUserIdProvider _currentUserIdProvider;
+    private Guid? _currentUserId => _currentUserIdProvider?.CurrentUserId;
+
     private bool _isDraftFilterIsEnabled => GlobalQueryFilterGenericProvider.IsEnabled<IIsDraft>();
+    private bool _multiUserFilterIsEnabled => GlobalQueryFilterGenericProvider?.IsEnabled<IHasMultiUser>() ?? false;
+
     public AppDbContext(
-        DbContextOptions<AppDbContext> options, 
+        DbContextOptions<AppDbContext> options,
         ICurrentTenantProvider currentTenantProvider,
-        IGlobalQueryFilterGenericProvider globalQueryFilterGenericProvider)
+        IGlobalQueryFilterGenericProvider globalQueryFilterGenericProvider,
+        ICurrentUserIdProvider currentUserIdProvider)
         : base(
             options,
             currentTenantProvider,
             globalQueryFilterGenericProvider)
     {
+        _currentUserIdProvider = currentUserIdProvider;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -52,6 +60,11 @@ public class AppDbContext : BaseEfCoreNpgsqlDbContext, IRecipeDbContext
             return true;
         }
 
+        if (typeof(IHasMultiUser).IsAssignableFrom(typeof(TEntity)))
+        {
+            return true;
+        }
+
         return base.ShouldFilterEntity<TEntity>(mutableEntityType);
     }
 
@@ -61,11 +74,14 @@ public class AppDbContext : BaseEfCoreNpgsqlDbContext, IRecipeDbContext
 
         if (typeof(IIsDraft).IsAssignableFrom(typeof(TEntity)))
         {
-            Expression<Func<TEntity, bool>> isDraftFilterExpression =
-                e => !_isDraftFilterIsEnabled || (e as IIsDraft).IsDraft == false; // EF.Property<bool>(e, "IsActive");
-            expression = expression == null
-                ? isDraftFilterExpression
-                : CombineExpressions(expression, isDraftFilterExpression);
+            Expression<Func<TEntity, bool>> isDraftFilterExpression = e => !_isDraftFilterIsEnabled || (e as IIsDraft).IsDraft == false; // EF.Property<bool>(e, "IsActive");
+            expression = expression == null ? isDraftFilterExpression : CombineExpressions(expression, isDraftFilterExpression);
+        }
+
+        if (typeof(IHasMultiUser).IsAssignableFrom(typeof(TEntity)) && _currentUserId.HasValue)
+        {
+            Expression<Func<TEntity, bool>>? multiUserExpression = x => !_multiUserFilterIsEnabled || (x as IHasMultiUser).OwnerUserId == _currentUserId.Value;
+            expression = expression == null ? multiUserExpression : CombineExpressions(expression, multiUserExpression);
         }
 
         return expression;
