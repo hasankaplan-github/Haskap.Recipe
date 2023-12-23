@@ -23,4 +23,5 @@ public interface IRecipeService
     Task DecreaseStepOrderAsync(DecreaseStepOrderInputDto inputDto, CancellationToken cancellationToken);
     Task DeleteStepAsync(DeleteStepInputDto inputDto, string webRootPath, CancellationToken cancellationToken);
     Task MarkAsDeletedAsync(Guid id, CancellationToken cancellationToken);
+    Task UpdateStepAsync(UpdateStepInputDto inputDto, List<FileInputDto> pictureFiles, string webRootPath, CancellationToken cancellationToken);
 }

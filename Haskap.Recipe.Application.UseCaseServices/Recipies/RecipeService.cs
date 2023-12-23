@@ -312,4 +312,46 @@ public class RecipeService : IRecipeService
 
         await _recipeDbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task UpdateStepAsync(UpdateStepInputDto inputDto, List<FileInputDto> pictureFiles, string webRootPath, CancellationToken cancellationToken)
+    {
+        var recipe = await _recipeDbContext.Recipe
+            .Include(x => x.Steps.Where(y => y.Id == inputDto.StepId))
+            .Where(x => x.Id == inputDto.RecipeId)
+            .FirstAsync(cancellationToken);
+
+        var stepToBeUpdated = recipe.Steps[0];
+
+        stepToBeUpdated.SetInstruction(inputDto.Instruction);
+
+        var deletedPictureFiles = new List<FileInputDto>();
+
+        foreach (var pictureId in (inputDto.DeletedPictureIds ?? Enumerable.Empty<Guid>()))
+        {
+            var picture = stepToBeUpdated.Pictures.Where(x => x.Id == pictureId).First();
+            stepToBeUpdated.RemovePicture(picture);
+
+            deletedPictureFiles.Add(new FileInputDto
+            {
+                Extension = picture.File.Extension,
+                NewName = picture.File.NewName
+            });
+        }
+
+
+
+
+        foreach (var pictureFile in pictureFiles)
+        {
+            var stepPicture = new StepPicture(pictureFile.OriginalName);
+            stepToBeUpdated.AddPicture(stepPicture);
+
+            pictureFile.NewName = stepPicture.File.NewName;
+            pictureFile.Extension = stepPicture.File.Extension;
+        }
+
+        await _recipeDbContext.SaveChangesAsync(cancellationToken);
+
+        await MediatorWrapper.Publish(new StepUpdatedDomainEvent(inputDto.RecipeId, inputDto.StepId, deletedPictureFiles, pictureFiles, webRootPath), cancellationToken);
+    }
 }

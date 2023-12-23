@@ -19,8 +19,8 @@
 <div class="modal-body">
     <div class="row">
         <div class="col-md-12">
-            <label for="instructionTextarea" class="form-label">Adım Metni</label>
-            <textarea id="instructionTextarea" class="form-control" maxlength="@StepConsts.MaxInstructionLength" aria-describedby="Adım" rows="7"></textarea>
+            <label for="newStepInstructionTextarea" class="form-label">Adım Metni</label>
+            <textarea id="newStepInstructionTextarea" class="form-control" maxlength="@StepConsts.MaxInstructionLength" aria-describedby="Adım" rows="7"></textarea>
         </div>
     </div>
 
@@ -28,8 +28,8 @@
         <div class="col-md-12">
             <label class="form-label">Resim Seç</label>
             <div class="custom-file">
-                <input type="file" class="custom-file-input" id="stepPictures" multiple>
-                <label class="custom-file-label" for="stepPictures">Resim Seç</label>
+                <input type="file" class="custom-file-input" id="newStepStepPictures" multiple>
+                <label class="custom-file-label" for="newStepStepPictures">Resim Seç</label>
             </div>
         </div>
     </div>
@@ -52,14 +52,14 @@
 
     $("#saveNewStepButton").click(function () {
         let formData = new FormData();
-        let stepPictures = $('#stepPictures')[0].files;
+        let stepPictures = $('#newStepStepPictures')[0].files;
 
         for (let i = 0; i < stepPictures.length; i++) {
             formData.append('formFiles', stepPictures[i]);
         }
 
         formData.append('recipeId', "@ViewBag.RecipeId");
-        formData.append('instruction', $("#instructionTextarea").val());
+        formData.append('instruction', $("#newStepInstructionTextarea").val());
 
         $.ajax({
             type: "POST",

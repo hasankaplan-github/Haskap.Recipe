@@ -7,6 +7,7 @@ let userUpdateRolesModal;
 let newIngredientModal;
 let updateIngredientModal;
 let newStepModal;
+let updateStepModal;
 
 
 const modal = {
@@ -17,7 +18,8 @@ const modal = {
     userUpdateRolesModalId: 'userUpdateRolesModal',
     newIngredientModalId: 'newIngredientModal',
     updateIngredientModalId: 'updateIngredientModal',
-    newStepModalId: 'newStepModal'
+    newStepModalId: 'newStepModal',
+    updateStepModalId: 'updateStepModal'
 }
 
 const wizardModalOptions = {

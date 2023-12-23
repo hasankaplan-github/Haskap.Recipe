@@ -22,11 +22,7 @@ public class Step : Entity
     public Step(Guid id, string instruction, int stepOrder, List<StepPicture> pictures)
         : base(id)
     {
-        Guard.Against.NullOrWhiteSpace(instruction);
-        Guard.Against.InvalidInput(instruction, nameof(instruction), x => x.Length <= StepConsts.MaxInstructionLength);
-
-        Id = id;
-        Instruction = instruction;
+        SetInstruction(instruction);
         SetStepOrder(stepOrder);
         AddPictures(pictures);
     }
@@ -47,5 +43,13 @@ public class Step : Entity
         Guard.Against.NegativeOrZero(stepOrder);
 
         StepOrder = stepOrder;
+    }
+
+    public void SetInstruction(string instruction)
+    {
+        Guard.Against.NullOrWhiteSpace(instruction);
+        Guard.Against.InvalidInput(instruction, nameof(instruction), x => x.Length <= StepConsts.MaxInstructionLength);
+
+        Instruction = instruction;
     }
 }

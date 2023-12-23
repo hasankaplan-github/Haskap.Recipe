@@ -1,0 +1,107 @@
+﻿@using Haskap.Recipe.Application.Dtos.Recipies;
+@using Haskap.Recipe.Domain.Shared.Consts;
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model StepOutputDto
+
+@{
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+<div class="modal-header bg-primary">
+    <h5 class="modal-title" id="staticBackdropLabel"><i class="fa-solid fa-pen-to-square"></i> Adım Güncelle (@(Model.StepOrder). Adım)</h5>
+    <button type="button" class="btn-close cancelUpdateStep" @*data-bs-dismiss="modal"*@ aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <label for="updateStepInstructionTextarea" class="form-label">Adım Metni</label>
+            <textarea id="updateStepInstructionTextarea" class="form-control" maxlength="@StepConsts.MaxInstructionLength" aria-describedby="Adım" rows="7">@Html.Raw(Model.Instruction)</textarea>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <label class="form-label">Yeni Resim Seç</label>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="updateStepStepPicturesInput" multiple>
+                <label class="custom-file-label" for="updateStepStepPicturesInput">Yeni Resim Seç</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <label class="form-label">Resimlerden Silmek İstediğinizi Seçin</label>
+        @foreach (var picture in Model.Pictures)
+        {
+            <div class="col-md-2">
+                <img width="100" height="100" style="object-fit:contain;" src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{Model.RecipeId}/{Model.Id}/{picture.NewName}{picture.Extension}")" alt="@Html.Raw(picture.OriginalName)">
+                <div class="custom-control custom-checkbox">
+                    <input class="custom-control-input custom-control-input-danger" type="checkbox" name="updateStepDeletePictureCheckbox" value="@picture.Id" id="@Html.Raw("id_" + picture.Id.ToString())" />
+                    <label for="@Html.Raw("id_" + picture.Id.ToString())" class="custom-control-label">Sil</label>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary cancelUpdateStep" @*data-bs-dismiss="modal"*@ id="cancelUpdateStepButton"><i class="fa-solid fa-xmark"></i> İptal</button>
+    <button type="button" class="btn btn-primary" @*data-bs-dismiss="modal"*@ id="saveUpdateStepButton"><i class="fas fa-save"></i> Kaydet</button>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        bsCustomFileInput.init();
+    })
+
+    $(".cancelUpdateStep").click(function () {
+        updateStepModal.hide();
+    })
+
+    $("#saveUpdateStepButton").click(function () {
+        let formData = new FormData();
+        let stepPictures = $('#updateStepStepPicturesInput')[0].files;
+
+        for (let i = 0; i < stepPictures.length; i++) {
+            formData.append('formFiles', stepPictures[i]);
+        }
+
+        $("input[name='updateStepDeletePictureCheckbox']:checked").map(function (i, element) {
+            formData.append("deletedPictureIds", $(element).val());
+        });
+
+        formData.append('recipeId', "@Model.RecipeId");
+        formData.append('stepId', "@Model.Id");
+        formData.append('instruction', $("#updateStepInstructionTextarea").val());
+
+        $.ajax({
+            type: "PUT",
+            headers: {
+                'RequestVerificationToken': '@antiforgeryToken'
+            },
+            url: '@Url.Action("UpdateStep", "Recipe")',
+            data: formData,
+            processData: false,  // tell jQuery not to process the data
+            contentType: false  // tell jQuery not to set contentType
+        }).done(function (result, status, xhr) {
+            Swal.fire(
+                'Başarılı',
+                'Adım başarıyla güncellendi.',
+                'success'
+            );
+
+            loadStepsViewComponent();
+
+            updateStepModal.hide();
+        });
+    })
+
+</script>

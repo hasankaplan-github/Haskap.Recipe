@@ -148,4 +148,20 @@
         });
     }
 
+    function showUpdateStepModal(recipeId, stepId) {
+        $.ajax({
+            type: "GET",
+            url: '/Recipe/LoadUpdateStepModalContentViewComponent', //'@Url.Action("LoadCreateReservationViewComponent", "Schedule")',
+            data: {
+                recipeId: recipeId,
+                stepId: stepId
+            }
+        }).done(function (result, status, xhr) {
+            $("#updateStepModalContent").html(result);
+        });
+
+        updateStepModal = new bootstrap.Modal(document.getElementById(modal.updateStepModalId), wizardModalOptions);
+        updateStepModal.show();
+    }
+
 </script>

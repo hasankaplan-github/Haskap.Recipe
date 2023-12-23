@@ -215,4 +215,43 @@ public class RecipeController : Controller
     {
         return ViewComponent(typeof(ViewComponents.Recipe.ToolbarViewComponent), new { recipeId });
     }
+
+    [HttpGet]
+    public async Task<IActionResult> LoadUpdateStepModalContentViewComponent(Guid recipeId, Guid stepId, CancellationToken cancellationToken = default)
+    {
+        return ViewComponent(typeof(ViewComponents.Recipe.UpdateStepModalContentViewComponent), new { recipeId, stepId });
+    }
+
+    [HttpPut]
+    public async Task UpdateStep(UpdateStepInputDto inputDto, List<IFormFile> formFiles, CancellationToken cancellationToken = default)
+    {
+        var pictureFiles = new List<FileInputDto>();
+
+        if (formFiles?.Any() == true)
+        {
+            var picturesTasks = formFiles.AsParallel()
+                .Select(async x =>
+                {
+                    var fileInputDto = new FileInputDto
+                    {
+                        ContentLength = x.Length,
+                        OriginalName = x.FileName
+                    };
+
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await x.CopyToAsync(memoryStream);
+                        fileInputDto.Content = memoryStream.ToArray();
+                    }
+
+                    return fileInputDto;
+                });
+
+            pictureFiles = (await Task.WhenAll(picturesTasks)).ToList();
+        }
+
+        using var _ = _isDraftFilter.Disable();
+
+        await _recipeService.UpdateStepAsync(inputDto, pictureFiles, _webHostEnvironment.WebRootPath, cancellationToken);
+    }
 }
