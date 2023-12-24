@@ -32,5 +32,10 @@ public class RecipeEntityTypeConfiguration : BaseEntityTypeConfiguration<Domain.
             .WithOne()
             .HasForeignKey(x => x.RecipeId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.OwnsOne(x => x.Picture, x =>
+        {
+            x.Ignore(y => y.Id);
+        });
     }
 }

@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -56,13 +57,18 @@ public class RecipeService : IRecipeService
         await _recipeDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<CreateAsDraftOutputDto> CreateAsDraftAsync(CreateAsDraftInputDto inputDto, CancellationToken cancellationToken)
+    public async Task<CreateAsDraftOutputDto> CreateAsDraftAsync(CreateAsDraftInputDto inputDto, FileInputDto pictureFile, string webRootPath, CancellationToken cancellationToken)
     {
+        var picture = new Domain.Common.File(pictureFile.OriginalName);
+        pictureFile.NewName = picture.NewName;
+        pictureFile.Extension = picture.Extension;
+
         var recipe = new Recipe.Domain.RecipeAggregate.Recipe(
             GuidGenerator.CreateSimpleGuid(),
             inputDto.Name,
             inputDto.Description,
-            isDraft: true);
+            isDraft: true,
+            picture);
 
         foreach (var categoryId in (inputDto.CategoryIds ?? Enumerable.Empty<Guid>()))
         {
@@ -71,6 +77,8 @@ public class RecipeService : IRecipeService
 
         await _recipeDbContext.Recipe.AddAsync(recipe);
         await _recipeDbContext.SaveChangesAsync();
+
+        await MediatorWrapper.Publish(new RecipeCreatedDomainEvent(recipe.Id, pictureFile, webRootPath), cancellationToken);
 
         return new CreateAsDraftOutputDto { Id = recipe.Id };
     }
@@ -92,8 +100,12 @@ public class RecipeService : IRecipeService
         return output;
     }
 
-    public async Task UpdateAsync(Guid id, UpdateInputDto inputDto, CancellationToken cancellationToken)
+    public async Task UpdateAsync(Guid id, UpdateInputDto inputDto, FileInputDto pictureFile, string webRootPath, CancellationToken cancellationToken)
     {
+        var picture = new Domain.Common.File(pictureFile.OriginalName);
+        pictureFile.NewName = picture.NewName;
+        pictureFile.Extension = picture.Extension;
+
         var recipe = await _recipeDbContext.Recipe
             .Include(x => x.Categories)
             .Where(x => x.Id == id)
@@ -101,6 +113,8 @@ public class RecipeService : IRecipeService
 
         recipe.SetName(inputDto.Name);
         recipe.SetDescription(inputDto.Description);
+        var deletedPicture = _mapper.Map<FileOutputDto>(recipe.Picture);
+        recipe.SetPicture(picture);
 
         var toBeDeleted = recipe.Categories
             .IntersectBy(inputDto.UnselectedCategoryIds ?? Enumerable.Empty<Guid>(), x => x.CategoryId)
@@ -117,6 +131,8 @@ public class RecipeService : IRecipeService
         recipe.AddCategories(toBeAdded);
 
         await _recipeDbContext.SaveChangesAsync(cancellationToken);
+
+        await MediatorWrapper.Publish(new RecipeUpdatedDomainEvent(recipe.Id, pictureFile, deletedPicture, webRootPath), cancellationToken);
     }
 
     public async Task DeleteIngredientAsync(Guid recipeId, Guid ingredientId, CancellationToken cancellationToken)

@@ -33,6 +33,16 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-md-12">
+        <label class="form-label">Resim Seç</label>
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" id="pictureInput">
+            <label class="custom-file-label" for="pictureInput">Resim Seç</label>
+        </div>
+    </div>
+</div>
+
 <br />
 
 <div class="row justify-content-center">
@@ -49,24 +59,33 @@
 
 @section Scripts{
     <script src="~/lib/adminlte_3_2_0/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/lib/AdminLte_3_2_0/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
 
     <script>
         $(document).ready(function () {
             $('.select2').select2();
+
+            bsCustomFileInput.init();
         })
 
         $("#createAsDraftButton").click(function () {
+            let formData = new FormData();
+            let picture = $('#pictureInput')[0].files[0];
+
+            formData.append('formFile', picture);
+            formData.append("name", $("#nameInput").val());
+            formData.append("description", $("#descriptionTextarea").val());
+            formData.append("categoryIds", $("#categorySelect").val());
+
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("CreateAsDraft", "Recipe")',
                 headers: {
                     'RequestVerificationToken': '@antiforgeryToken'
                 },
-                data: {
-                    name: $("#nameInput").val(),
-                    description: $("#descriptionTextarea").val(),
-                    categoryIds: $("#categorySelect").val()
-                }
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false  // tell jQuery not to set contentType
             }).done(function (result, status, xhr) {
                 Swal.fire({
                     icon: 'success',

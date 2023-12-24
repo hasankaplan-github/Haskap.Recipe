@@ -3,6 +3,7 @@ using Haskap.Recipe.Application.Dtos.Accounts;
 using Haskap.Recipe.Application.Dtos.Common;
 using Haskap.Recipe.Application.Dtos.Common.DataTable;
 using Haskap.Recipe.Application.Dtos.Recipies;
+using Haskap.Recipe.Domain.Common;
 using Haskap.Recipe.Domain.Providers;
 using Haskap.Recipe.Domain.RecipeAggregate;
 using Haskap.Recipe.Ui.MvcWebUi.CustomAuthorization;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
 namespace Haskap.Recipe.Ui.MvcWebUi.Controllers;
@@ -24,6 +26,7 @@ public class RecipeController : Controller
     private readonly IIsDraftGlobalQueryFilterProvider _isDraftFilter;
     private readonly IAccountService _accountService;
     private readonly IMultiUserGlobalQueryFilterProvider _multiUserFilter;
+    private readonly StepPicturesSettings _stepPicturesSettings;
 
     public RecipeController(
         ICategoryService categoryService,
@@ -31,7 +34,8 @@ public class RecipeController : Controller
         IWebHostEnvironment webHostEnvironment,
         IIsDraftGlobalQueryFilterProvider isDraftFilter,
         IAccountService accountService,
-        IMultiUserGlobalQueryFilterProvider multiUserFilter)
+        IMultiUserGlobalQueryFilterProvider multiUserFilter,
+        IOptions<StepPicturesSettings> stepPicturesSettingsOptions)
     {
         _categoryService = categoryService;
         _recipeService = recipeService;
@@ -39,6 +43,7 @@ public class RecipeController : Controller
         _isDraftFilter = isDraftFilter;
         _accountService = accountService;
         _multiUserFilter = multiUserFilter;
+        _stepPicturesSettings = stepPicturesSettingsOptions.Value;
     }
 
     public IActionResult Index()
@@ -60,13 +65,27 @@ public class RecipeController : Controller
     }
 
     [HttpPost]
-    public async Task<CreateAsDraftOutputDto> CreateAsDraft(CreateAsDraftInputDto inputDto, CancellationToken cancellationToken = default)
+    public async Task<CreateAsDraftOutputDto> CreateAsDraft(CreateAsDraftInputDto inputDto, IFormFile formFile, CancellationToken cancellationToken = default)
     {
-        return await _recipeService.CreateAsDraftAsync(inputDto, cancellationToken);
+        var fileInputDto = new FileInputDto
+        {
+            ContentLength = formFile.Length,
+            OriginalName = formFile.FileName
+        };
+
+        using (var memoryStream = new MemoryStream())
+        {
+            await formFile.CopyToAsync(memoryStream);
+            fileInputDto.Content = memoryStream.ToArray();
+        }
+
+        return await _recipeService.CreateAsDraftAsync(inputDto, fileInputDto, _webHostEnvironment.WebRootPath, cancellationToken);
     }
 
     public async Task<IActionResult> Edit(Guid recipeId, CancellationToken cancellationToken = default)
     {
+        ViewBag.BaseFolderPath = _stepPicturesSettings.FolderName;
+
         ViewBag.Categories = (await _categoryService.GetAllAsync(cancellationToken))
             .Select(x => new SelectListItem
             {
@@ -131,7 +150,7 @@ public class RecipeController : Controller
     }
 
     [HttpPut]
-    public async Task Update(Guid id, Application.Dtos.Recipies.UpdateInputDto inputDto, CancellationToken cancellationToken = default)
+    public async Task Update(Guid id, Application.Dtos.Recipies.UpdateInputDto inputDto, IFormFile formFile, CancellationToken cancellationToken = default)
     {
         using var _ = _isDraftFilter.Disable();
 
@@ -140,8 +159,20 @@ public class RecipeController : Controller
         var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
 
         using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
-        
-        await _recipeService.UpdateAsync(id, inputDto, cancellationToken);
+
+        var fileInputDto = new FileInputDto
+        {
+            ContentLength = formFile.Length,
+            OriginalName = formFile.FileName
+        };
+
+        using (var memoryStream = new MemoryStream())
+        {
+            await formFile.CopyToAsync(memoryStream);
+            fileInputDto.Content = memoryStream.ToArray();
+        }
+
+        await _recipeService.UpdateAsync(id, inputDto, fileInputDto, _webHostEnvironment.WebRootPath, cancellationToken);
     }
 
     [HttpGet]

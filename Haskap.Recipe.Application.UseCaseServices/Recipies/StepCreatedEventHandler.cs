@@ -15,9 +15,9 @@ public class StepCreatedEventHandler : INotificationHandler<StepCreatedDomainEve
 {
     private readonly StepPicturesSettings _stepPicturesSettings;
 
-    public StepCreatedEventHandler(IOptions<StepPicturesSettings> cateringPhotoSettingsOptions)
+    public StepCreatedEventHandler(IOptions<StepPicturesSettings> recipePictureSettingsOptions)
     {
-        _stepPicturesSettings = cateringPhotoSettingsOptions.Value;
+        _stepPicturesSettings = recipePictureSettingsOptions.Value;
     }
 
     public async Task Handle(StepCreatedDomainEvent notification, CancellationToken cancellationToken)

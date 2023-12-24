@@ -92,6 +92,22 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-md-6">
+                <img width="100" height="100" style="object-fit:contain;" src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{Model.Id}/{Model.Picture.NewName}{Model.Picture.Extension}")" alt="@Html.Raw(Model.Picture.OriginalName)">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <label class="form-label">Resim Değiştir</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="pictureInput">
+                    <label class="custom-file-label" for="pictureInput">Resim Seç</label>
+                </div>
+            </div>
+        </div>
+
         <br />
 
         <div class="row">
@@ -136,6 +152,8 @@
             $('.select2').select2();
 
             $("#categorySelect").val(@Json.Serialize(Model.Categories.Select(x=>x.CategoryId))).change();
+
+            bsCustomFileInput.init();
 
             loadToolbarViewComponent();
 
@@ -187,19 +205,25 @@
 
             let selectedCategoryIds = $("#categorySelect").val();
 
+            let formData = new FormData();
+            let picture = $('#pictureInput')[0].files[0];
+
+            formData.append('formFile', picture);
+            formData.append("id", "@Model.Id");
+            formData.append("name", $("#nameInput").val());
+            formData.append("description", $("#descriptionTextarea").val());
+            formData.append("selectedCategoryIds", selectedCategoryIds);
+            formData.append("unselectedCategoryIds", unselectedCategoryIds);
+
             $.ajax({
                 type: "PUT",
                 url: '@Url.Action("Update", "Recipe")',
                 headers: {
                     'RequestVerificationToken': '@antiforgeryToken'
                 },
-                data: {
-                    id: "@Model.Id",
-                    name: $("#nameInput").val(),
-                    description: $("#descriptionTextarea").val(),
-                    selectedCategoryIds: selectedCategoryIds,
-                    unselectedCategoryIds: unselectedCategoryIds
-                }
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false  // tell jQuery not to set contentType
             }).done(function (result, status, xhr) {
                 Swal.fire(
                     'Başarılı',

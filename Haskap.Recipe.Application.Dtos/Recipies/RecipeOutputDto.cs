@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Haskap.Recipe.Application.Dtos.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,8 @@ public class RecipeOutputDto
     public List<IngredientOutputDto> Ingredients { get; set; }
     public List<RecipeCategoryOutputDto> Categories { get; set; }
     public List<StepOutputDto> Steps { get; set; }
+    public FileOutputDto Picture { get; set; }
+
     public Guid? CreatedUserId { get; set; }
     public DateTime? CreatedOn { get; set; }
     public Guid? ModifiedUserId { get; set; }

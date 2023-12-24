@@ -26,6 +26,8 @@ public class Recipe : AggregateRoot, IAuditable, ISoftDeletable, IIsDraft, IHasM
 
     private List<Step> _steps = new();
     public IReadOnlyList<Step> Steps => _steps.AsReadOnly();
+    public Common.File Picture { get; private set; }
+
 
     public Guid? CreatedUserId { get; set; }
     public DateTime? CreatedOn { get; set; }
@@ -36,17 +38,21 @@ public class Recipe : AggregateRoot, IAuditable, ISoftDeletable, IIsDraft, IHasM
 
     private Recipe() { }
 
-    public Recipe(Guid id, string name, string? description, bool isDraft)
+    public Recipe(Guid id, string name, string? description, bool isDraft, Common.File picture)
         : base(id)
     {
-        
-
-        
-
         Id = id;
         SetName(name);
         SetDescription(description);
         IsDraft = isDraft;
+        SetPicture(picture);
+    }
+
+    public void SetPicture(Common.File picture)
+    {
+        Guard.Against.Null(picture);
+
+        Picture = picture;
     }
 
     public void SetName(string name)
