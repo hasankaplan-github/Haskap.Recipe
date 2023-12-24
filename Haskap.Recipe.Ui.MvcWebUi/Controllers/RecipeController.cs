@@ -4,8 +4,10 @@ using Haskap.Recipe.Application.Dtos.Common;
 using Haskap.Recipe.Application.Dtos.Common.DataTable;
 using Haskap.Recipe.Application.Dtos.Recipies;
 using Haskap.Recipe.Domain.Providers;
+using Haskap.Recipe.Domain.RecipeAggregate;
 using Haskap.Recipe.Ui.MvcWebUi.CustomAuthorization;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -74,7 +76,13 @@ public class RecipeController : Controller
             .ToList();
 
         using var _ = _isDraftFilter.Disable();
-        
+
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
+
+        using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
+
         var recipeOutputDto = await _recipeService.GetByIdAsync(recipeId, cancellationToken);
 
         return View(recipeOutputDto);
@@ -85,6 +93,12 @@ public class RecipeController : Controller
     {
         using var _ = _isDraftFilter.Disable();
 
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
+
+        using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
+
         await _recipeService.ActivateAsync(id, cancellationToken);
     }
 
@@ -92,6 +106,12 @@ public class RecipeController : Controller
     public async Task MarkAsDraft(Guid id, CancellationToken cancellationToken = default)
     {
         using var _ = _isDraftFilter.Disable();
+
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
+
+        using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
 
         await _recipeService.MarkAsDraftAsync(id, cancellationToken);
     }
@@ -101,6 +121,12 @@ public class RecipeController : Controller
     {
         using var _ = _isDraftFilter.Disable();
 
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
+
+        using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
+
         await _recipeService.MarkAsDeletedAsync(id, cancellationToken);
     }
 
@@ -109,6 +135,12 @@ public class RecipeController : Controller
     {
         using var _ = _isDraftFilter.Disable();
 
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
+
+        using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
+        
         await _recipeService.UpdateAsync(id, inputDto, cancellationToken);
     }
 
@@ -123,6 +155,12 @@ public class RecipeController : Controller
     {
         using var _ = _isDraftFilter.Disable();
 
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
+
+        using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
+        
         await _recipeService.DeleteIngredientAsync(recipeId, ingredientId, cancellationToken);
     }
 
@@ -136,6 +174,12 @@ public class RecipeController : Controller
     public async Task SaveNewIngredient(SaveNewIngredientInputDto inputDto, CancellationToken cancellationToken = default)
     {
         using var _ = _isDraftFilter.Disable();
+
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
+
+        using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
 
         await _recipeService.SaveNewIngredientAsync(inputDto, cancellationToken);
     }
@@ -151,6 +195,12 @@ public class RecipeController : Controller
     {
         using var _ = _isDraftFilter.Disable();
 
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
+
+        using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
+        
         await _recipeService.UpdateIngredientAsync(inputDto, cancellationToken);
     }
 
@@ -196,6 +246,12 @@ public class RecipeController : Controller
 
         using var _ = _isDraftFilter.Disable();
 
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
+
+        using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
+        
         await _recipeService.SaveNewStepAsync(inputDto, pictureFiles, _webHostEnvironment.WebRootPath, cancellationToken);
     }
 
@@ -203,6 +259,12 @@ public class RecipeController : Controller
     public async Task IncreaseStepOrder(IncreaseStepOrderInputDto inputDto, CancellationToken cancellationToken = default)
     {
         using var _ = _isDraftFilter.Disable();
+
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
+
+        using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
 
         await _recipeService.IncreaseStepOrderAsync(inputDto, cancellationToken);
     }
@@ -212,6 +274,12 @@ public class RecipeController : Controller
     {
         using var _ = _isDraftFilter.Disable();
 
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
+
+        using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
+
         await _recipeService.DecreaseStepOrderAsync(inputDto, cancellationToken);
     }
 
@@ -219,6 +287,12 @@ public class RecipeController : Controller
     public async Task DeleteStep(DeleteStepInputDto inputDto, CancellationToken cancellationToken = default)
     {
         using var _ = _isDraftFilter.Disable();
+
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
+
+        using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
 
         await _recipeService.DeleteStepAsync(inputDto, _webHostEnvironment.WebRootPath, cancellationToken);
     }
@@ -265,6 +339,12 @@ public class RecipeController : Controller
 
         using var _ = _isDraftFilter.Disable();
 
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
+
+        using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
+
         await _recipeService.UpdateStepAsync(inputDto, pictureFiles, _webHostEnvironment.WebRootPath, cancellationToken);
     }
 
@@ -282,17 +362,9 @@ public class RecipeController : Controller
 
         var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
 
-        JqueryDataTableResult? result = null;
+        using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
 
-        if (allPermissions.Contains(Permissions.Recipe.Admin))
-        {
-            using var __ = _multiUserFilter.Disable();
-            result = await _recipeService.EditorSearchAsync(inputDto, jqueryDataTableParam, cancellationToken);
-        }
-        else
-        {
-            result = await _recipeService.EditorSearchAsync(inputDto, jqueryDataTableParam, cancellationToken);
-        }
+        var result = await _recipeService.EditorSearchAsync(inputDto, jqueryDataTableParam, cancellationToken);
 
         return Json(result);
     }

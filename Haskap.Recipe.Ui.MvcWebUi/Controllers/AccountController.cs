@@ -113,7 +113,6 @@ public class AccountController : Controller
     [HttpPost]
     public async Task ChangePassword(ChangePasswordInputDto inputDto, CancellationToken cancellationToken)
     {
-        return;
         await _accountService.ChangePasswordAsync(inputDto, cancellationToken);
     }
 
