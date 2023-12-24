@@ -51,15 +51,6 @@
                 <label for="searchUserUserNameInput" class="form-label">Kullanıcı Adı</label>
                 <input type="text" maxlength="100" class="form-control" id="searchUserUserNameInput" aria-describedby="Kullanıcı Adı">
             </div>
-
-            <div class="col-md-3">
-                <label for="searchUserIsActiveSelect" class="form-label">Aktiflik</label>
-                <select id="searchUserIsActiveSelect" class="form-control select2" style="width: 100%;">
-                    <option value=""></option>
-                    <option value="true">Aktif</option>
-                    <option value="false">Pasif</option>
-                </select>
-            </div>
         </div>
 
     </div>
@@ -192,7 +183,6 @@
                         d.firstName = $("#searchUserFirstNameInput").val();
                         d.lastName = $("#searchUserLastNameInput").val();
                         d.userName = $("#searchUserUserNameInput").val();
-                        d.isActive = $("#searchUserIsActiveSelect").val();
 
                         return d;
                     }
@@ -203,25 +193,15 @@
                     { title: 'Soyadı', data: "lastName" },
                     { title: 'User Name', data: "userName" },
                     { title: 'System Time Zone Id', data: "systemTimeZoneId" },
-                    { title: 'Aktiflik', data: "isActive",
-                        render: function (data, type){
-                            let isActive = new Boolean(data);
-
-                            return isActive == true ? "Aktif" : "Pasif";
-                        }
-                    },
-                    { title: 'Firma Adı', data: "tenantName", orderable: false },
                     {
                         title: 'İşlemler', orderable: false,
                         data: "id",
                         render: function (data, type, row, meta) {
                             if (type === 'display') {
-                                let toggleActiveStatusText = row.isActive == true ? "Pasifleştir" : "Aktifleştir";
                                 return '<div class="dropdown">' +
                                     '<button type="button" class="btn btn-primary btn-sm dropdown-toggle dropdown-icon" data-bs-toggle="dropdown">İşlemler</button>' +
                                     '<ul class="dropdown-menu">' +
                                     '<li><a class="btn-danger dropdown-item" href="#" onclick="deleteUser(\'' + data + '\');"><i class="fa-solid fa-trash-can"></i> Sil</a></li>' +
-                                    '<li><a class="btn-danger dropdown-item" href="#" onclick="toggleActiveStatus(\'' + data + '\');"><i class="fa-solid fa-wave-square"></i> ' + toggleActiveStatusText + '</a></li>' +
                                     '<li><a class="btn-primary dropdown-item" href="#" onclick="showUpdatePermissionsModal(\'' + data + '\');"><i class="fa-solid fa-shield-halved"></i> Yetkiler</a></li>' +
                                     '<li><a class="btn-primary dropdown-item" href="#" onclick="showUpdateRolesModal(\'' + data + '\');"><i class="fa-solid fa-user-tag"></i> Roller</a></li>' +
                                     '</ul>' +
@@ -277,23 +257,6 @@
                         searchResultTable.draw();
                     });
                 }
-            });
-        }
-
-        function toggleActiveStatus(userId) { 
-            $.ajax({
-                type: "PUT",
-                headers: {
-                    'RequestVerificationToken': '@antiforgeryToken'
-                },
-                url: "@Url.Action("ToggleActiveStatus", "Account")",
-                data: {
-                    userId: userId
-                }
-            }).done(function (result, status, xhr) {
-                Swal.fire('Başarıyla değiştirildi.', '', 'success');
-
-                searchResultTable.draw();
             });
         }
 

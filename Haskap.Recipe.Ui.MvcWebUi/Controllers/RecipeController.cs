@@ -1,12 +1,15 @@
 ﻿using Haskap.Recipe.Application.Contracts;
+using Haskap.Recipe.Application.Dtos.Accounts;
 using Haskap.Recipe.Application.Dtos.Common;
 using Haskap.Recipe.Application.Dtos.Common.DataTable;
 using Haskap.Recipe.Application.Dtos.Recipies;
 using Haskap.Recipe.Domain.Providers;
+using Haskap.Recipe.Ui.MvcWebUi.CustomAuthorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
 
 namespace Haskap.Recipe.Ui.MvcWebUi.Controllers;
 
@@ -17,17 +20,23 @@ public class RecipeController : Controller
     private readonly IRecipeService _recipeService;
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IIsDraftGlobalQueryFilterProvider _isDraftFilter;
+    private readonly IAccountService _accountService;
+    private readonly IMultiUserGlobalQueryFilterProvider _multiUserFilter;
 
     public RecipeController(
         ICategoryService categoryService,
         IRecipeService recipeService,
         IWebHostEnvironment webHostEnvironment,
-        IIsDraftGlobalQueryFilterProvider isDraftFilter)
+        IIsDraftGlobalQueryFilterProvider isDraftFilter,
+        IAccountService accountService,
+        IMultiUserGlobalQueryFilterProvider multiUserFilter)
     {
         _categoryService = categoryService;
         _recipeService = recipeService;
         _webHostEnvironment = webHostEnvironment;
         _isDraftFilter = isDraftFilter;
+        _accountService = accountService;
+        _multiUserFilter = multiUserFilter;
     }
 
     public IActionResult Index()
@@ -96,7 +105,7 @@ public class RecipeController : Controller
     }
 
     [HttpPut]
-    public async Task Update(Guid id, UpdateInputDto inputDto, CancellationToken cancellationToken = default)
+    public async Task Update(Guid id, Application.Dtos.Recipies.UpdateInputDto inputDto, CancellationToken cancellationToken = default)
     {
         using var _ = _isDraftFilter.Disable();
 
@@ -269,7 +278,22 @@ public class RecipeController : Controller
     {
         using var _ = _isDraftFilter.Disable();
 
-        var result = await _recipeService.EditorSearchAsync(inputDto, jqueryDataTableParam, cancellationToken);
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
+
+        JqueryDataTableResult? result = null;
+
+        if (allPermissions.Contains(Permissions.Recipe.Admin))
+        {
+            using var __ = _multiUserFilter.Disable();
+            result = await _recipeService.EditorSearchAsync(inputDto, jqueryDataTableParam, cancellationToken);
+        }
+        else
+        {
+            result = await _recipeService.EditorSearchAsync(inputDto, jqueryDataTableParam, cancellationToken);
+        }
+
         return Json(result);
     }
 }

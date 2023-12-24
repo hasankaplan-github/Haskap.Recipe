@@ -13,33 +13,30 @@ using Haskap.Recipe.Application.Dtos.Common.DataTable;
 namespace Haskap.Recipe.Application.UseCaseServices.Roles;
 public class RoleService : UseCaseService, IRoleService
 {
-    private readonly IRecipeDbContext _ajandaDbContext;
+    private readonly IRecipeDbContext _recipeDbContext;
     private readonly IMapper _mapper;
-    private readonly ICurrentTenantProvider _currentTenantProvider;
 
     public RoleService(
         IRecipeDbContext ajandaDbContext,
-        IMapper mapper,
-        ICurrentTenantProvider currentTenantProvider)
+        IMapper mapper)
     {
-        _ajandaDbContext = ajandaDbContext;
+        _recipeDbContext = ajandaDbContext;
         _mapper = mapper;
-        _currentTenantProvider = currentTenantProvider;
     }
 
     public async Task DeleteAsync(DeleteInputDto inputDto, CancellationToken cancellationToken)
     {
-        var toBeDeleted = await _ajandaDbContext.Role
+        var toBeDeleted = await _recipeDbContext.Role
             .Where(x=>x.Id == inputDto.RoleId)
             .FirstAsync(cancellationToken);
 
-        _ajandaDbContext.Role.Remove(toBeDeleted);
-        await _ajandaDbContext.SaveChangesAsync(cancellationToken);
+        _recipeDbContext.Role.Remove(toBeDeleted);
+        await _recipeDbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<List<RoleOutputDto>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var roles = await _ajandaDbContext.Role
+        var roles = await _recipeDbContext.Role
             .ToListAsync(cancellationToken);
 
         var output = _mapper.Map<List<RoleOutputDto>>(roles);
@@ -52,15 +49,15 @@ public class RoleService : UseCaseService, IRoleService
         var newRole = new Role(
             GuidGenerator.CreateSimpleGuid(),
             inputDto.Name,
-            _ajandaDbContext.Role);
+            _recipeDbContext.Role);
 
-        await _ajandaDbContext.Role.AddAsync(newRole, cancellationToken);
-        await _ajandaDbContext.SaveChangesAsync(cancellationToken);
+        await _recipeDbContext.Role.AddAsync(newRole, cancellationToken);
+        await _recipeDbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<JqueryDataTableResult> SearchAsync(SearchParamsInputDto inputDto, JqueryDataTableParam jqueryDataTableParam, CancellationToken cancellationToken)
     {
-        var query = _ajandaDbContext.Role.AsQueryable();
+        var query = _recipeDbContext.Role.AsQueryable();
 
         var totalCount = await query.CountAsync(cancellationToken);
         var filteredCount = totalCount;
@@ -121,7 +118,7 @@ public class RoleService : UseCaseService, IRoleService
 
     public async Task<RoleOutputDto> GetByIdAsync(Guid roleId, CancellationToken cancellationToken)
     {
-        var role = await _ajandaDbContext.Role
+        var role = await _recipeDbContext.Role
             .Where(x => x.Id == roleId)
             .FirstAsync(cancellationToken);
 
@@ -132,18 +129,18 @@ public class RoleService : UseCaseService, IRoleService
 
     public async Task UpdateAsync(UpdateInputDto inputDto, CancellationToken cancellationToken)
     {
-        var role = await _ajandaDbContext.Role
+        var role = await _recipeDbContext.Role
             .Where(x => x.Id == inputDto.RoleId)
             .FirstAsync(cancellationToken);
 
-        role.SetName(inputDto.NewName, _ajandaDbContext.Role);
+        role.SetName(inputDto.NewName, _recipeDbContext.Role);
 
-        await _ajandaDbContext.SaveChangesAsync(cancellationToken);
+        await _recipeDbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task UpdatePermissionsAsync(UpdatePermissionsInputDto inputDto, CancellationToken cancellationToken)
     {
-        var role = await _ajandaDbContext.Role
+        var role = await _recipeDbContext.Role
             .Where(x => x.Id == inputDto.RoleId)
             .FirstAsync(cancellationToken);
 
@@ -166,12 +163,12 @@ public class RoleService : UseCaseService, IRoleService
             role.AddPermission(permissionName);
         }
 
-        await _ajandaDbContext.SaveChangesAsync(cancellationToken);
+        await _recipeDbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<List<PermissionOutputDto>> GetPermissionsAsync(Guid roleId, CancellationToken cancellationToken)
     {
-        var role = await _ajandaDbContext.Role
+        var role = await _recipeDbContext.Role
            .Where(x => x.Id == roleId)
            .FirstAsync(cancellationToken);
 

@@ -336,7 +336,9 @@ public class AccountService : UseCaseService, IAccountService
             .Where(x => x.Id == inputDto.UserId)
             .FirstAsync(cancellationToken);
 
-        var toBeDeleted = user.Roles.IntersectBy(inputDto.UncheckedRoles ?? Enumerable.Empty<Guid>(), x => x.RoleId).ToList();
+        var toBeDeleted = user.Roles
+            .IntersectBy(inputDto.UncheckedRoles ?? Enumerable.Empty<Guid>(), x => x.RoleId)
+            .ToList();
 
         foreach (var userRole in toBeDeleted)
         {
@@ -344,7 +346,9 @@ public class AccountService : UseCaseService, IAccountService
         }
 
 
-        var toBeAdded = (inputDto.CheckedRoles ?? Enumerable.Empty<Guid>()).Except(user.Roles.Select(x => x.RoleId));
+        var toBeAdded = (inputDto.CheckedRoles ?? Enumerable.Empty<Guid>())
+            .Except(user.Roles.Select(x => x.RoleId))
+            .ToList();
 
         foreach (var roleId in toBeAdded)
         {

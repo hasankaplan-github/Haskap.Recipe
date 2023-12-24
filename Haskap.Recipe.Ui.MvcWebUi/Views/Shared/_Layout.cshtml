@@ -220,7 +220,7 @@
             <!-- Brand Logo -->
             <a href="#" class="brand-link">
                 @*<img src="../../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">*@
-                <span class="brand-text font-weight-light">Ajanda - @User.Claims.Where(x => x.Type == TenantConsts.NameClaimType).FirstOrDefault()?.Value</span>
+                <span class="brand-text font-weight-light">Yemek Tarifleri</span>
             </a>
 
             <!-- Sidebar -->
@@ -272,38 +272,7 @@
                                 </p>
                             </a>
                         </li>
-
-                        <li class="nav-item">
-                            <a href="Raporlar" class="nav-link">
-                                <i class="nav-icon fa-solid fa-magnifying-glass-chart"></i>
-                                <p>
-                                    Raporlar
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-action="PriceReport" asp-controller="Reports" class="nav-link">
-                                        <i class="nav-icon fa-solid fa-chart-simple"></i>
-                                        <p>
-                                            Ücret Raporu
-                                            @*<span class="right badge badge-danger">New</span>*@
-                                        </p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a asp-action="ReservationCountReport" asp-controller="Reports" class="nav-link">
-                                        <i class="nav-icon fa-solid fa-chart-simple"></i>
-                                        <p>
-                                            Rezervasyon Sayısı Rporu
-                                            @*<span class="right badge badge-danger">New</span>*@
-                                        </p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
+                        
                         <li class="nav-item">
                             <a href="Hesap İşlemleri" class="nav-link">
                                 <i class="nav-icon fa-solid fa-user"></i>
