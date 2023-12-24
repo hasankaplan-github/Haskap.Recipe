@@ -160,16 +160,21 @@ public class RecipeController : Controller
 
         using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
 
-        var fileInputDto = new FileInputDto
-        {
-            ContentLength = formFile.Length,
-            OriginalName = formFile.FileName
-        };
+        FileInputDto? fileInputDto = null;
 
-        using (var memoryStream = new MemoryStream())
+        if (formFile is not null)
         {
-            await formFile.CopyToAsync(memoryStream);
-            fileInputDto.Content = memoryStream.ToArray();
+            fileInputDto = new FileInputDto
+            {
+                ContentLength = formFile.Length,
+                OriginalName = formFile.FileName
+            };
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await formFile.CopyToAsync(memoryStream);
+                fileInputDto.Content = memoryStream.ToArray();
+            }
         }
 
         await _recipeService.UpdateAsync(id, inputDto, fileInputDto, _webHostEnvironment.WebRootPath, cancellationToken);

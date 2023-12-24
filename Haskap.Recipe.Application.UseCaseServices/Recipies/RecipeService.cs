@@ -100,12 +100,8 @@ public class RecipeService : IRecipeService
         return output;
     }
 
-    public async Task UpdateAsync(Guid id, UpdateInputDto inputDto, FileInputDto pictureFile, string webRootPath, CancellationToken cancellationToken)
+    public async Task UpdateAsync(Guid id, UpdateInputDto inputDto, FileInputDto? pictureFile, string webRootPath, CancellationToken cancellationToken)
     {
-        var picture = new Domain.Common.File(pictureFile.OriginalName);
-        pictureFile.NewName = picture.NewName;
-        pictureFile.Extension = picture.Extension;
-
         var recipe = await _recipeDbContext.Recipe
             .Include(x => x.Categories)
             .Where(x => x.Id == id)
@@ -113,8 +109,17 @@ public class RecipeService : IRecipeService
 
         recipe.SetName(inputDto.Name);
         recipe.SetDescription(inputDto.Description);
-        var deletedPicture = _mapper.Map<FileOutputDto>(recipe.Picture);
-        recipe.SetPicture(picture);
+
+        FileOutputDto? deletedPicture = null;
+        if (pictureFile is not null)
+        {
+            var picture = new Domain.Common.File(pictureFile.OriginalName);
+            pictureFile.NewName = picture.NewName;
+            pictureFile.Extension = picture.Extension;
+
+            deletedPicture = _mapper.Map<FileOutputDto>(recipe.Picture);
+            recipe.SetPicture(picture);
+        }
 
         var toBeDeleted = recipe.Categories
             .IntersectBy(inputDto.UnselectedCategoryIds ?? Enumerable.Empty<Guid>(), x => x.CategoryId)
@@ -132,7 +137,10 @@ public class RecipeService : IRecipeService
 
         await _recipeDbContext.SaveChangesAsync(cancellationToken);
 
-        await MediatorWrapper.Publish(new RecipeUpdatedDomainEvent(recipe.Id, pictureFile, deletedPicture, webRootPath), cancellationToken);
+        if (pictureFile is not null)
+        {
+            await MediatorWrapper.Publish(new RecipeUpdatedDomainEvent(recipe.Id, pictureFile, deletedPicture, webRootPath), cancellationToken);
+        }
     }
 
     public async Task DeleteIngredientAsync(Guid recipeId, Guid ingredientId, CancellationToken cancellationToken)
