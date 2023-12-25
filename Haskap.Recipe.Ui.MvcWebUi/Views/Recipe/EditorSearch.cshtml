@@ -133,8 +133,42 @@
                     //contentType: "application/json"
                 },
                 columns: [
+                    {
+                        title: 'Resim', data: "picture",
+                        render: function (data, type, row, meta) {
+                            if (type === 'display') {
+                                return '<img width="100" height="100" style="object-fit:contain;" src="@Html.Raw($"/{ViewBag.BaseFolderPath}/")' + row.recipeId + '/' + data.newName + data.extension + '" alt="' + data.originalName + '">';
+                            }
+
+                            return data;
+                        }
+                    },
                     { title: 'Tarif Adı', searchable: true, visible: true, data: "recipeName" },
                     { title: 'Tarif Sahibi', searchable: true, visible: true, data: "ownerUserUsername" },
+                    {
+                        title: 'Oluşturulma Tarihi', data: "createdOn",
+                        render: function (data, type) {
+                            let date = new Date(data);
+                            let createdOn = date.toLocaleString('tr-TR', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric',
+                                hour12: false,
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+
+                            return createdOn;
+                        }
+                    },
+                    {
+                        title: 'Taslak Durumu', data: "isDraft",
+                        render: function (data, type) {
+                            let isDraft = new Boolean(data);
+
+                            return isDraft == true ? "Taslak" : "Aktif";
+                        }
+                    },
                     {
                         title: 'İşlemler', orderable: false,
                         data: "recipeId",
@@ -143,7 +177,7 @@
                                 return '<div class="dropdown">' +
                                     '<button type="button" class="btn btn-primary btn-sm dropdown-toggle dropdown-icon" data-bs-toggle="dropdown">İşlemler</button>' +
                                     '<ul class="dropdown-menu">' +
-                                    '<li><a class="btn-primary dropdown-item" href="#" onclick="redirectToEditPage(\'' + data + '\');"><i class="fa-solid fa-pen"></i> Güncelle</a></li>' +
+                                    '<li><a class="btn-primary dropdown-item" href="#" onclick="redirectToEditPage(\'' + data + '\');"><i class="fa-solid fa-pen-to-square"></i> Güncelle</a></li>' +
                                     '</ul>' +
                                     '</div>';
                             }

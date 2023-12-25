@@ -24,9 +24,8 @@ public class MultiUserSaveChangesInterceptor : SaveChangesInterceptor
         }
 
         var entityEntries = dbContext.ChangeTracker
-                                        .Entries()
-                                        .Where(x => x.Entity is IHasMultiUser && 
-                                                    x.State == EntityState.Added)
+                                        .Entries<IHasMultiUser>()
+                                        .Where(x => x.State == EntityState.Added)
                                         .ToList();
 
         foreach (var entityEntry in entityEntries)

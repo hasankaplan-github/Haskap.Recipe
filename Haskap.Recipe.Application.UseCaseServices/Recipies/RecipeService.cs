@@ -389,7 +389,15 @@ public class RecipeService : IRecipeService
                          OwnerUserId = recipe.OwnerUserId,
                          OwnerUserUsername = user.Credentials.UserName,
                          RecipeId = recipe.Id,
-                         RecipeName = recipe.Name
+                         RecipeName = recipe.Name,
+                         CreatedOn = recipe.CreatedOn,
+                         IsDraft = recipe.IsDraft,
+                         Picture = new FileOutputDto 
+                         { 
+                             Extension = recipe.Picture.Extension,
+                             NewName = recipe.Picture.NewName,
+                             OriginalName = recipe.Picture.OriginalName
+                         }
                      });
             
         var totalCount = await query.CountAsync(cancellationToken);

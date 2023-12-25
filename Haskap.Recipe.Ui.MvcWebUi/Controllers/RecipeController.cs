@@ -84,27 +84,9 @@ public class RecipeController : Controller
 
     public async Task<IActionResult> Edit(Guid recipeId, CancellationToken cancellationToken = default)
     {
-        ViewBag.BaseFolderPath = _stepPicturesSettings.FolderName;
+        ViewBag.RecipeId = recipeId;
 
-        ViewBag.Categories = (await _categoryService.GetAllAsync(cancellationToken))
-            .Select(x => new SelectListItem
-            {
-                Text = x.Name,
-                Value = x.Id.ToString()
-            })
-            .ToList();
-
-        using var _ = _isDraftFilter.Disable();
-
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
-        var allPermissions = await _accountService.GetAllPermissionsAsync(new GetAllPermissionsInputDto { UserId = userId }, cancellationToken);
-
-        using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
-
-        var recipeOutputDto = await _recipeService.GetByIdAsync(recipeId, cancellationToken);
-
-        return View(recipeOutputDto);
+        return View();
     }
 
     [HttpPut]
@@ -178,6 +160,12 @@ public class RecipeController : Controller
         }
 
         await _recipeService.UpdateAsync(id, inputDto, fileInputDto, _webHostEnvironment.WebRootPath, cancellationToken);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> LoadBasicInfoViewComponent(Guid recipeId, CancellationToken cancellationToken)
+    {
+        return ViewComponent(typeof(ViewComponents.Recipe.BasicInfoViewComponent), new { recipeId });
     }
 
     [HttpGet]
@@ -386,6 +374,8 @@ public class RecipeController : Controller
 
     public async Task<IActionResult> EditorSearch(CancellationToken cancellationToken = default)
     {
+        ViewBag.BaseFolderPath = _stepPicturesSettings.FolderName;
+
         return View();
     }
 

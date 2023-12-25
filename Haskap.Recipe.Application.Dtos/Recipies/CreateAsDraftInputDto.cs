@@ -9,5 +9,5 @@ public class CreateAsDraftInputDto
 {
     public string Name { get; set; }
     public string? Description { get; set; }
-    public IList<Guid> CategoryIds { get; set; }
+    public IList<Guid>? CategoryIds { get; set; }
 }

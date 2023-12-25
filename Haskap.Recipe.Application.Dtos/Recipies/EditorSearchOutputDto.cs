@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Haskap.Recipe.Application.Dtos.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,4 +12,7 @@ public class EditorSearchOutputDto
     public string RecipeName { get; set; }
     public Guid OwnerUserId { get; set; } 
     public string OwnerUserUsername { get; set; }
+    public DateTime? CreatedOn { get; set; }
+    public bool IsDraft { get; set; }
+    public FileOutputDto Picture { get; set; }
 }

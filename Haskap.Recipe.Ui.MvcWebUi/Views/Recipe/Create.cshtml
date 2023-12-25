@@ -75,7 +75,9 @@
             formData.append('formFile', picture);
             formData.append("name", $("#nameInput").val());
             formData.append("description", $("#descriptionTextarea").val());
-            formData.append("categoryIds", $("#categorySelect").val());
+            $("#categorySelect").val().forEach(function (currentValue, index, arr) {
+                formData.append("categoryIds", currentValue);
+            });
 
             $.ajax({
                 type: "POST",

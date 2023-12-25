@@ -30,13 +30,18 @@ public class StepUpdatedEventHandler : INotificationHandler<StepUpdatedDomainEve
 
     private async Task DeleteStepPicturesAsync(StepUpdatedDomainEvent notification, CancellationToken cancellationToken)
     {
+        if (!notification.DeletedPictureFiles.Any())
+        {
+            return;
+        }
+
         var fullFolderPath = Path.Combine(
             notification.WebRootPath,
             _stepPicturesSettings.FolderName,
             notification.RecipeId.ToString(),
             notification.StepId.ToString());
 
-        foreach (var pictureFile in notification.DeletedPictureFiles ?? Enumerable.Empty<FileInputDto>())
+        foreach (var pictureFile in notification.DeletedPictureFiles)
         {
             var fullFileName = Path.Combine(fullFolderPath, $"{pictureFile.NewName}{pictureFile.Extension}");
             System.IO.File.Delete(fullFileName);
