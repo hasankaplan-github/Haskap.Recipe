@@ -144,6 +144,6 @@ app.UseRequestLocalization(x =>
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Recipe}/{action=EditorSearch}/{id?}");
+    pattern: "{controller=Recipe}/{action=Index}/{id?}");
 
 app.Run();

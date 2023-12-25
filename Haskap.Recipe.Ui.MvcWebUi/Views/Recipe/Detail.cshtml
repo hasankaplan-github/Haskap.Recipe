@@ -1,0 +1,112 @@
+﻿@using Haskap.Recipe.Application.Dtos.Recipies;
+
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model RecipeOutputDto
+
+@{
+    Layout = "_PublicLayout";
+}
+
+
+<!-- ##### Breadcumb Area Start ##### -->
+<div class="breadcumb-area bg-img bg-overlay" style="background-image: url(/lib/public/delicious/img/bg-img/breadcumb3.jpg);">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <div class="breadcumb-text text-center">
+                    <h2>Tarif</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ##### Breadcumb Area End ##### -->
+
+<div class="receipe-post-area section-padding-80">
+    <!-- Receipe Slider -->
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="receipe-slider owl-carousel">
+                    <img style="height: 400px" src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{Model.Id}/{Model.Picture.NewName}{Model.Picture.Extension}")" alt="">
+                    @* <img src="img/bg-img/bg5.jpg" alt="">
+                    <img src="img/bg-img/bg5.jpg" alt=""> *@
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receipe Content Area -->
+    <div class="receipe-content-area">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-12 col-md-8">
+                    <div class="receipe-headline my-5">
+                        <span>@Model.CreatedOn.Value.ToLongDateString()</span>
+                        <h2>@Model.Name</h2>
+                        <div class="receipe-duration">
+                            <h6>Açıklama: @Model.Description</h6>
+                            @* <h6>Cook: 30 mins</h6>
+                            <h6>Yields: 8 Servings</h6> *@
+                        </div>
+                    </div>
+                </div>
+
+                @* <div class="col-12 col-md-4">
+                    <div class="receipe-ratings text-right my-5">
+                        <div class="ratings">
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star-o" aria-hidden="true"></i>
+                        </div>
+                        <a href="#" class="btn delicious-btn">For Begginers</a>
+                    </div>
+                </div> *@
+            </div>
+
+            <div class="row">
+
+                <div class="col-12 col-lg-8">
+                    @foreach (var step in Model.Steps.OrderBy(x => x.StepOrder))
+                    {
+                        <!-- Single Preparation Step -->
+                        <div class="single-preparation-step d-flex">
+                            <h4>@step.StepOrder .</h4>
+                            <p>@step.Instruction</p>
+                        </div>
+                    }
+                </div>
+
+                <div class="col-12 col-lg-4">
+                    <div class="ingredients">
+                        <h4>Malzemeler</h4>
+
+                        @foreach (var ingredientGroup in Model.Ingredients.GroupBy(x => x.IngredientGroupId))
+                        {
+                            <h6>@ingredientGroup.First().IngredientGroup.Name</h6>
+
+                            @foreach (var ingredient in ingredientGroup)
+                            {
+                                <!-- Custom Checkbox -->
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="customCheck_@ingredient.Id">
+                                    <label class="custom-control-label" for="customCheck_@ingredient.Id">@($"{ingredient.Amount.Value} {ingredient.Amount.Unit.Name} {ingredient.Name}")</label>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>

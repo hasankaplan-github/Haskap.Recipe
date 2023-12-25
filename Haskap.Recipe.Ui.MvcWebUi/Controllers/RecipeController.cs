@@ -46,9 +46,28 @@ public class RecipeController : Controller
         _stepPicturesSettings = stepPicturesSettingsOptions.Value;
     }
 
-    public IActionResult Index()
+    [AllowAnonymous]
+    public async Task<IActionResult> Detail(Guid recipeId, CancellationToken cancellationToken = default)
     {
-        return View();
+        ViewBag.BaseFolderPath = _stepPicturesSettings.FolderName;
+
+        using var _ = _multiUserFilter.Disable();
+
+        var recipe = await _recipeService.GetByIdAsync(recipeId, cancellationToken);
+
+        return View(recipe);
+    }
+
+    [AllowAnonymous]
+    public async Task<IActionResult> Index(CancellationToken cancellationToken = default)
+    {
+        ViewBag.BaseFolderPath = _stepPicturesSettings.FolderName;
+
+        using var _ = _multiUserFilter.Disable();
+
+        var randomRecipies = await _recipeService.GetRandomRecipies(cancellationToken);
+
+        return View(randomRecipies);
     }
 
     public async Task<IActionResult> Create(CancellationToken cancellationToken = default)

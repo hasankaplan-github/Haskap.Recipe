@@ -1,16 +1,14 @@
-﻿using Haskap.Recipe.Application.Contracts;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Haskap.DddBase.Domain.Providers;
+using Haskap.DddBase.Domain.Shared.Consts;
+using Haskap.Recipe.Application.Contracts;
+using Haskap.Recipe.Application.Dtos.Accounts;
+using Haskap.Recipe.Application.Dtos.Common.DataTable;
+using Haskap.Recipe.Ui.MvcWebUi.CustomAuthorization;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using Haskap.DddBase.Domain.Shared.Consts;
-using Haskap.Recipe.Application.Dtos.Accounts;
-using Haskap.DddBase.Domain.Providers;
-using Haskap.Recipe.Ui.MvcWebUi.CustomAuthorization;
-using Haskap.DddBase.Infra.Providers;
-using Haskap.Recipe.Application.UseCaseServices.Accounts;
-using Haskap.Recipe.Application.Dtos.Common.DataTable;
 
 namespace Haskap.Recipe.Ui.MvcWebUi.Controllers;
 
@@ -32,7 +30,12 @@ public class AccountController : Controller
     public async Task<IActionResult> Login(string? returnUrl = null, CancellationToken cancellationToken = default)
     {
         //var loginOutputDto = new LoginOutputDto { ReturnUrl = returnUrl ?? string.Empty };
-        ViewBag.ReturnUrl = returnUrl ?? "/";
+        ViewBag.ReturnUrl = returnUrl ?? "/Recipe/EditorSearch";
+
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return Redirect(ViewBag.ReturnUrl);
+        }
 
         return View();
     }
@@ -41,7 +44,7 @@ public class AccountController : Controller
     [HttpPost]
     public async Task Login(LoginInputDto inputDto, CancellationToken cancellationToken = default)
     {
-        ViewBag.ReturnUrl = inputDto.ReturnUrl ?? "/";
+        ViewBag.ReturnUrl = string.IsNullOrWhiteSpace(inputDto.ReturnUrl) || inputDto.ReturnUrl == "/" ? "/Recipe/EditorSearch" : inputDto.ReturnUrl;
 
         var output = await _accountService.LoginAsync(inputDto, cancellationToken);
 

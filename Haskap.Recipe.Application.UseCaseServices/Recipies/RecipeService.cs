@@ -465,4 +465,18 @@ public class RecipeService : IRecipeService
             data = recipies
         };
     }
+
+    public async Task<List<RecipeOutputDto>> GetRandomRecipies(CancellationToken cancellationToken)
+    {
+        var randomRecipies = await _recipeDbContext.Recipe
+            .OrderBy(r => Guid.NewGuid())
+            .Take(8)
+            .ToListAsync(cancellationToken);
+
+        //something.OrderBy(r => EF.Functions.Random()).Take(5)
+
+        var output = _mapper.Map<List<RecipeOutputDto>>(randomRecipies);
+
+        return output;
+    }
 }
