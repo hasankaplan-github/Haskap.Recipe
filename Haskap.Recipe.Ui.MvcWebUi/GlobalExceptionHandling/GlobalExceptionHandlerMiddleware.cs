@@ -72,8 +72,24 @@ public class GlobalExceptionHandlerMiddleware
                 };
                 var errorId = await viewLevelExceptionService.SaveAndGetIdAsync(inputDto);
 
-                httpContext.Response.Redirect($"/Home/Error?errorId={errorId}");
+                var controller = httpContext.GetRouteValue("controller")?.ToString();
+                var action = httpContext.GetRouteValue("action")?.ToString();
+
+                if (IsPublicArea(controller, action))
+                {
+                    httpContext.Response.Redirect($"/Home/PublicError?errorId={errorId}");
+                }
+                else
+                {
+                    httpContext.Response.Redirect($"/Home/Error?errorId={errorId}");
+                }
             }
+        }
+
+        static bool IsPublicArea(string? controller, string? action)
+        {
+            return controller == "Recipe" &&
+                  (action == "Index" || action == "Detail" || action == "PublicSearch");
         }
     }
 }

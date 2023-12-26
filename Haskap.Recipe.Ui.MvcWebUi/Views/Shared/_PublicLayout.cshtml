@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
     
     @*<title>@ViewData["Title"] - Ajanda</title>*@
-    <title></title>
+    <title>Yemek Tarifleri - @ViewData["Title"]</title>
 
     <!-- Favicon -->
     <link rel="icon" href="~/lib/public/delicious/img/core-img/favicon.ico">
@@ -44,7 +44,7 @@
 
     <!-- Search Wrapper -->
     <div class="search-wrapper">
-        <form asp-action="PublicSearch" method="post">
+        <form asp-controller="Recipe" asp-action="PublicSearch" method="post">
             <!-- Close Btn -->
             <div class="close-btn"><i class="fa fa-times" aria-hidden="true"></i></div>
 
@@ -123,9 +123,9 @@
                             <!-- Nav Start -->
                             <div class="classynav">
                                 <ul>
-                                    <li @* class="active" *@><a asp-action="Index">Ana Sayfa</a></li>
-                                    <li><a href="about.html">Hakkında</a></li>
-                                    <li><a href="contact.html">İletişim</a></li>
+                                    <li @* class="active" *@><a asp-controller="Recipe" asp-action="Index">Ana Sayfa</a></li>
+                                    @* <li><a href="about.html">Hakkında</a></li>
+                                    <li><a href="contact.html">İletişim</a></li> *@
                                     <li><a asp-action="Login" asp-controller="Account">Admin Panel</a></li>
                                     @* <li>
                                         <a href="#">Pages</a>

@@ -1,0 +1,51 @@
+﻿@using Haskap.Recipe.Application.Dtos.ViewLevelExceptions;
+
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model ViewLevelExceptionOutputDto
+
+@{
+    Layout = "_PublicLayout";
+    ViewData["Title"] = "Error";
+}
+
+
+<!-- ##### Breadcumb Area Start ##### -->
+<div class="breadcumb-area bg-img bg-overlay" style="background-image: url(/lib/public/delicious/img/bg-img/breadcumb1.jpg);">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <div class="breadcumb-text text-center">
+                    <h2>Hata</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ##### Breadcumb Area End ##### -->
+
+
+<!-- ##### About Area Start ##### -->
+<section class="about-area section-padding-80">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-heading">
+                    <h3>İsteğiniz gerçekleştirilirken bir hata oluştu.</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h6 class="sub-heading pb-5">@(Model?.Message ?? string.Empty)</h6>
+
+                <p class="text-center"> @(Model?.StackTrace ?? string.Empty)</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ##### About Area End ##### -->

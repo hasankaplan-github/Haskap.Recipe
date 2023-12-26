@@ -52,5 +52,12 @@ public class HomeController : Controller
         return View(output);
     }
 
-    
+    [AllowAnonymous]
+    public async Task<IActionResult> PublicError(Guid errorId)
+    {
+        var output = await _viewLevelExceptionService.GetViewLevelExceptionAsync(errorId);
+        await _viewLevelExceptionService.DeleteViewLevelExceptionAsync(errorId);
+
+        return View(output);
+    }
 }
