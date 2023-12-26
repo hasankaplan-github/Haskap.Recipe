@@ -1,0 +1,105 @@
+﻿@using Haskap.Recipe.Application.Dtos.Recipies;
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model List<PublicSearchRecipeOutputDto>
+
+@{
+    Layout = "_PublicLayout";
+
+    Pagination pagination = ViewBag.Pagination;
+}
+
+
+<!-- ##### Small Receipe Area Start ##### -->
+<section class="small-receipe-area section-padding-80-0">
+    <div class="container">
+        <div class="row">
+
+            @foreach (var searchOutput in Model)
+            {
+                <!-- Small Receipe Area -->
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="single-small-receipe-area d-flex">
+                        <!-- Receipe Thumb -->
+                        <div class="receipe-thumb">
+                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{searchOutput.RecipeId}/{searchOutput.RecipePicture.NewName}{searchOutput.RecipePicture.Extension}")" alt="">
+                        </div>
+                        <!-- Receipe Content -->
+                        <div class="receipe-content">
+                            <span>@searchOutput.RecipeCreatedOn.Value.ToLongDateString()</span>
+                            <a asp-action="Detail" asp-route-recipeId="@searchOutput.RecipeId">
+                                <h5>@searchOutput.RecipeName</h5>
+                            </a>
+                            @* <div class="ratings">
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                        </div>
+                        <p>2 Comments</p> *@
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</section>
+<!-- ##### Small Receipe Area End ##### -->
+
+
+<div class="blog-area section-padding-80">
+    <div class="container">
+        <div class="row justify-content-center">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @if (pagination.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <form asp-action="PublicSearch" method="post">
+                                <input type="hidden" name="searchName" value="@ViewBag.PublicSearchInputDto.SearchName" />
+                                <input type="hidden" name="searchIngredients" value="@ViewBag.PublicSearchInputDto.SearchIngredients" />
+                                <input type="hidden" name="currentPageIndex" value="@(pagination.CurrentPageIndex - 1)" />
+                                <button class="page-link" type="submit">&laquo;</button>
+                            </form>
+                        </li>
+                    }
+
+                    @{
+                        var visiblePageIndexCount = 3; // odd numbers results well
+                        var firstPageIndex = pagination.GetFirstPageIndex(visiblePageIndexCount);
+                        var lastPageIndex = pagination.GetLastPageIndex(visiblePageIndexCount);
+                    }
+
+                    @for (int i = firstPageIndex; i <= lastPageIndex; i++)
+                    {
+                        <li class="page-item @(i == pagination.CurrentPageIndex ? "active" : "")">
+                            <form asp-action="PublicSearch" method="post">
+                                <input type="hidden" name="searchName" value="@ViewBag.PublicSearchInputDto.SearchName" />
+                                <input type="hidden" name="searchIngredients" value="@ViewBag.PublicSearchInputDto.SearchIngredients" />
+                                <input type="hidden" name="currentPageIndex" value="@i" />
+                                <button class="page-link" type="submit">@(i).</button>
+                            </form>
+                        </li>
+                    }
+
+                    @if (pagination.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <form asp-action="PublicSearch" method="post">
+                                <input type="hidden" name="searchName" value="@ViewBag.PublicSearchInputDto.SearchName" />
+                                <input type="hidden" name="searchIngredients" value="@ViewBag.PublicSearchInputDto.SearchIngredients" />
+                                <input type="hidden" name="currentPageIndex" value="@(pagination.CurrentPageIndex + 1)" />
+                                <button class="page-link" type="submit">&raquo;</button>
+                            </form>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

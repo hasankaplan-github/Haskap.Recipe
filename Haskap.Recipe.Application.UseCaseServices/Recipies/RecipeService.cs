@@ -12,12 +12,15 @@ using Haskap.Recipe.Domain.UnitAggregate;
 using Haskap.Recipe.Domain.UserAggregate;
 using Haskap.Recipe.Domain.UserAggregate.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Haskap.Recipe.Application.UseCaseServices.Recipies;
 public class RecipeService : IRecipeService
@@ -478,5 +481,66 @@ public class RecipeService : IRecipeService
         var output = _mapper.Map<List<RecipeOutputDto>>(randomRecipies);
 
         return output;
+    }
+
+    public async Task<PublicSearchOutputDto> PublicSearchAsync(PublicSearchInputDto inputDto, CancellationToken cancellationToken)
+    {
+        var searchQuery = _recipeDbContext.Recipe
+            .Include(x => x.Ingredients)
+            .AsQueryable();
+
+        if (string.IsNullOrWhiteSpace(inputDto.SearchName) == false)
+        {
+            searchQuery = searchQuery.Where(x => x.Name.Contains(inputDto.SearchName));
+        }
+
+        if (string.IsNullOrWhiteSpace(inputDto.SearchIngredients) == false)
+        {
+            var searchIngredients = inputDto.SearchIngredients.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+
+            var recipeQueries = new List<IQueryable<Domain.RecipeAggregate.Recipe>>();
+            foreach (var ingredient in searchIngredients)
+            {
+                recipeQueries.Add(searchQuery.Where(x => x.Ingredients.Any(y => y.Name.ToLower().Contains(ingredient.ToLower()))));
+            }
+
+            IQueryable<Domain.RecipeAggregate.Recipe> query = recipeQueries.FirstOrDefault();
+            foreach (var recipeQuery in recipeQueries)
+            {
+                query = query.Union(recipeQuery);
+            }
+
+            searchQuery = searchQuery.Intersect(query);
+
+            //recipesQuery = recipesQuery.Where(x => x.Ingredients.Any(y => inputDto.SearchIngredients.ToLower().Contains(y.Name.ToLower())));
+        }
+
+        var filteredCount = await searchQuery.CountAsync();
+
+        var searchRecipeOutput = await searchQuery
+            .OrderBy(x => x.Id)
+            .Skip((inputDto.CurrentPageIndex - 1) * inputDto.PageSize)
+            .Take(inputDto.PageSize)
+            .Select(x => new PublicSearchRecipeOutputDto
+            {
+                RecipeCreatedOn = x.CreatedOn,
+                RecipeId = x.Id,
+                RecipeName = x.Name,
+                RecipePicture = new FileOutputDto
+                {
+                    Extension = x.Picture.Extension,
+                    NewName = x.Picture.NewName,
+                    OriginalName = x.Picture.OriginalName
+                }
+            })
+            .ToListAsync();
+
+        var searchOutput = new PublicSearchOutputDto
+        {
+            Recipes = searchRecipeOutput,
+            FilteredCount = filteredCount
+        };
+
+        return searchOutput;
     }
 }

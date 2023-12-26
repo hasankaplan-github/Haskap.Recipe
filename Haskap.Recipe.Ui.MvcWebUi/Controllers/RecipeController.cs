@@ -7,6 +7,7 @@ using Haskap.Recipe.Domain.Common;
 using Haskap.Recipe.Domain.Providers;
 using Haskap.Recipe.Domain.RecipeAggregate;
 using Haskap.Recipe.Ui.MvcWebUi.CustomAuthorization;
+using Haskap.Recipe.Ui.MvcWebUi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Hosting;
@@ -45,6 +46,26 @@ public class RecipeController : Controller
         _multiUserFilter = multiUserFilter;
         _stepPicturesSettings = stepPicturesSettingsOptions.Value;
     }
+
+    
+
+    [AllowAnonymous]
+    public async Task<IActionResult> PublicSearch(PublicSearchInputDto searchInputDto, CancellationToken cancellationToken = default)
+    {
+        ViewBag.BaseFolderPath = _stepPicturesSettings.FolderName;
+
+        ViewBag.PublicSearchInputDto = searchInputDto;
+
+        using var _ = _multiUserFilter.Disable();
+
+        var searchOutput = await _recipeService.PublicSearchAsync(searchInputDto, cancellationToken);
+
+        var pagination = new Pagination(searchInputDto.PageSize, searchInputDto.CurrentPageIndex, searchOutput.FilteredCount);
+        ViewBag.Pagination = pagination;
+
+        return View(searchOutput.Recipes);
+    }
+
 
     [AllowAnonymous]
     public async Task<IActionResult> Detail(Guid recipeId, CancellationToken cancellationToken = default)

@@ -27,4 +27,6 @@ public interface IRecipeService
     Task UpdateStepAsync(UpdateStepInputDto inputDto, List<FileInputDto> pictureFiles, string webRootPath, CancellationToken cancellationToken);
     Task<JqueryDataTableResult> EditorSearchAsync(EditorSearchInputDto inputDto, JqueryDataTableParam jqueryDataTableParam, CancellationToken cancellationToken);
     Task<List<RecipeOutputDto>> GetRandomRecipies(CancellationToken cancellationToken);
+
+    Task<PublicSearchOutputDto> PublicSearchAsync(PublicSearchInputDto inputDto, CancellationToken cancellationToken);
 }

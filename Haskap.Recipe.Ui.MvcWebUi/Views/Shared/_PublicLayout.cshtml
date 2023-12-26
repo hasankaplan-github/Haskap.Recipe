@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
 
     <!-- Core Stylesheet -->
-    <link rel="stylesheet" href="~/lib/public/delicious/style.css">
+    <link rel="stylesheet" href="~/lib/public/delicious/style.css" asp-append-version="true">
 
     @await RenderSectionAsync("Styles", required: false)
     
@@ -44,29 +44,21 @@
 
     <!-- Search Wrapper -->
     <div class="search-wrapper">
-        <!-- Close Btn -->
-        <div class="close-btn"><i class="fa fa-times" aria-hidden="true"></i></div>
+        <form asp-action="PublicSearch" method="post">
+            <!-- Close Btn -->
+            <div class="close-btn"><i class="fa fa-times" aria-hidden="true"></i></div>
 
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <form action="#" method="post">
-                        <input type="search" name="search" placeholder="Type any keywords...">
-                        <button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
-                    </form>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <input type="search" name="searchName" placeholder="Tarif ismiyle arayabilirsiniz...">
+                        <input type="search" name="searchIngredients" placeholder="Virgülle ayrılmış olarak tarif malzemelerinde arayabilirsiniz...">
+                    </div>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-12">
-                    <form action="#" method="post">
-                        <input type="search" name="search" placeholder="Type any keywords...">
-                        <button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
+            <button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+        </form>
     </div>
 
 
@@ -131,7 +123,7 @@
                             <!-- Nav Start -->
                             <div class="classynav">
                                 <ul>
-                                    <li class="active"><a asp-action="Index">Ana Sayfa</a></li>
+                                    <li @* class="active" *@><a asp-action="Index">Ana Sayfa</a></li>
                                     <li><a href="about.html">Hakkında</a></li>
                                     <li><a href="contact.html">İletişim</a></li>
                                     <li><a asp-action="Login" asp-controller="Account">Admin Panel</a></li>
@@ -271,6 +263,7 @@
     <script src="~/lib/public/delicious/js/plugins/plugins.js"></script>
     <!-- Active js -->
     <script src="~/lib/public/delicious/js/active.js"></script>
+
     <script src="~/lib/sweetalert/dist/sweetalert2.all.min.js"></script>
     
     <script>
