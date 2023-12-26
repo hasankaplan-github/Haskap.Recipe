@@ -50,7 +50,7 @@ public class RecipeController : Controller
     
 
     [AllowAnonymous]
-    public async Task<IActionResult> PublicSearch(PublicSearchInputDto searchInputDto, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Search(SearchInputDto searchInputDto, CancellationToken cancellationToken = default)
     {
         ViewBag.BaseFolderPath = _stepPicturesSettings.FolderName;
 

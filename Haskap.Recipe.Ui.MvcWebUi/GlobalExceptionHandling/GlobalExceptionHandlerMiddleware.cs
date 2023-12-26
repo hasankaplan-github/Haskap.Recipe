@@ -89,7 +89,7 @@ public class GlobalExceptionHandlerMiddleware
         static bool IsPublicArea(string? controller, string? action)
         {
             return controller == "Recipe" &&
-                  (action == "Index" || action == "Detail" || action == "PublicSearch");
+                  (action == nameof(Controllers.RecipeController.Index) || action == nameof(Controllers.RecipeController.Detail) || action == nameof(Controllers.RecipeController.Search));
         }
     }
 }

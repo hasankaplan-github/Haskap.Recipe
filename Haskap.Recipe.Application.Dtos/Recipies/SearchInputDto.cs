@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Haskap.Recipe.Application.Dtos.Recipies;
-public class PublicSearchInputDto
+public class SearchInputDto
 {
     public string SearchName { get; set; } 
     public string SearchIngredients {  get; set; }

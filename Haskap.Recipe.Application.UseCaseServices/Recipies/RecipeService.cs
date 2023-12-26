@@ -483,7 +483,7 @@ public class RecipeService : IRecipeService
         return output;
     }
 
-    public async Task<PublicSearchOutputDto> PublicSearchAsync(PublicSearchInputDto inputDto, CancellationToken cancellationToken)
+    public async Task<SearchOutputDto> PublicSearchAsync(SearchInputDto inputDto, CancellationToken cancellationToken)
     {
         var searchQuery = _recipeDbContext.Recipe
             .Include(x => x.Ingredients)
@@ -521,7 +521,7 @@ public class RecipeService : IRecipeService
             .OrderBy(x => x.Id)
             .Skip((inputDto.CurrentPageIndex - 1) * inputDto.PageSize)
             .Take(inputDto.PageSize)
-            .Select(x => new PublicSearchRecipeOutputDto
+            .Select(x => new SearchRecipeOutputDto
             {
                 RecipeCreatedOn = x.CreatedOn,
                 RecipeId = x.Id,
@@ -535,7 +535,7 @@ public class RecipeService : IRecipeService
             })
             .ToListAsync();
 
-        var searchOutput = new PublicSearchOutputDto
+        var searchOutput = new SearchOutputDto
         {
             Recipes = searchRecipeOutput,
             FilteredCount = filteredCount

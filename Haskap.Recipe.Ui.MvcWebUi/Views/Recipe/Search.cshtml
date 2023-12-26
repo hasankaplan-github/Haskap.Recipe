@@ -4,13 +4,27 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-@model List<PublicSearchRecipeOutputDto>
+@model List<SearchRecipeOutputDto>
 
 @{
     Layout = "_PublicLayout";
 
     Pagination pagination = ViewBag.Pagination;
 }
+
+<!-- ##### Breadcumb Area Start ##### -->
+<div class="breadcumb-area bg-img bg-overlay" style="background-image: url(/lib/public/delicious/img/bg-img/breadcumb2.jpg);">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <div class="breadcumb-text text-center">
+                    <h2>Arama Sonucu</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ##### Breadcumb Area End ##### -->
 
 
 <!-- ##### Small Receipe Area Start ##### -->
@@ -60,7 +74,7 @@
                     @if (pagination.HasPreviousPage)
                     {
                         <li class="page-item">
-                            <form asp-action="PublicSearch" method="post">
+                            <form asp-action="Search" method="post">
                                 <input type="hidden" name="searchName" value="@ViewBag.PublicSearchInputDto.SearchName" />
                                 <input type="hidden" name="searchIngredients" value="@ViewBag.PublicSearchInputDto.SearchIngredients" />
                                 <input type="hidden" name="currentPageIndex" value="@(pagination.CurrentPageIndex - 1)" />
@@ -78,7 +92,7 @@
                     @for (int i = firstPageIndex; i <= lastPageIndex; i++)
                     {
                         <li class="page-item @(i == pagination.CurrentPageIndex ? "active" : "")">
-                            <form asp-action="PublicSearch" method="post">
+                            <form asp-action="Search" method="post">
                                 <input type="hidden" name="searchName" value="@ViewBag.PublicSearchInputDto.SearchName" />
                                 <input type="hidden" name="searchIngredients" value="@ViewBag.PublicSearchInputDto.SearchIngredients" />
                                 <input type="hidden" name="currentPageIndex" value="@i" />
@@ -90,7 +104,7 @@
                     @if (pagination.HasNextPage)
                     {
                         <li class="page-item">
-                            <form asp-action="PublicSearch" method="post">
+                            <form asp-action="Search" method="post">
                                 <input type="hidden" name="searchName" value="@ViewBag.PublicSearchInputDto.SearchName" />
                                 <input type="hidden" name="searchIngredients" value="@ViewBag.PublicSearchInputDto.SearchIngredients" />
                                 <input type="hidden" name="currentPageIndex" value="@(pagination.CurrentPageIndex + 1)" />

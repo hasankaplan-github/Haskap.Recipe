@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Haskap.Recipe.Application.Dtos.Recipies;
-public class PublicSearchOutputDto
+public class SearchOutputDto
 {
-    public List<PublicSearchRecipeOutputDto> Recipes { get; set; }
+    public List<SearchRecipeOutputDto> Recipes { get; set; }
     public int FilteredCount { get; set; }
 }

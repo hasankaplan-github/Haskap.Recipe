@@ -28,5 +28,5 @@ public interface IRecipeService
     Task<JqueryDataTableResult> EditorSearchAsync(EditorSearchInputDto inputDto, JqueryDataTableParam jqueryDataTableParam, CancellationToken cancellationToken);
     Task<List<RecipeOutputDto>> GetRandomRecipies(CancellationToken cancellationToken);
 
-    Task<PublicSearchOutputDto> PublicSearchAsync(PublicSearchInputDto inputDto, CancellationToken cancellationToken);
+    Task<SearchOutputDto> PublicSearchAsync(SearchInputDto inputDto, CancellationToken cancellationToken);
 }

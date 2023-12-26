@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Haskap.Recipe.Application.Dtos.Recipies;
-public class PublicSearchRecipeOutputDto
+public class SearchRecipeOutputDto
 {
     public Guid RecipeId { get; set; }
     public string RecipeName { get; set; }
