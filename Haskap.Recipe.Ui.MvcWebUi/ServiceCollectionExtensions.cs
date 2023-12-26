@@ -13,7 +13,7 @@ using Haskap.Recipe.Application.UseCaseServices.ViewLevelExceptions;
 using Haskap.Recipe.Domain.UserAggregate;
 using Haskap.Recipe.Application.UseCaseServices.Roles;
 using Haskap.Recipe.Application.UseCaseServices.Categories;
-using Haskap.Recipe.Application.UseCaseServices.Recipies;
+using Haskap.Recipe.Application.UseCaseServices.Recipes;
 using Haskap.Recipe.Application.UseCaseServices.Units;
 using Haskap.Recipe.Application.UseCaseServices.IngredientGroups;
 using Haskap.Recipe.Domain.Providers;

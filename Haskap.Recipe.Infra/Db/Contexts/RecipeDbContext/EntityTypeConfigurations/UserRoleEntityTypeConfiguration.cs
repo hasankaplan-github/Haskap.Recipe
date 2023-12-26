@@ -16,11 +16,11 @@ public class UserRoleEntityTypeConfiguration : BaseEntityTypeConfiguration<UserR
     {
         base.Configure(builder);
 
-        //builder.HasOne<User>()
-        //    .WithMany(x => x.Roles)
-        //    .HasForeignKey(x => x.UserId)
-        //    .IsRequired()
-        //    .OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne<User>()
+            .WithMany(x => x.Roles)
+            .HasForeignKey(x => x.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne<Role>()
             .WithMany()

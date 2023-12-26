@@ -27,6 +27,8 @@ public class Recipe : AggregateRoot, IAuditable, ISoftDeletable, IIsDraft, IHasM
     private List<Step> _steps = new();
     public IReadOnlyList<Step> Steps => _steps.AsReadOnly();
     public Common.File Picture { get; private set; }
+    public Slug Slug { get; private set; }
+
 
 
     public Guid? CreatedUserId { get; set; }
@@ -61,6 +63,7 @@ public class Recipe : AggregateRoot, IAuditable, ISoftDeletable, IIsDraft, IHasM
         Guard.Against.InvalidInput(name, nameof(name), x => x.Length <= RecipeConsts.MaxNameLength);
 
         Name = name;
+        Slug = RecipeAggregate.Slug.Generate(name, 20);
     }
 
     public void SetDescription(string? description)

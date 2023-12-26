@@ -146,4 +146,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Recipe}/{action=Index}/{id?}");
 
+app.MapControllerRoute(
+    name: "public_recipe_detail",
+    pattern: "{controller=Recipe}/{action=Detail}/{slug}");
+
 app.Run();

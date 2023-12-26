@@ -37,5 +37,10 @@ public class RecipeEntityTypeConfiguration : BaseEntityTypeConfiguration<Domain.
         {
             x.Ignore(y => y.Id);
         });
+
+        builder.OwnsOne(x => x.Slug, x =>
+        {
+            x.HasIndex(y => y.Value).IsUnique();
+        });
     }
 }

@@ -481,7 +481,34 @@ namespace Haskap.Recipe.Infra.Db.Contexts.RecipeDbContext.Migrations
                                 .HasConstraintName("fk_recipe_recipe_id");
                         });
 
+                    b.OwnsOne("Haskap.Recipe.Domain.RecipeAggregate.Slug", "Slug", b1 =>
+                        {
+                            b1.Property<Guid>("RecipeId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("slug_value");
+
+                            b1.HasKey("RecipeId");
+
+                            b1.HasIndex("Value")
+                                .IsUnique()
+                                .HasDatabaseName("ix_recipe_slug_value");
+
+                            b1.ToTable("recipe");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RecipeId")
+                                .HasConstraintName("fk_recipe_recipe_id");
+                        });
+
                     b.Navigation("Picture")
+                        .IsRequired();
+
+                    b.Navigation("Slug")
                         .IsRequired();
                 });
 

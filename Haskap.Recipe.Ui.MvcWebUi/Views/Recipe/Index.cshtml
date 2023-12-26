@@ -1,4 +1,4 @@
-﻿@using Haskap.Recipe.Application.Dtos.Recipies;
+﻿@using Haskap.Recipe.Application.Dtos.Recipes;
 
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -24,7 +24,7 @@
                         <div class="top-cta-content">
                             <h3>@Html.Raw(recipe.Name)</h3>
                             <h6>Basit &amp; Lezzetli</h6>
-                            <a asp-action="Detail" asp-route-recipeId="@recipe.Id" class="btn delicious-btn">Tarife Git</a>
+                            <a asp-action="Detail" asp-route-slug="@recipe.Slug.Value" class="btn delicious-btn">Tarife Git</a>
                         </div>
                     </div>
                 </div>
@@ -45,119 +45,27 @@
         </div>
 
         <div class="row">
-            <!-- Single Best Receipe Area -->
-            <div class="col-12 col-sm-6 col-lg-4">
-                <div class="single-best-receipe-area mb-30">
-                    <img src="~/lib/public/delicious/img/bg-img/r1.jpg" alt="">
-                    <div class="receipe-content">
-                        <a href="receipe-post.html">
-                            <h5>Sushi Easy Receipy</h5>
-                        </a>
-                        <div class="ratings">
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star-o" aria-hidden="true"></i>
+            @foreach (var recipe in Model.Skip(2))
+            {
+                <!-- Single Best Receipe Area -->
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="single-best-receipe-area mb-30">
+                        <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{recipe.Id}/{recipe.Picture.NewName}{recipe.Picture.Extension}")" alt="">
+                        <div class="receipe-content">
+                            <a asp-action="Detail" asp-route-slug="@recipe.Slug.Value">
+                                <h5>@recipe.Name</h5>
+                            </a>
+                            @* <div class="ratings">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                            </div> *@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Single Best Receipe Area -->
-            <div class="col-12 col-sm-6 col-lg-4">
-                <div class="single-best-receipe-area mb-30">
-                    <img src="~/lib/public/delicious/img/bg-img/r2.jpg" alt="">
-                    <div class="receipe-content">
-                        <a href="receipe-post.html">
-                            <h5>Homemade Burger</h5>
-                        </a>
-                        <div class="ratings">
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star-o" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Single Best Receipe Area -->
-            <div class="col-12 col-sm-6 col-lg-4">
-                <div class="single-best-receipe-area mb-30">
-                    <img src="~/lib/public/delicious/img/bg-img/r3.jpg" alt="">
-                    <div class="receipe-content">
-                        <a href="receipe-post.html">
-                            <h5>Vegan Smoothie</h5>
-                        </a>
-                        <div class="ratings">
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star-o" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Single Best Receipe Area -->
-            <div class="col-12 col-sm-6 col-lg-4">
-                <div class="single-best-receipe-area mb-30">
-                    <img src="~/lib/public/delicious/img/bg-img/r4.jpg" alt="">
-                    <div class="receipe-content">
-                        <a href="receipe-post.html">
-                            <h5>Calabasa soup</h5>
-                        </a>
-                        <div class="ratings">
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star-o" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Single Best Receipe Area -->
-            <div class="col-12 col-sm-6 col-lg-4">
-                <div class="single-best-receipe-area mb-30">
-                    <img src="~/lib/public/delicious/img/bg-img/r5.jpg" alt="">
-                    <div class="receipe-content">
-                        <a href="receipe-post.html">
-                            <h5>Homemade Breakfast</h5>
-                        </a>
-                        <div class="ratings">
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star-o" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Single Best Receipe Area -->
-            <div class="col-12 col-sm-6 col-lg-4">
-                <div class="single-best-receipe-area mb-30">
-                    <img src="~/lib/public/delicious/img/bg-img/r6.jpg" alt="">
-                    <div class="receipe-content">
-                        <a href="receipe-post.html">
-                            <h5>Healthy Fruit Desert</h5>
-                        </a>
-                        <div class="ratings">
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star-o" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </section>

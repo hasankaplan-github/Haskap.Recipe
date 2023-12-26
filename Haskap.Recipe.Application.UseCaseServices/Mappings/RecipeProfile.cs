@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Haskap.Recipe.Application.Dtos.IngredientGroups;
-using Haskap.Recipe.Application.Dtos.Recipies;
+using Haskap.Recipe.Application.Dtos.Recipes;
 using Haskap.Recipe.Application.Dtos.Units;
 using Haskap.Recipe.Domain.IngredientGroupAggregate;
 using Haskap.Recipe.Domain.RecipeAggregate;
@@ -49,6 +49,14 @@ public class AmountProfile : Profile
     public AmountProfile()
     {
         CreateMap<Amount, AmountOutputDto>();
+    }
+}
+
+public class SlugProfile : Profile
+{
+    public SlugProfile()
+    {
+        CreateMap<Slug, SlugOutputDto>();
     }
 }
 

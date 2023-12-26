@@ -1,6 +1,6 @@
 ﻿using Haskap.Recipe.Application.Dtos.Common;
 using Haskap.Recipe.Application.Dtos.Common.DataTable;
-using Haskap.Recipe.Application.Dtos.Recipies;
+using Haskap.Recipe.Application.Dtos.Recipes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +12,7 @@ public interface IRecipeService
 {
     Task<CreateAsDraftOutputDto> CreateAsDraftAsync(CreateAsDraftInputDto inputDto, FileInputDto pictureFile, string webRootPath, CancellationToken cancellationToken);
     Task<RecipeOutputDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<RecipeOutputDto> GetBySlugAsync(string slug, CancellationToken cancellationToken);
     Task ActivateAsync(Guid id, CancellationToken cancellationToken);
     Task MarkAsDraftAsync(Guid id, CancellationToken cancellationToken);
     Task UpdateAsync(Guid id, UpdateInputDto inputDto, FileInputDto? pictureFile, string webRootPath, CancellationToken cancellationToken);

@@ -1,4 +1,4 @@
-﻿@using Haskap.Recipe.Application.Dtos.Recipies;
+﻿@using Haskap.Recipe.Application.Dtos.Recipes;
 
 
 @*
@@ -81,6 +81,13 @@
                             <h4>@step.StepOrder .</h4>
                             <p>@step.Instruction</p>
                         </div>
+
+                        foreach (var stepPicture in step.Pictures)
+                        {
+                            <div style="top: -50px;" class="single-best-receipe-area">
+                                <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{Model.Id}/{step.Id}/{stepPicture.NewName}{stepPicture.Extension}")" alt="">
+                            </div>
+                        }
                     }
                 </div>
 

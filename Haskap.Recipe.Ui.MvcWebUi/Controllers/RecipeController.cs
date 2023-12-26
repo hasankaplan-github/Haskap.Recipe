@@ -2,7 +2,7 @@
 using Haskap.Recipe.Application.Dtos.Accounts;
 using Haskap.Recipe.Application.Dtos.Common;
 using Haskap.Recipe.Application.Dtos.Common.DataTable;
-using Haskap.Recipe.Application.Dtos.Recipies;
+using Haskap.Recipe.Application.Dtos.Recipes;
 using Haskap.Recipe.Domain.Common;
 using Haskap.Recipe.Domain.Providers;
 using Haskap.Recipe.Domain.RecipeAggregate;
@@ -68,13 +68,14 @@ public class RecipeController : Controller
 
 
     [AllowAnonymous]
-    public async Task<IActionResult> Detail(Guid recipeId, CancellationToken cancellationToken = default)
+    [HttpGet("{slug}")]
+    public async Task<IActionResult> Detail(string slug, CancellationToken cancellationToken = default)
     {
         ViewBag.BaseFolderPath = _stepPicturesSettings.FolderName;
 
         using var _ = _multiUserFilter.Disable();
 
-        var recipe = await _recipeService.GetByIdAsync(recipeId, cancellationToken);
+        var recipe = await _recipeService.GetBySlugAsync(slug, cancellationToken);
 
         return View(recipe);
     }
@@ -172,7 +173,7 @@ public class RecipeController : Controller
     }
 
     [HttpPut]
-    public async Task Update(Guid id, Application.Dtos.Recipies.UpdateInputDto inputDto, IFormFile formFile, CancellationToken cancellationToken = default)
+    public async Task Update(Guid id, Application.Dtos.Recipes.UpdateInputDto inputDto, IFormFile formFile, CancellationToken cancellationToken = default)
     {
         using var _ = _isDraftFilter.Disable();
 

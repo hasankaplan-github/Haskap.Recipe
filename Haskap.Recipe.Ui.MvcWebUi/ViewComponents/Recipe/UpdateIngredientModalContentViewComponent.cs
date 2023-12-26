@@ -1,6 +1,6 @@
 ﻿using Haskap.Recipe.Application.Contracts;
 using Haskap.Recipe.Application.Dtos.Accounts;
-using Haskap.Recipe.Application.Dtos.Recipies;
+using Haskap.Recipe.Application.Dtos.Recipes;
 using Haskap.Recipe.Application.UseCaseServices.Accounts;
 using Haskap.Recipe.Application.UseCaseServices.Units;
 using Haskap.Recipe.Domain.Providers;
