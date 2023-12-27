@@ -533,27 +533,29 @@ public class RecipeService : IRecipeService
 
         var filteredCount = await searchQuery.CountAsync();
 
-        var searchRecipeOutput = await searchQuery
+        var recipes = await searchQuery
             .OrderBy(x => x.Id)
             .Skip((inputDto.CurrentPageIndex - 1) * inputDto.PageSize)
             .Take(inputDto.PageSize)
-            .Select(x => new SearchRecipeOutputDto
-            {
-                RecipeCreatedOn = x.CreatedOn,
-                RecipeId = x.Id,
-                RecipeName = x.Name,
-                RecipePicture = new FileOutputDto
-                {
-                    Extension = x.Picture.Extension,
-                    NewName = x.Picture.NewName,
-                    OriginalName = x.Picture.OriginalName
-                }
-            })
+            //.Select(x => new SearchRecipeOutputDto
+            //{
+            //    RecipeCreatedOn = x.CreatedOn,
+            //    RecipeId = x.Id,
+            //    RecipeName = x.Name,
+            //    RecipePicture = new FileOutputDto
+            //    {
+            //        Extension = x.Picture.Extension,
+            //        NewName = x.Picture.NewName,
+            //        OriginalName = x.Picture.OriginalName
+            //    }
+            //})
             .ToListAsync();
+
+        var recipesOutput = _mapper.Map<List<RecipeOutputDto>>(recipes);
 
         var searchOutput = new SearchOutputDto
         {
-            Recipes = searchRecipeOutput,
+            Recipes = recipesOutput,
             FilteredCount = filteredCount
         };
 

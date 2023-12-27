@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 namespace Haskap.Recipe.Application.Dtos.Recipes;
 public class SearchOutputDto
 {
-    public List<SearchRecipeOutputDto> Recipes { get; set; }
+    public List<RecipeOutputDto> Recipes { get; set; }
     public int FilteredCount { get; set; }
 }

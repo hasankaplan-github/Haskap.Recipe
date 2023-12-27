@@ -4,7 +4,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-@model List<SearchRecipeOutputDto>
+@model List<RecipeOutputDto>
 
 @{
     Layout = "_PublicLayout";
@@ -32,29 +32,36 @@
     <div class="container">
         <div class="row">
 
-            @foreach (var searchOutput in Model)
+            @foreach (var recipe in Model)
             {
                 <!-- Small Receipe Area -->
                 <div class="col-12 col-sm-6 col-lg-4">
                     <div class="single-small-receipe-area d-flex">
                         <!-- Receipe Thumb -->
                         <div class="receipe-thumb">
-                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{searchOutput.RecipeId}/{searchOutput.RecipePicture.NewName}{searchOutput.RecipePicture.Extension}")" alt="">
+                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{recipe.Id}/{recipe.Picture.NewName}{recipe.Picture.Extension}")" alt="">
                         </div>
                         <!-- Receipe Content -->
                         <div class="receipe-content">
-                            <span>@searchOutput.RecipeCreatedOn.Value.ToLongDateString()</span>
-                            <a asp-action="Detail" asp-route-recipeId="@searchOutput.RecipeId">
-                                <h5>@searchOutput.RecipeName</h5>
+                            <span>@recipe.CreatedOn.Value.ToLongDateString()</span>
+                            <a asp-action="Detail" asp-route-recipeId="@recipe.Id">
+                                <h5>@recipe.Name</h5>
                             </a>
-                            @* <div class="ratings">
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        </div>
-                        <p>2 Comments</p> *@
+                            <div class="ratings">
+                                @{
+                                    int i = 0;
+                                }
+                                @for (i = 0; i < recipe.Rating; i++)
+                                {
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                }
+
+                                @for (; i < 5; i++)
+                                {
+                                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                                }
+                            </div>
+                            @* <p>2 Comments</p> *@
                         </div>
                     </div>
                 </div>
