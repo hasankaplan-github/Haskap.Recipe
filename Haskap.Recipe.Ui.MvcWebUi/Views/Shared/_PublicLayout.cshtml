@@ -288,6 +288,20 @@
             }
         });
 
+        $(document).ajaxStart(function () {
+            $("#preloader").fadeIn();
+        });
+
+        $(document).ajaxStop(function () {
+            $('#preloader').fadeOut('slow', function () {
+                //$(this).remove();
+            });
+        });
+
+        $(this).submit(function (e) {
+            $("#preloader").fadeIn();
+        });
+
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
