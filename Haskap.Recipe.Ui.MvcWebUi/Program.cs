@@ -71,6 +71,7 @@ builder.Services.AddCustomAuthorization();
 
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblies(typeof(AccountService).Assembly/*, typeof(CheckForDuplicateCreditCardTypeNameEventHandler).Assembly*/));
 builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
+builder.Services.AddScoped<RatingValueResolver>();
 
 
 //builder.Services.AddHttpClient<DugunSalonuHttpClient>(httpClient =>

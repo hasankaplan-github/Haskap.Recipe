@@ -5,6 +5,7 @@ using Haskap.Recipe.Application.Dtos.Recipes;
 using Haskap.Recipe.Application.Dtos.Units;
 using Haskap.Recipe.Domain;
 using Haskap.Recipe.Domain.IngredientGroupAggregate;
+using Haskap.Recipe.Domain.Providers;
 using Haskap.Recipe.Domain.RecipeAggregate;
 using Haskap.Recipe.Domain.UnitAggregate;
 using Microsoft.EntityFrameworkCore;
@@ -29,15 +30,19 @@ public class RatingValueResolver : IValueResolver<Domain.RecipeAggregate.Recipe,
 {
     private readonly long _maxViewCount;
 
-    public RatingValueResolver(IRecipeDbContext recipeDbContext)
+    public RatingValueResolver(
+        IRecipeDbContext recipeDbContext,
+        IMultiUserGlobalQueryFilterProvider multiUserFilter)
     {
+        using var _ = multiUserFilter.Disable();
+
         _maxViewCount = recipeDbContext.Recipe
             .Max(x => x.ViewCount);
     }
 
     public short Resolve(Domain.RecipeAggregate.Recipe source, RecipeOutputDto destination, short destMember, ResolutionContext context)
     {
-        var rating = (short)Math.Round((decimal)source.ViewCount * 5 / _maxViewCount, MidpointRounding.AwayFromZero);
+        var rating = _maxViewCount == 0 ? (short)0 : (short)Math.Round((decimal)source.ViewCount * 5 / _maxViewCount, MidpointRounding.AwayFromZero);
 
         return rating;
     }

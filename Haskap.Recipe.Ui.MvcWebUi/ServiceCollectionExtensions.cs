@@ -39,8 +39,6 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IRecipeService, RecipeService>();
         services.AddTransient<IUnitService, UnitService>();
         services.AddTransient<IIngredientGroupService, IngredientGroupService>();
-
-        services.AddScoped<RatingValueResolver>();
     }
 
     public static void AddProviders(this IServiceCollection services)
