@@ -24,4 +24,6 @@ public class RecipeOutputDto
     public DateTime? CreatedOn { get; set; }
     public Guid? ModifiedUserId { get; set; }
     public DateTime? ModifiedOn { get; set; }
+    public Guid OwnerUserId { get; set; }
+    public string OwnerUserUsername { get; set; }
 }

@@ -553,6 +553,30 @@ public class RecipeService : IRecipeService
 
         var recipesOutput = _mapper.Map<List<RecipeOutputDto>>(recipes);
 
+        //recipesOutput = (from recipeOutput in recipesOutput
+        //                 join user in _recipeDbContext.User on recipeOutput.OwnerUserId equals user.Id
+        //                 select new RecipeOutputDto
+        //                 {
+        //                     CreatedOn = recipeOutput.CreatedOn,
+        //                     Categories = recipeOutput.Categories,
+        //                     CreatedUserId = recipeOutput.CreatedUserId,
+        //                     Description = recipeOutput.Description,
+        //                     Id = recipeOutput.Id,
+        //                     Ingredients = recipeOutput.Ingredients,
+        //                     IsDraft = recipeOutput.IsDraft,
+        //                     ModifiedOn = recipeOutput.ModifiedOn,
+        //                     ModifiedUserId = recipeOutput.ModifiedUserId,
+        //                     Name = recipeOutput.Name,
+        //                     OwnerUserId = recipeOutput.OwnerUserId,
+        //                     OwnerUserUsername = user.Credentials.UserName,
+        //                     Picture = recipeOutput.Picture,
+        //                     Rating = recipeOutput.Rating,
+        //                     Slug = recipeOutput.Slug,
+        //                     Steps = recipeOutput.Steps,
+        //                     ViewCount = recipeOutput.ViewCount
+        //                 })
+        //                 .ToList();
+
         var searchOutput = new SearchOutputDto
         {
             Recipes = recipesOutput,
@@ -579,6 +603,13 @@ public class RecipeService : IRecipeService
         await _recipeDbContext.SaveChangesAsync(cancellationToken);
 
         var output = _mapper.Map<RecipeOutputDto>(recipe);
+
+        var ownerUsername = await _recipeDbContext.User
+            .Where(x => x.Id == recipe.OwnerUserId)
+            .Select(x => x.Credentials.UserName)
+            .FirstAsync(cancellationToken);
+
+        output.OwnerUserUsername = ownerUsername;
 
         return output;
     }

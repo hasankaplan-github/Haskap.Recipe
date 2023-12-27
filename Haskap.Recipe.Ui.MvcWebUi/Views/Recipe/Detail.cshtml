@@ -47,12 +47,12 @@
             <div class="row">
                 <div class="col-12 col-md-8">
                     <div class="receipe-headline my-5">
-                        <span>@Model.CreatedOn.Value.ToLongDateString()</span>
+                        <span>@Model.CreatedOn?.ToLongDateString()</span>
                         <h2>@Model.Name</h2>
                         <div class="receipe-duration">
                             <h6>@Model.Description</h6>
-                            @* <h6>Cook: 30 mins</h6>
-                            <h6>Yields: 8 Servings</h6> *@
+                            <h6>Yazar: @Model.OwnerUserUsername</h6>
+                            @* <h6>Yields: 8 Servings</h6> *@
                         </div>
                     </div>
                 </div>
