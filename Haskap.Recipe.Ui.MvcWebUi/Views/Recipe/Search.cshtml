@@ -44,7 +44,7 @@
                         <!-- Receipe Content -->
                         <div class="receipe-content">
                             <span>@recipe.CreatedOn.Value.ToLongDateString()</span>
-                            <a asp-action="Detail" asp-route-recipeId="@recipe.Id">
+                            <a asp-action="Detail" asp-route-slug="@recipe.Slug.Value">
                                 <h5>@recipe.Name</h5>
                             </a>
                             <div class="ratings">
