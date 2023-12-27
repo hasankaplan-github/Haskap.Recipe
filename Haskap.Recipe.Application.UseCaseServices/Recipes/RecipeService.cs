@@ -485,11 +485,11 @@ public class RecipeService : IRecipeService
         };
     }
 
-    public async Task<List<RecipeOutputDto>> GetRandomRecipies(CancellationToken cancellationToken)
+    public async Task<List<RecipeOutputDto>> GetRandomRecipiesAsync(int count, CancellationToken cancellationToken)
     {
         var randomRecipies = await _recipeDbContext.Recipe
             .OrderBy(r => Guid.NewGuid())
-            .Take(8)
+            .Take(count)
             .ToListAsync(cancellationToken);
 
         //something.OrderBy(r => EF.Functions.Random()).Take(5)
@@ -499,7 +499,7 @@ public class RecipeService : IRecipeService
         return output;
     }
 
-    public async Task<SearchOutputDto> PublicSearchAsync(SearchInputDto inputDto, CancellationToken cancellationToken)
+    public async Task<SearchOutputDto> SearchAsync(SearchInputDto inputDto, CancellationToken cancellationToken)
     {
         var searchQuery = _recipeDbContext.Recipe
             .Include(x => x.Ingredients)
@@ -558,5 +558,38 @@ public class RecipeService : IRecipeService
         };
 
         return searchOutput;
+    }
+
+    public async Task<RecipeOutputDto> GetRecipeForDetailWiewAsync(string slug, CancellationToken cancellationToken)
+    {
+        var recipe = await _recipeDbContext.Recipe
+            .Include(x => x.Categories)
+            .Include(x => x.Ingredients)
+            .ThenInclude(x => x.IngredientGroup)
+            .Include(x => x.Ingredients)
+            .ThenInclude(x => x.Amount.Unit)
+            .Include(x => x.Steps)
+            .Where(x => x.Slug.Value == slug)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        recipe.IncrementViewCount();
+
+        await _recipeDbContext.SaveChangesAsync(cancellationToken);
+
+        var output = _mapper.Map<RecipeOutputDto>(recipe);
+
+        return output;
+    }
+
+    public async Task<List<RecipeOutputDto>> GetMostViewedRecipiesAsync(int count, CancellationToken cancellationToken)
+    {
+        var mostViewedRecipes = await _recipeDbContext.Recipe
+            .OrderByDescending(r => r.ViewCount)
+            .Take(count)
+            .ToListAsync(cancellationToken);
+
+        var output = _mapper.Map<List<RecipeOutputDto>>(mostViewedRecipes);
+
+        return output;
     }
 }

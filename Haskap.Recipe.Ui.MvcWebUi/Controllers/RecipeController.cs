@@ -58,7 +58,7 @@ public class RecipeController : Controller
 
         using var _ = _multiUserFilter.Disable();
 
-        var searchOutput = await _recipeService.PublicSearchAsync(searchInputDto, cancellationToken);
+        var searchOutput = await _recipeService.SearchAsync(searchInputDto, cancellationToken);
 
         var pagination = new Pagination(searchInputDto.PageSize, searchInputDto.CurrentPageIndex, searchOutput.FilteredCount);
         ViewBag.Pagination = pagination;
@@ -75,7 +75,7 @@ public class RecipeController : Controller
 
         using var _ = _multiUserFilter.Disable();
 
-        var recipe = await _recipeService.GetBySlugAsync(slug, cancellationToken);
+        var recipe = await _recipeService.GetRecipeForDetailWiewAsync(slug, cancellationToken);
 
         return View(recipe);
     }
@@ -87,7 +87,9 @@ public class RecipeController : Controller
 
         using var _ = _multiUserFilter.Disable();
 
-        var randomRecipies = await _recipeService.GetRandomRecipies(cancellationToken);
+        var randomRecipies = await _recipeService.GetRandomRecipiesAsync(2, cancellationToken);
+
+        ViewBag.MostViewedRecipes = await _recipeService.GetMostViewedRecipiesAsync(6, cancellationToken);
 
         return View(randomRecipies);
     }

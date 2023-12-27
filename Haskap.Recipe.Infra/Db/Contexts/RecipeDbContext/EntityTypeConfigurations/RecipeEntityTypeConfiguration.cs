@@ -42,5 +42,10 @@ public class RecipeEntityTypeConfiguration : BaseEntityTypeConfiguration<Domain.
         {
             x.HasIndex(y => y.Value).IsUnique();
         });
+
+        builder.Property(x => x.ViewCount)
+            .HasDefaultValue(0);
+
+        builder.HasIndex(x => x.ViewCount);
     }
 }

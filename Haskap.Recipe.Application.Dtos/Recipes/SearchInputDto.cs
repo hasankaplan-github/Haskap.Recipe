@@ -10,5 +10,5 @@ public class SearchInputDto
     public string SearchName { get; set; } 
     public string SearchIngredients {  get; set; }
     public int CurrentPageIndex { get; set; } = 1;
-    public int PageSize { get; set; } = 1;
+    public int PageSize { get; set; } = 9;
 }

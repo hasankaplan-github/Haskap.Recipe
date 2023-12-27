@@ -28,6 +28,7 @@ public class Recipe : AggregateRoot, IAuditable, ISoftDeletable, IIsDraft, IHasM
     public IReadOnlyList<Step> Steps => _steps.AsReadOnly();
     public Common.File Picture { get; private set; }
     public Slug Slug { get; private set; }
+    public long ViewCount { get; private set; }
 
 
 
@@ -48,6 +49,11 @@ public class Recipe : AggregateRoot, IAuditable, ISoftDeletable, IIsDraft, IHasM
         SetDescription(description);
         IsDraft = isDraft;
         SetPicture(picture);
+    }
+
+    public void IncrementViewCount()
+    {
+        ViewCount++;
     }
 
     public void SetPicture(Common.File picture)

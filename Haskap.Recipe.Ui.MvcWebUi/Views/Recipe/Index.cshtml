@@ -8,13 +8,15 @@
 
 @{
     Layout = "_PublicLayout";
+
+    var mostViewedRecipes = ViewBag.MostViewedRecipes as List<RecipeOutputDto>;
 }
 
 <!-- ##### Top Catagory Area Start ##### -->
 <section class="top-catagory-area section-padding-80-0">
     <div class="container">
         <div class="row">
-            @foreach (var recipe in Model.Take(2))
+            @foreach (var recipe in Model)
             {
                 <!-- Top Catagory Area -->
                 <div class="col-12 col-lg-6">
@@ -39,13 +41,13 @@
         <div class="row">
             <div class="col-12">
                 <div class="section-heading">
-                    @* <h3>The best Receipies</h3> *@
+                    <h3>En çok görüntülenen tarifler</h3>
                 </div>
             </div>
         </div>
 
         <div class="row">
-            @foreach (var recipe in Model.Skip(2))
+            @foreach (var recipe in mostViewedRecipes)
             {
                 <!-- Single Best Receipe Area -->
                 <div class="col-12 col-sm-6 col-lg-4">
