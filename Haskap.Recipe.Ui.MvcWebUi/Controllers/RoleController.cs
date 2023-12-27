@@ -17,7 +17,8 @@ public class RoleController : Controller
     {
         _roleService = roleService;
     }
-
+    
+    [HttpGet("Index")]    
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
         return View();
