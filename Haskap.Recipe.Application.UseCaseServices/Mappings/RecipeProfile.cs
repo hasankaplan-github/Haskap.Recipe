@@ -27,19 +27,19 @@ public class RecipeProfile : Profile
 
 public class RatingValueResolver : IValueResolver<Domain.RecipeAggregate.Recipe, RecipeOutputDto, short>
 {
-    private readonly IRecipeDbContext _recipeDbContext;
+    private readonly long _maxViewCount;
 
     public RatingValueResolver(IRecipeDbContext recipeDbContext)
     {
-        _recipeDbContext = recipeDbContext;
+        _maxViewCount = recipeDbContext.Recipe
+            .Max(x => x.ViewCount);
     }
 
     public short Resolve(Domain.RecipeAggregate.Recipe source, RecipeOutputDto destination, short destMember, ResolutionContext context)
     {
-        var maxViewCount = _recipeDbContext.Recipe
-            .Max(x => x.ViewCount);
+        var rating = (short)Math.Round((decimal)source.ViewCount * 5 / _maxViewCount, MidpointRounding.AwayFromZero);
 
-        return (short)Math.Round((decimal)source.ViewCount * 5 / maxViewCount, MidpointRounding.AwayFromZero);
+        return rating;
     }
 }
 

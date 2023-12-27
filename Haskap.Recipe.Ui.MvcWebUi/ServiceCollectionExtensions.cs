@@ -19,6 +19,7 @@ using Haskap.Recipe.Application.UseCaseServices.IngredientGroups;
 using Haskap.Recipe.Domain.Providers;
 using Haskap.Recipe.Infra.Providers;
 using Haskap.Recipe.Infra.Db.Interceptors;
+using Haskap.Recipe.Application.UseCaseServices.Mappings;
 
 namespace Haskap.Recipe.Ui.MvcWebUi;
 
@@ -38,6 +39,8 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IRecipeService, RecipeService>();
         services.AddTransient<IUnitService, UnitService>();
         services.AddTransient<IIngredientGroupService, IngredientGroupService>();
+
+        services.AddScoped<RatingValueResolver>();
     }
 
     public static void AddProviders(this IServiceCollection services)
