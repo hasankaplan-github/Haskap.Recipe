@@ -17,6 +17,8 @@ public class RecipeOutputDto
     public List<StepOutputDto> Steps { get; set; }
     public FileOutputDto Picture { get; set; }
     public SlugOutputDto Slug { get; set; }
+    public long ViewCount { get; set; }
+    public short Rating { get; set; } = 0;
 
     public Guid? CreatedUserId { get; set; }
     public DateTime? CreatedOn { get; set; }

@@ -485,7 +485,7 @@ public class RecipeService : IRecipeService
         };
     }
 
-    public async Task<List<RecipeOutputDto>> GetRandomRecipiesAsync(int count, CancellationToken cancellationToken)
+    public async Task<List<RecipeOutputDto>> GetRandomRecipesAsync(int count, CancellationToken cancellationToken)
     {
         var randomRecipies = await _recipeDbContext.Recipe
             .OrderBy(r => Guid.NewGuid())

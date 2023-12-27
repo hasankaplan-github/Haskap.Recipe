@@ -27,7 +27,7 @@ public interface IRecipeService
     Task MarkAsDeletedAsync(Guid id, CancellationToken cancellationToken);
     Task UpdateStepAsync(UpdateStepInputDto inputDto, List<FileInputDto> pictureFiles, string webRootPath, CancellationToken cancellationToken);
     Task<JqueryDataTableResult> EditorSearchAsync(EditorSearchInputDto inputDto, JqueryDataTableParam jqueryDataTableParam, CancellationToken cancellationToken);
-    Task<List<RecipeOutputDto>> GetRandomRecipiesAsync(int count, CancellationToken cancellationToken);
+    Task<List<RecipeOutputDto>> GetRandomRecipesAsync(int count, CancellationToken cancellationToken);
     Task<SearchOutputDto> SearchAsync(SearchInputDto inputDto, CancellationToken cancellationToken);
     Task<RecipeOutputDto> GetRecipeForDetailWiewAsync(string slug, CancellationToken cancellationToken);
     Task<List<RecipeOutputDto>> GetMostViewedRecipiesAsync(int count, CancellationToken cancellationToken);

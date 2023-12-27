@@ -87,11 +87,11 @@ public class RecipeController : Controller
 
         using var _ = _multiUserFilter.Disable();
 
-        var randomRecipies = await _recipeService.GetRandomRecipiesAsync(2, cancellationToken);
+        var randomRecipes = await _recipeService.GetRandomRecipesAsync(2, cancellationToken);
 
         ViewBag.MostViewedRecipes = await _recipeService.GetMostViewedRecipiesAsync(6, cancellationToken);
 
-        return View(randomRecipies);
+        return View(randomRecipes);
     }
 
     public async Task<IActionResult> Create(CancellationToken cancellationToken = default)
