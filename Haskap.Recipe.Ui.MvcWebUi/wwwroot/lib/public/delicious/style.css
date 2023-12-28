@@ -693,7 +693,7 @@ textarea:focus {
   z-index: 1; }
     .single-best-receipe-area img {
         border-bottom: 3px solid #40ba37;
-        height: 250px;
+        height: 300px;
         width: 100%;
     }
   .single-best-receipe-area .receipe-content {
