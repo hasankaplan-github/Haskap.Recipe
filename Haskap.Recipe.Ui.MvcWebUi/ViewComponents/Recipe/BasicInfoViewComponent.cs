@@ -58,7 +58,7 @@ public class BasicInfoViewComponent : ViewComponent
 
         using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
 
-        var recipeOutputDto = await _recipeService.GetByIdAsync(recipeId, cancellationToken);
+        var recipeOutputDto = await _recipeService.GetByIdForBasicInfoViewComponentAsync(recipeId, cancellationToken);
 
         return View(recipeOutputDto);
 

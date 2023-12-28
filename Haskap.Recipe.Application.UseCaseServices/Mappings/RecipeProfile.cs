@@ -23,6 +23,13 @@ public class RecipeProfile : Profile
     {
         CreateMap<Recipe.Domain.RecipeAggregate.Recipe, RecipeOutputDto>()
             .ForMember(x => x.Rating, x => x.MapFrom<RatingValueResolver>());
+
+
+        CreateMap<Domain.RecipeAggregate.Recipe, RecipeForIngredientsViewComponentOutputDto>();
+
+        CreateMap<Domain.RecipeAggregate.Recipe, RecipeForStepsViewComponentOutputDto>();
+
+        CreateMap<Domain.RecipeAggregate.Recipe, RecipeForBasicInfoViewComponentOutputDto>();
     }
 }
 

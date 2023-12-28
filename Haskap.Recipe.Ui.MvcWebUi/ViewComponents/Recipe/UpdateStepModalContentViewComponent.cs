@@ -45,7 +45,7 @@ public class UpdateStepModalContentViewComponent : ViewComponent
 
         using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
 
-        var recipe = await _recipeService.GetByIdAsync(recipeId, cancellationToken);
+        var recipe = await _recipeService.GetByIdForStepsViewComponentAsync(recipeId, cancellationToken);
 
         var step = recipe.Steps
             .Where(x => x.Id == stepId)

@@ -625,4 +625,57 @@ public class RecipeService : IRecipeService
 
         return output;
     }
+
+    public async Task<RecipeForToolbarViewComponentOutputDto> GetByIdForToolbarViewComponentAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var recipeOutput = await _recipeDbContext.Recipe
+            .Where(x => x.Id == id)
+            .Select(x => new RecipeForToolbarViewComponentOutputDto
+            {
+                Id = x.Id,
+                IsDraft = x.IsDraft
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return recipeOutput;
+    }
+
+    public async Task<RecipeForIngredientsViewComponentOutputDto> GetByIdForIngredientsViewComponentAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var recipe = await _recipeDbContext.Recipe
+            .Include(x => x.Ingredients)
+            .ThenInclude(x => x.IngredientGroup)
+            .Include(x => x.Ingredients)
+            .ThenInclude(x => x.Amount.Unit)
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var output = _mapper.Map<RecipeForIngredientsViewComponentOutputDto>(recipe);
+
+        return output;
+    }
+
+    public async Task<RecipeForStepsViewComponentOutputDto> GetByIdForStepsViewComponentAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var recipe = await _recipeDbContext.Recipe
+            .Include(x => x.Steps)
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var output = _mapper.Map<RecipeForStepsViewComponentOutputDto>(recipe);
+
+        return output;
+    }
+
+    public async Task<RecipeForBasicInfoViewComponentOutputDto> GetByIdForBasicInfoViewComponentAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var recipe = await _recipeDbContext.Recipe
+            .Include(x => x.Categories)
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var output = _mapper.Map<RecipeForBasicInfoViewComponentOutputDto>(recipe);
+
+        return output;
+    }
 }

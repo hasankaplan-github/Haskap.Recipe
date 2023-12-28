@@ -31,4 +31,8 @@ public interface IRecipeService
     Task<SearchOutputDto> SearchAsync(SearchInputDto inputDto, CancellationToken cancellationToken);
     Task<RecipeOutputDto> GetRecipeForDetailWiewAsync(string slug, CancellationToken cancellationToken);
     Task<List<RecipeOutputDto>> GetMostViewedRecipiesAsync(int count, CancellationToken cancellationToken);
+    Task<RecipeForToolbarViewComponentOutputDto> GetByIdForToolbarViewComponentAsync(Guid id, CancellationToken cancellationToken);
+    Task<RecipeForIngredientsViewComponentOutputDto> GetByIdForIngredientsViewComponentAsync(Guid id, CancellationToken cancellationToken);
+    Task<RecipeForStepsViewComponentOutputDto> GetByIdForStepsViewComponentAsync(Guid id, CancellationToken cancellationToken);
+    Task<RecipeForBasicInfoViewComponentOutputDto> GetByIdForBasicInfoViewComponentAsync(Guid id, CancellationToken cancellationToken);
 }

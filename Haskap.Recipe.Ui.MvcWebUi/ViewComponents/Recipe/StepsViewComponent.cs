@@ -35,6 +35,7 @@ public class StepsViewComponent : ViewComponent
     public async Task<IViewComponentResult> InvokeAsync(Guid recipeId, CancellationToken cancellationToken = default)
     {
         ViewBag.BaseFolderPath = _stepPicturesSettings.FolderName;
+
         using var _ = _isDraftFilter.Disable();
 
         var userId = Guid.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
@@ -43,7 +44,7 @@ public class StepsViewComponent : ViewComponent
 
         using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
 
-        var recipeOutputDto = await _recipeService.GetByIdAsync(recipeId, cancellationToken);
+        var recipeOutputDto = await _recipeService.GetByIdForStepsViewComponentAsync(recipeId, cancellationToken);
 
         return View(recipeOutputDto.Steps);
     }

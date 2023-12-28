@@ -39,7 +39,7 @@ public class ToolbarViewComponent : ViewComponent
 
         using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
 
-        var recipeOutputDto = await _recipeService.GetByIdAsync(recipeId, cancellationToken);
+        var recipeOutputDto = await _recipeService.GetByIdForToolbarViewComponentAsync(recipeId, cancellationToken);
 
         return View(recipeOutputDto);
     }

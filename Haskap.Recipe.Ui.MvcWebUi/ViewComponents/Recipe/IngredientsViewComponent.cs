@@ -38,7 +38,7 @@ public class IngredientsViewComponent : ViewComponent
 
         using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
 
-        var recipeOutputDto = await _recipeService.GetByIdAsync(recipeId, cancellationToken);
+        var recipeOutputDto = await _recipeService.GetByIdForIngredientsViewComponentAsync(recipeId, cancellationToken);
 
         return View(recipeOutputDto.Ingredients);
 

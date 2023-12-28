@@ -47,7 +47,7 @@ public class UpdateIngredientModalContentViewComponent : ViewComponent
 
         using var __ = allPermissions.Contains(Permissions.Recipe.Admin) ? _multiUserFilter.Disable() : null;
 
-        var recipe = await _recipeService.GetByIdAsync(recipeId, cancellationToken);
+        var recipe = await _recipeService.GetByIdForIngredientsViewComponentAsync(recipeId, cancellationToken);
 
         var ingredient = recipe.Ingredients
             .Where(x => x.Id == ingredientId)
