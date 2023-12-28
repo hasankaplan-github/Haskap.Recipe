@@ -54,7 +54,7 @@ public class RecipeController : Controller
     {
         ViewBag.BaseFolderPath = _stepPicturesSettings.FolderName;
 
-        ViewBag.PublicSearchInputDto = searchInputDto;
+        ViewBag.SearchInputDto = searchInputDto;
 
         using var _ = _multiUserFilter.Disable();
 

@@ -44,15 +44,17 @@
 
     <!-- Search Wrapper -->
     <div class="search-wrapper">
-        <form asp-controller="Recipe" asp-action="Search" method="post">
+        <form id="searchForm" asp-controller="Recipe" asp-action="Search" method="post">
             <!-- Close Btn -->
             <div class="close-btn"><i class="fa fa-times" aria-hidden="true"></i></div>
 
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <input type="search" name="searchName" placeholder="Tarif ismiyle arayabilirsiniz...">
-                        <input type="search" name="searchIngredients" placeholder="Virgülle ayrılmış olarak tarif malzemelerinde arayabilirsiniz...">
+                        <input type="search" name="searchName" id="searchNameInput" placeholder="Tarif ismiyle arayabilirsiniz...">
+                        <input type="search" name="searchIngredients" id="searchIngredientsInput" placeholder="Virgülle ayrılmış olarak tarif malzemelerinde arayabilirsiniz...">
+                        <input type="hidden" name="categoryId" id="categoryIdInput" value="">
+                        <input type="hidden" name="currentPageIndex" id="currentPageIndexInput" value="1">
                     </div>
                 </div>
             </div>
@@ -303,6 +305,16 @@
         $(this).submit(function (e) {
             $("#preloader").fadeIn();
         });
+
+        function searchWithPaging(searchName, searchIngredients, categoryId, currentPageIndex) {
+            $("#searchNameInput").val(searchName);
+            $("#searchIngredientsInput").val(searchIngredients);
+            $("#categoryIdInput").val(categoryId);
+            $("#currentPageIndexInput").val(currentPageIndex);
+
+            $("#searchForm").submit();
+        }
+
 
     </script>
     @await RenderSectionAsync("Scripts", required: false)

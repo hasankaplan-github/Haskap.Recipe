@@ -1,6 +1,7 @@
 ﻿using Haskap.DddBase.Domain;
 using Haskap.Recipe.Domain.CategoryAggregate;
 using Haskap.Recipe.Domain.IngredientGroupAggregate;
+using Haskap.Recipe.Domain.RecipeAggregate;
 using Haskap.Recipe.Domain.RoleAggregate;
 using Haskap.Recipe.Domain.UnitAggregate;
 using Haskap.Recipe.Domain.UserAggregate;
@@ -19,6 +20,7 @@ public interface IRecipeDbContext : IUnitOfWork
     DbSet<RecipeAggregate.Recipe> Recipe { get; set; }
     DbSet<Role> Role { get; set; }
     DbSet<Category> Category { get; set; }
+    DbSet<RecipeCategory> RecipeCategory { get; set; }
     DbSet<Unit> Unit { get; set; }
     DbSet<IngredientGroup> IngredientGroup { get; set; }
     DbSet<User> User { get; set; }

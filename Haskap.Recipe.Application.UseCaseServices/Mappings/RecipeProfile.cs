@@ -22,7 +22,9 @@ public class RecipeProfile : Profile
     public RecipeProfile()
     {
         CreateMap<Recipe.Domain.RecipeAggregate.Recipe, RecipeOutputDto>()
-            .ForMember(x => x.Rating, x => x.MapFrom<RatingValueResolver>());
+            .ForMember(x => x.Rating, x => x.MapFrom<RatingValueResolver>())
+            .ForMember(x => x.RecipeCategories, x => x.MapFrom(y => y.Categories))
+            .ForMember(x => x.Categories, x => x.Ignore());
 
 
         CreateMap<Domain.RecipeAggregate.Recipe, RecipeForIngredientsViewComponentOutputDto>();

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Haskap.DddBase.Utilities.Guids;
 using Haskap.Recipe.Application.Contracts;
+using Haskap.Recipe.Application.Dtos.Categories;
 using Haskap.Recipe.Application.Dtos.Common;
 using Haskap.Recipe.Application.Dtos.Common.DataTable;
 using Haskap.Recipe.Application.Dtos.Recipes;
@@ -501,9 +502,7 @@ public class RecipeService : IRecipeService
 
     public async Task<SearchOutputDto> SearchAsync(SearchInputDto inputDto, CancellationToken cancellationToken)
     {
-        var searchQuery = _recipeDbContext.Recipe
-            .Include(x => x.Ingredients)
-            .AsQueryable();
+        var searchQuery = _recipeDbContext.Recipe.AsQueryable();
 
         if (string.IsNullOrWhiteSpace(inputDto.SearchName) == false)
         {
@@ -512,6 +511,8 @@ public class RecipeService : IRecipeService
 
         if (string.IsNullOrWhiteSpace(inputDto.SearchIngredients) == false)
         {
+            searchQuery = searchQuery.Include(x => x.Ingredients);
+
             var searchIngredients = inputDto.SearchIngredients.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
             var recipeQueries = new List<IQueryable<Domain.RecipeAggregate.Recipe>>();
@@ -529,6 +530,12 @@ public class RecipeService : IRecipeService
             searchQuery = searchQuery.Intersect(query);
 
             //recipesQuery = recipesQuery.Where(x => x.Ingredients.Any(y => inputDto.SearchIngredients.ToLower().Contains(y.Name.ToLower())));
+        }
+
+        if (inputDto.CategoryId.HasValue)
+        {
+            searchQuery = searchQuery.Include(x => x.Categories)
+                .Where(x => x.Categories.Any(y => y.CategoryId == inputDto.CategoryId));
         }
 
         var filteredCount = await searchQuery.CountAsync();
@@ -598,20 +605,28 @@ public class RecipeService : IRecipeService
             .Where(x => x.Slug.Value == slug)
             .FirstOrDefaultAsync(cancellationToken);
 
+        var categoryIds = recipe.Categories.Select(x => x.CategoryId).ToList();
+
+        var categories = await _recipeDbContext.Category
+            .Where(x => categoryIds.Contains(x.Id))
+            .ToListAsync(cancellationToken);
+
+        var recipeOutput = _mapper.Map<RecipeOutputDto>(recipe);
+
+        recipeOutput.Categories = _mapper.Map<List<CategoryOutputDto>>(categories);
+
+        var ownerUsername = await _recipeDbContext.User
+            .Where(x => x.Id == recipeOutput.OwnerUserId)
+            .Select(x => x.Credentials.UserName)
+            .FirstAsync(cancellationToken);
+
+        recipeOutput.OwnerUserUsername = ownerUsername;
+
         recipe.IncrementViewCount();
 
         await _recipeDbContext.SaveChangesAsync(cancellationToken);
 
-        var output = _mapper.Map<RecipeOutputDto>(recipe);
-
-        var ownerUsername = await _recipeDbContext.User
-            .Where(x => x.Id == recipe.OwnerUserId)
-            .Select(x => x.Credentials.UserName)
-            .FirstAsync(cancellationToken);
-
-        output.OwnerUserUsername = ownerUsername;
-
-        return output;
+        return recipeOutput;
     }
 
     public async Task<List<RecipeOutputDto>> GetMostViewedRecipiesAsync(int count, CancellationToken cancellationToken)

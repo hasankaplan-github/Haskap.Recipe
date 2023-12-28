@@ -46,6 +46,7 @@ public class AppDbContext : BaseEfCoreNpgsqlDbContext, IRecipeDbContext
     public DbSet<Domain.RecipeAggregate.Recipe> Recipe { get; set; }
     public DbSet<Role> Role { get; set; }
     public DbSet<Category> Category { get; set; }
+    public DbSet<RecipeCategory> RecipeCategory { get; set; }
     public DbSet<Unit> Unit { get; set; }
     public DbSet<IngredientGroup> IngredientGroup { get; set; }
     public DbSet<User> User { get; set; }

@@ -86,12 +86,7 @@
                     @if (pagination.HasPreviousPage)
                     {
                         <li class="page-item">
-                            <form asp-action="Search" method="post">
-                                <input type="hidden" name="searchName" value="@ViewBag.PublicSearchInputDto.SearchName" />
-                                <input type="hidden" name="searchIngredients" value="@ViewBag.PublicSearchInputDto.SearchIngredients" />
-                                <input type="hidden" name="currentPageIndex" value="@(pagination.CurrentPageIndex - 1)" />
-                                <button class="page-link" type="submit">&laquo;</button>
-                            </form>
+                            <a class="page-link" href="javascript:searchWithPaging('@ViewBag.SearchInputDto.SearchName', '@ViewBag.SearchInputDto.SearchIngredients', '@ViewBag.SearchInputDto.CategoryId', @(pagination.CurrentPageIndex - 1));">&laquo;</a>
                         </li>
                     }
 
@@ -104,24 +99,14 @@
                     @for (int i = firstPageIndex; i <= lastPageIndex; i++)
                     {
                         <li class="page-item @(i == pagination.CurrentPageIndex ? "active" : "")">
-                            <form asp-action="Search" method="post">
-                                <input type="hidden" name="searchName" value="@ViewBag.PublicSearchInputDto.SearchName" />
-                                <input type="hidden" name="searchIngredients" value="@ViewBag.PublicSearchInputDto.SearchIngredients" />
-                                <input type="hidden" name="currentPageIndex" value="@i" />
-                                <button class="page-link" type="submit">@(i).</button>
-                            </form>
+                            <a class="page-link" href="javascript:searchWithPaging('@ViewBag.SearchInputDto.SearchName', '@ViewBag.SearchInputDto.SearchIngredients', '@ViewBag.SearchInputDto.CategoryId', @i);">@(i).</a>
                         </li>
                     }
 
                     @if (pagination.HasNextPage)
                     {
                         <li class="page-item">
-                            <form asp-action="Search" method="post">
-                                <input type="hidden" name="searchName" value="@ViewBag.PublicSearchInputDto.SearchName" />
-                                <input type="hidden" name="searchIngredients" value="@ViewBag.PublicSearchInputDto.SearchIngredients" />
-                                <input type="hidden" name="currentPageIndex" value="@(pagination.CurrentPageIndex + 1)" />
-                                <button class="page-link" type="submit">&raquo;</button>
-                            </form>
+                            <a class="page-link" href="javascript:searchWithPaging('@ViewBag.SearchInputDto.SearchName', '@ViewBag.SearchInputDto.SearchIngredients', '@ViewBag.SearchInputDto.CategoryId', @(pagination.CurrentPageIndex + 1));">&raquo;</a>
                         </li>
                     }
                 </ul>

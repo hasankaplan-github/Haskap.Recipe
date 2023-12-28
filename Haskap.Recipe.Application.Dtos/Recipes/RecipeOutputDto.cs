@@ -1,4 +1,5 @@
-﻿using Haskap.Recipe.Application.Dtos.Common;
+﻿using Haskap.Recipe.Application.Dtos.Categories;
+using Haskap.Recipe.Application.Dtos.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,8 @@ public class RecipeOutputDto
     public string? Description { get; set; }
     public bool IsDraft { get; set; }
     public List<IngredientOutputDto> Ingredients { get; set; }
-    public List<RecipeCategoryOutputDto> Categories { get; set; }
+    public List<RecipeCategoryOutputDto> RecipeCategories { get; set; }
+    public List<CategoryOutputDto> Categories { get; set; }
     public List<StepOutputDto> Steps { get; set; }
     public FileOutputDto Picture { get; set; }
     public SlugOutputDto Slug { get; set; }

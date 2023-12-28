@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 namespace Haskap.Recipe.Application.Dtos.Recipes;
 public class SearchInputDto
 {
-    public string SearchName { get; set; } 
-    public string SearchIngredients {  get; set; }
+    public string? SearchName { get; set; } 
+    public string? SearchIngredients {  get; set; }
     public int CurrentPageIndex { get; set; } = 1;
-    public int PageSize { get; set; } = 9;
+    public int PageSize { get; set; } = 2;
+    public Guid? CategoryId { get; set; } = null;
 }
