@@ -7,13 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Views\Shared\Components\**" />
     <Compile Remove="wwwroot\lib\AdminLte_3_2_0\plugins\bs-stepper\**" />
-    <Content Remove="Views\Shared\Components\**" />
     <Content Remove="wwwroot\lib\AdminLte_3_2_0\plugins\bs-stepper\**" />
-    <EmbeddedResource Remove="Views\Shared\Components\**" />
     <EmbeddedResource Remove="wwwroot\lib\AdminLte_3_2_0\plugins\bs-stepper\**" />
-    <None Remove="Views\Shared\Components\**" />
     <None Remove="wwwroot\lib\AdminLte_3_2_0\plugins\bs-stepper\**" />
   </ItemGroup>
 
@@ -63,7 +59,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ViewComponents\Shared\" />
     <Folder Include="wwwroot\RecipePictures\" />
   </ItemGroup>
 

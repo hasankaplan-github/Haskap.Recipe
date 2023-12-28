@@ -129,7 +129,6 @@
                                     <li @* class="active" *@><a asp-controller="Recipe" asp-action="Index">Ana Sayfa</a></li>
                                     @* <li><a href="about.html">Hakkında</a></li>
                                     <li><a href="contact.html">İletişim</a></li> *@
-                                    <li><a asp-action="Login" asp-controller="Account">Admin Panel</a></li>
                                     @* <li>
                                         <a href="#">Pages</a>
                                         <ul class="dropdown">
@@ -163,10 +162,11 @@
                                             </li>
                                         </ul>
                                     </li> *@
-                                    @* <li>
-                                        <a href="#">Mega Menu</a>
+                                    <li>
+                                        <a href="#">Kategoriler</a>
                                         <div class="megamenu">
-                                            <ul class="single-mega cn-col-4">
+                                            @await Component.InvokeAsync(typeof(Haskap.Recipe.Ui.MvcWebUi.ViewComponents.Shared.CategoriesViewComponent))
+                                            @* <ul class="single-mega cn-col-4">
                                                 <li class="title">Catagory</li>
                                                 <li><a href="index.html">Home</a></li>
                                                 <li><a href="about.html">About Us</a></li>
@@ -198,9 +198,10 @@
                                                     <a href="#"><img src="img/bg-img/bg1.jpg" alt=""></a>
                                                     <a href="#"><img src="img/bg-img/bg6.jpg" alt=""></a>
                                                 </div>
-                                            </div>
+                                            </div> *@
                                         </div>
-                                    </li> *@
+                                    </li>
+                                    <li><a asp-action="Login" asp-controller="Account">Admin Panel</a></li>
                                     @* <li><a href="receipe-post.html">Receipies</a></li>
                                     <li><a href="receipe-post.html">4 Vegans</a></li>
                                     <li><a href="contact.html">Contact</a></li> *@

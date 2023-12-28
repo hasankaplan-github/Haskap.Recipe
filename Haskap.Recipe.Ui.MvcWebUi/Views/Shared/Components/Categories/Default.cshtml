@@ -1,0 +1,26 @@
+﻿@using Haskap.Recipe.Application.Dtos.Categories;
+@using Haskap.Recipe.Domain.Shared.Consts;
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model List<CategoryOutputDto>
+
+@{
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+
+    var chunkSize = (int)Math.Ceiling((decimal)Model.Count / 3);
+}
+
+@foreach (var categoryChunk in Model.Chunk(chunkSize))
+{
+    <ul class="single-mega cn-col-4">
+        @foreach (var category in categoryChunk)
+        {
+            <li><a href="javascript:searchWithPaging('', '', '@category.Id', 1);">@category.Name</a></li>
+        }
+    </ul>
+}
