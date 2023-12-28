@@ -1218,11 +1218,13 @@ textarea:focus {
       .breadcumb-area .breadcumb-text h2 {
         font-size: 24px; } }
 
-/* About Us Area */
-.sub-heading {
-  line-height: 2;
-  font-size: 18px;
-  text-align: center; }
+
+    /* About Us Area */
+    .sub-heading {
+        line-height: 2;
+        font-size: 18px;
+        text-align: center;
+    }
 
 /* :: 18.0 Contact Area CSS */
 .map-area {
