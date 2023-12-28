@@ -67,7 +67,7 @@
 
         $('.select2').select2();
 
-        $("#categorySelect").val(@Json.Serialize(Model.Categories.Select(x => x.CategoryId))).change();
+        $("#categorySelect").val(@Json.Serialize(Model.RecipeCategories.Select(x => x.CategoryId))).change();
     })
 
     $("#saveButton").click(function () {
