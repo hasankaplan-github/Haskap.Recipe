@@ -751,15 +751,17 @@ textarea:focus {
   position: relative;
   z-index: 1;
   margin-bottom: 50px; }
-  .single-small-receipe-area .receipe-thumb {
-    -webkit-box-flex: 0;
-    -ms-flex: 0 0 100px;
-    flex: 0 0 100px;
-    max-width: 100px;
-    width: 100px;
-    height: 100px;
-    padding-right: 20px; }
-  .single-small-receipe-area .receipe-content span {
+    .single-small-receipe-area .receipe-content a .receipe-thumb {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 100px;
+        flex: 0 0 100px;
+        max-width: 100px;
+        /*width: 200px;
+        height: 200px;*/
+        /*padding-right: 20px;*/
+        margin-bottom: 5px;
+    }
+  .single-small-receipe-area .receipe-content a span {
     font-size: 12px;
     display: block;
     color: #40ba37; }
@@ -776,7 +778,7 @@ textarea:focus {
           font-size: 16px; } }
       .single-small-receipe-area .receipe-content a h5:hover, .single-small-receipe-area .receipe-content a h5:focus {
         color: #40ba37; }
-  .single-small-receipe-area .receipe-content .ratings i {
+  .single-small-receipe-area .receipe-content a .ratings i {
     font-size: 11px;
     color: #fbb710;
     display: inline-block;

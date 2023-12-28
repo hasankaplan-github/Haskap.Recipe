@@ -37,31 +37,36 @@
                 <!-- Small Receipe Area -->
                 <div class="col-12 col-sm-6 col-lg-4">
                     <div class="single-small-receipe-area d-flex">
-                        <!-- Receipe Thumb -->
-                        <div class="receipe-thumb">
-                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{recipe.Id}/{recipe.Picture.NewName}{recipe.Picture.Extension}")" alt="">
-                        </div>
                         <!-- Receipe Content -->
                         <div class="receipe-content">
-                            <span>@recipe.CreatedOn.Value.ToLongDateString()</span>
-                            <a asp-action="Detail" asp-route-slug="@recipe.Slug.Value">
-                                <h5>@recipe.Name</h5>
-                            </a>
-                            <div class="ratings">
-                                @{
-                                    int i = 0;
-                                }
-                                @for (i = 0; i < recipe.Rating; i++)
-                                {
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                }
 
-                                @for (; i < 5; i++)
-                                {
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                }
-                            </div>
-                            @* <p>2 Comments</p> *@
+                            <a asp-action="Detail" asp-route-slug="@recipe.Slug.Value">
+                                <!-- Receipe Thumb -->
+                                <div class="receipe-thumb">
+                                    <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{recipe.Id}/{recipe.Picture.NewName}{recipe.Picture.Extension}")" alt="">
+                                </div>
+
+                                <span>@recipe.CreatedOn.Value.ToLongDateString()</span>
+                                @* <a asp-action="Detail" asp-route-slug="@recipe.Slug.Value"> *@
+                                <h5>@recipe.Name</h5>
+                                @* </a> *@
+                                <div class="ratings">
+                                    @{
+                                        int i = 0;
+                                    }
+                                    @for (i = 0; i < recipe.Rating; i++)
+                                    {
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    }
+
+                                    @for (; i < 5; i++)
+                                    {
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    }
+                                </div>
+                                @* <p>2 Comments</p> *@
+                            </a>
+
                         </div>
                     </div>
                 </div>
