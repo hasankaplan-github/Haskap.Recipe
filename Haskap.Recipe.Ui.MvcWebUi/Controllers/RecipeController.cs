@@ -80,6 +80,18 @@ public class RecipeController : Controller
         return View(recipe);
     }
 
+    [HttpGet("Preview/{slug}")]
+    public async Task<IActionResult> Preview(string slug, CancellationToken cancellationToken = default)
+    {
+        ViewBag.BaseFolderPath = _stepPicturesSettings.FolderName;
+
+        using var _ = _multiUserFilter.Disable();
+
+        var recipe = await _recipeService.GetRecipeForPreviewWiewAsync(slug, cancellationToken);
+
+        return View(recipe);
+    }
+
     [AllowAnonymous]
     public async Task<IActionResult> Index(CancellationToken cancellationToken = default)
     {

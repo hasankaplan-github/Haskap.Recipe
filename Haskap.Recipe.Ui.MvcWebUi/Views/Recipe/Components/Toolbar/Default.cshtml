@@ -22,7 +22,8 @@
     {
         <button class="btn btn-app bg-info" id="markAsDraftButton"><i class="fas fa-wave-square"></i> Taslak Olarak İşaretle</button>
     }
-    <button class="btn btn-app bg-danger" id="deleteButton"><i class="fa-solid fa-trash-can"></i> Sil</button>
+    <a asp-action="Preview" asp-controller="Recipe" asp-route-slug="@Model.Slug.Value" target="_blank" class="btn btn-app bg-info"><i class="fas fa-play"></i> Önizleme</a>
+    <button class="btn btn-app bg-danger" id="deleteButton"><i class="fas fa-trash-can"></i> Sil</button>
 </div>
 
 

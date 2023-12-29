@@ -629,6 +629,38 @@ public class RecipeService : IRecipeService
         return recipeOutput;
     }
 
+    public async Task<RecipeOutputDto> GetRecipeForPreviewWiewAsync(string slug, CancellationToken cancellationToken)
+    {
+        var recipe = await _recipeDbContext.Recipe
+            .Include(x => x.Categories)
+            .Include(x => x.Ingredients)
+            .ThenInclude(x => x.IngredientGroup)
+            .Include(x => x.Ingredients)
+            .ThenInclude(x => x.Amount.Unit)
+            .Include(x => x.Steps)
+            .Where(x => x.Slug.Value == slug)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var categoryIds = recipe.Categories.Select(x => x.CategoryId).ToList();
+
+        var categories = await _recipeDbContext.Category
+            .Where(x => categoryIds.Contains(x.Id))
+            .ToListAsync(cancellationToken);
+
+        var recipeOutput = _mapper.Map<RecipeOutputDto>(recipe);
+
+        recipeOutput.Categories = _mapper.Map<List<CategoryOutputDto>>(categories);
+
+        var ownerUsername = await _recipeDbContext.User
+            .Where(x => x.Id == recipeOutput.OwnerUserId)
+            .Select(x => x.Credentials.UserName)
+            .FirstAsync(cancellationToken);
+
+        recipeOutput.OwnerUserUsername = ownerUsername;
+
+        return recipeOutput;
+    }
+
     public async Task<List<RecipeOutputDto>> GetMostViewedRecipiesAsync(int count, CancellationToken cancellationToken)
     {
         var mostViewedRecipes = await _recipeDbContext.Recipe
@@ -643,16 +675,13 @@ public class RecipeService : IRecipeService
 
     public async Task<RecipeForToolbarViewComponentOutputDto> GetByIdForToolbarViewComponentAsync(Guid id, CancellationToken cancellationToken)
     {
-        var recipeOutput = await _recipeDbContext.Recipe
+        var recipe = await _recipeDbContext.Recipe
             .Where(x => x.Id == id)
-            .Select(x => new RecipeForToolbarViewComponentOutputDto
-            {
-                Id = x.Id,
-                IsDraft = x.IsDraft
-            })
             .FirstOrDefaultAsync(cancellationToken);
 
-        return recipeOutput;
+        var output = _mapper.Map<RecipeForToolbarViewComponentOutputDto>(recipe);
+
+        return output;
     }
 
     public async Task<RecipeForIngredientsViewComponentOutputDto> GetByIdForIngredientsViewComponentAsync(Guid id, CancellationToken cancellationToken)

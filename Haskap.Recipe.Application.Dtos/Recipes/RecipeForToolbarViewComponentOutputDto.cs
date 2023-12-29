@@ -10,4 +10,5 @@ public class RecipeForToolbarViewComponentOutputDto
 {
     public Guid Id { get; set; }
     public bool IsDraft { get; set; }
+    public SlugOutputDto Slug { get; set; }
 }
