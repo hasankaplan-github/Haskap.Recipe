@@ -31,7 +31,8 @@ public class RecipeProfile : Profile
 
         CreateMap<Domain.RecipeAggregate.Recipe, RecipeForStepsViewComponentOutputDto>();
 
-        CreateMap<Domain.RecipeAggregate.Recipe, RecipeForBasicInfoViewComponentOutputDto>();
+        CreateMap<Domain.RecipeAggregate.Recipe, RecipeForBasicInfoViewComponentOutputDto>()
+            .ForMember(x => x.RecipeCategories, x => x.MapFrom(y => y.Categories));
     }
 }
 
