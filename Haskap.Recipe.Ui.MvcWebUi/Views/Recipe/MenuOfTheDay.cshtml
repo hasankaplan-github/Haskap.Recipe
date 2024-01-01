@@ -1,0 +1,195 @@
+﻿@using Haskap.Recipe.Application.Dtos.Recipes;
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+@model MenuOfTheDayOutputDto
+
+@{
+    Layout = "_PublicLayout";
+}
+
+<!-- ##### Breadcumb Area Start ##### -->
+<div class="breadcumb-area bg-img bg-overlay" style="background-image: url(/lib/public/delicious/img/bg-img/breadcumb4.jpg);">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <div class="breadcumb-text text-center">
+                    <h2>Günün Menüsü</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ##### Breadcumb Area End ##### -->
+
+
+<!-- ##### Best Receipe Area Start ##### -->
+<section class="best-receipe-area">
+    <div class="container">
+
+        @if (Model.BreakfastRecipe is not null)
+        {
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-heading">
+                        <h3>Kahvaltılık</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Single Best Receipe Area -->
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="single-best-receipe-area mb-30">
+                        <a asp-action="Detail" asp-route-slug="@Model.BreakfastRecipe.Slug.Value">
+                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{Model.BreakfastRecipe.Id}/{Model.BreakfastRecipe.Picture.NewName}{Model.BreakfastRecipe.Picture.Extension}")" alt="">
+                            <div class="receipe-content">
+                                <h5>@Model.BreakfastRecipe.Name</h5>
+
+                                <div class="ratings">
+                                    @{
+                                        int i = 0;
+                                    }
+                                    @for (i = 0; i < Model.BreakfastRecipe.Rating; i++)
+                                    {
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    }
+
+                                    @for (; i < 5; i++)
+                                    {
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    }
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.LunchRecipe is not null)
+        {
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-heading">
+                        <h3>Öğle Yemeği</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Single Best Receipe Area -->
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="single-best-receipe-area mb-30">
+                        <a asp-action="Detail" asp-route-slug="@Model.LunchRecipe.Slug.Value">
+                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{Model.LunchRecipe.Id}/{Model.LunchRecipe.Picture.NewName}{Model.LunchRecipe.Picture.Extension}")" alt="">
+                            <div class="receipe-content">
+                                <h5>@Model.LunchRecipe.Name</h5>
+
+                                <div class="ratings">
+                                    @{
+                                        int i = 0;
+                                    }
+                                    @for (i = 0; i < Model.LunchRecipe.Rating; i++)
+                                    {
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    }
+
+                                    @for (; i < 5; i++)
+                                    {
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    }
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.SoupRecipe is not null)
+        {
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-heading">
+                        <h3>Çorba</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Single Best Receipe Area -->
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="single-best-receipe-area mb-30">
+                        <a asp-action="Detail" asp-route-slug="@Model.SoupRecipe.Slug.Value">
+                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{Model.SoupRecipe.Id}/{Model.SoupRecipe.Picture.NewName}{Model.SoupRecipe.Picture.Extension}")" alt="">
+                            <div class="receipe-content">
+                                <h5>@Model.SoupRecipe.Name</h5>
+
+                                <div class="ratings">
+                                    @{
+                                        int i = 0;
+                                    }
+                                    @for (i = 0; i < Model.SoupRecipe.Rating; i++)
+                                    {
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    }
+
+                                    @for (; i < 5; i++)
+                                    {
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    }
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.DinnerRecipe is not null)
+        {
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-heading">
+                        <h3>Çorba</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Single Best Receipe Area -->
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="single-best-receipe-area mb-30">
+                        <a asp-action="Detail" asp-route-slug="@Model.DinnerRecipe.Slug.Value">
+                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{Model.DinnerRecipe.Id}/{Model.DinnerRecipe.Picture.NewName}{Model.DinnerRecipe.Picture.Extension}")" alt="">
+                            <div class="receipe-content">
+                                <h5>@Model.DinnerRecipe.Name</h5>
+
+                                <div class="ratings">
+                                    @{
+                                        int i = 0;
+                                    }
+                                    @for (i = 0; i < Model.DinnerRecipe.Rating; i++)
+                                    {
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    }
+
+                                    @for (; i < 5; i++)
+                                    {
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    }
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+       
+    </div>
+</section>
+<!-- ##### Best Receipe Area End ##### -->

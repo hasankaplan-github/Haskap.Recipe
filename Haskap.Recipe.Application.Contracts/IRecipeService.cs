@@ -36,4 +36,5 @@ public interface IRecipeService
     Task<RecipeForStepsViewComponentOutputDto> GetByIdForStepsViewComponentAsync(Guid id, CancellationToken cancellationToken);
     Task<RecipeForBasicInfoViewComponentOutputDto> GetByIdForBasicInfoViewComponentAsync(Guid id, CancellationToken cancellationToken);
     Task<RecipeOutputDto> GetRecipeForPreviewWiewAsync(string slug, CancellationToken cancellationToken);
+    Task<MenuOfTheDayOutputDto> GetMenuOfTheDayAsync(MenuOfTheDayInputDto inputDto, CancellationToken cancellationToken);
 }

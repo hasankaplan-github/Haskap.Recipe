@@ -106,6 +106,16 @@ public class RecipeController : Controller
         return View(randomRecipes);
     }
 
+    [AllowAnonymous]
+    public async Task<IActionResult> MenuOfTheDay(CancellationToken cancellationToken = default)
+    {
+        ViewBag.BaseFolderPath = _stepPicturesSettings.FolderName;
+
+        var outputDto = await _recipeService.GetMenuOfTheDayAsync(new MenuOfTheDayInputDto(), cancellationToken);
+
+        return View(outputDto);
+    }
+
     public async Task<IActionResult> Create(CancellationToken cancellationToken = default)
     {
         ViewBag.Categories = (await _categoryService.GetAllAsync(cancellationToken))
