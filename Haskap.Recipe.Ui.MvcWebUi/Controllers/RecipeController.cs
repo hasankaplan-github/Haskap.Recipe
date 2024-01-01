@@ -111,6 +111,8 @@ public class RecipeController : Controller
     {
         ViewBag.BaseFolderPath = _stepPicturesSettings.FolderName;
 
+        using var _ = _multiUserFilter.Disable();
+
         var outputDto = await _recipeService.GetMenuOfTheDayAsync(new MenuOfTheDayInputDto(), cancellationToken);
 
         return View(outputDto);
