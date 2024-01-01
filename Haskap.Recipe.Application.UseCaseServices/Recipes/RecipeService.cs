@@ -541,7 +541,7 @@ public class RecipeService : IRecipeService
         var filteredCount = await searchQuery.CountAsync();
 
         var recipes = await searchQuery
-            .OrderBy(x => x.Id)
+            .OrderBy(x => EF.Functions.Random())
             .Skip((inputDto.CurrentPageIndex - 1) * inputDto.PageSize)
             .Take(inputDto.PageSize)
             //.Select(x => new SearchRecipeOutputDto
