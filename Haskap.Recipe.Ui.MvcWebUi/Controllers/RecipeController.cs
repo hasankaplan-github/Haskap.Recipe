@@ -107,13 +107,13 @@ public class RecipeController : Controller
     }
 
     [AllowAnonymous]
-    public async Task<IActionResult> MenuOfTheDay(CancellationToken cancellationToken = default)
+    public async Task<IActionResult> MenuOfTheDay(MenuOfTheDayInputDto inputDto, CancellationToken cancellationToken = default)
     {
         ViewBag.BaseFolderPath = _stepPicturesSettings.FolderName;
 
         using var _ = _multiUserFilter.Disable();
 
-        var outputDto = await _recipeService.GetMenuOfTheDayAsync(new MenuOfTheDayInputDto(), cancellationToken);
+        var outputDto = await _recipeService.GetMenuOfTheDayAsync(inputDto, cancellationToken);
 
         return View(outputDto);
     }

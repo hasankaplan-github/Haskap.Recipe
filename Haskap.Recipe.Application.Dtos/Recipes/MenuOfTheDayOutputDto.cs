@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 namespace Haskap.Recipe.Application.Dtos.Recipes;
 public class MenuOfTheDayOutputDto
 {
-    public RecipeOutputDto? BreakfastRecipe { get; set; }
-    public RecipeOutputDto? LunchRecipe { get; set; }
-    public RecipeOutputDto? SoupRecipe { get; set; }
-    public RecipeOutputDto? DinnerRecipe { get; set; }
+    public List<RecipeOutputDto> BreakfastRecipes { get; set; }
+    public List<RecipeOutputDto> LunchRecipes { get; set; }
+    public List<RecipeOutputDto> SoupRecipes { get; set; }
+    public List<RecipeOutputDto> DinnerRecipes { get; set; }
+    public List<RecipeOutputDto> DessertRecipes { get; set; }
 }

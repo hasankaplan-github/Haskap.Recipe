@@ -63,6 +63,10 @@
         </form>
     </div>
 
+    <form id="menuOfTheDayForm" asp-controller="Recipe" asp-action="MenuOfTheDay" method="post">
+        <input type="hidden" name="ingredients" id="ingredientsInput" value="">
+    </form>
+
 
     <!-- ##### Header Area Start ##### -->
     <header class="header-area">
@@ -201,7 +205,7 @@
                                             </div> *@
                                         </div>
                                     </li>
-                                    <li><a asp-action="MenuOfTheDay" asp-controller="Recipe">Günün Menüsü</a></li>
+                                    <li><a href="javascript:menuOfTheDay(null);">Günün Menüsü</a></li>
                                     <li><a asp-action="Login" asp-controller="Account">Admin Panel</a></li>
                                     @* <li><a href="receipe-post.html">Receipies</a></li>
                                     <li><a href="receipe-post.html">4 Vegans</a></li>
@@ -315,6 +319,12 @@
             $("#currentPageIndexInput").val(currentPageIndex);
 
             $("#searchForm").submit();
+        }
+
+        function menuOfTheDay(ingredients) {
+            $("#ingredientsInput").val(ingredients);
+
+            $("#menuOfTheDayForm").submit();
         }
 
 

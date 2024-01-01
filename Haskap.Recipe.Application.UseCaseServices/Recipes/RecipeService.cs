@@ -731,6 +731,7 @@ public class RecipeService : IRecipeService
         var lunchCategoryId = Guid.Parse("ee0b4b1e-8e15-471b-8970-d83360cb52dd");
         var soupCategoryId = Guid.Parse("ab851a8b-22de-48c3-be2b-3d4f0f8fd24d");
         var dinnerCategoryId = Guid.Parse("c1354fe3-776e-4d21-ad9d-bdd623188031");
+        var dessertCategoryId = Guid.Parse("d86e3066-6047-4128-a1d0-fa092429a6fb");
 
         if (string.IsNullOrWhiteSpace(inputDto.Ingredients) == false)
         {
@@ -751,48 +752,58 @@ public class RecipeService : IRecipeService
             searchIngredients = string.IsNullOrWhiteSpace(searchIngredients) ? null : searchIngredients;
         }
 
-        var breakfastRecipe = await SearchAsync(new SearchInputDto
+        var breakfastRecipes = await SearchAsync(new SearchInputDto
         {
             CategoryId = breakfastCategoryId,
             CurrentPageIndex = 1,
-            PageSize = 1,
+            PageSize = 3,
             SearchIngredients = searchIngredients,
             SearchName = null
         }, cancellationToken);
 
-        var lunchRecipe = await SearchAsync(new SearchInputDto
+        var lunchRecipes = await SearchAsync(new SearchInputDto
         {
             CategoryId = lunchCategoryId,
             CurrentPageIndex = 1,
-            PageSize = 1,
+            PageSize = 3,
             SearchIngredients = searchIngredients,
             SearchName = null
         }, cancellationToken);
 
-        var soupRecipe = await SearchAsync(new SearchInputDto
+        var soupRecipes = await SearchAsync(new SearchInputDto
         {
             CategoryId = soupCategoryId,
             CurrentPageIndex = 1,
-            PageSize = 1,
+            PageSize = 3,
             SearchIngredients = searchIngredients,
             SearchName = null
         }, cancellationToken);
 
-        var dinnerRecipe = await SearchAsync(new SearchInputDto
+        var dinnerRecipes = await SearchAsync(new SearchInputDto
         {
             CategoryId = dinnerCategoryId,
             CurrentPageIndex = 1,
-            PageSize = 1,
+            PageSize = 3,
+            SearchIngredients = searchIngredients,
+            SearchName = null
+        }, cancellationToken);
+
+        var dessertRecipes = await SearchAsync(new SearchInputDto
+        {
+            CategoryId = dessertCategoryId,
+            CurrentPageIndex = 1,
+            PageSize = 3,
             SearchIngredients = searchIngredients,
             SearchName = null
         }, cancellationToken);
 
         var outputDto = new MenuOfTheDayOutputDto
         {
-            BreakfastRecipe = breakfastRecipe.Recipes.FirstOrDefault(),
-            LunchRecipe = lunchRecipe.Recipes.FirstOrDefault(),
-            SoupRecipe = soupRecipe.Recipes.FirstOrDefault(),
-            DinnerRecipe = dinnerRecipe.Recipes.FirstOrDefault()
+            BreakfastRecipes = breakfastRecipes.Recipes,
+            LunchRecipes = lunchRecipes.Recipes,
+            SoupRecipes = soupRecipes.Recipes,
+            DinnerRecipes = dinnerRecipes.Recipes,
+            DessertRecipes = dessertRecipes.Recipes
         };
 
         return outputDto;

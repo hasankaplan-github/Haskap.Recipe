@@ -24,36 +24,52 @@
     </div>
 </div>
 <!-- ##### Breadcumb Area End ##### -->
-
-
 <!-- ##### Best Receipe Area Start ##### -->
 <section class="best-receipe-area">
+
+    <!-- Receipe Post Search -->
+    <div class="receipe-post-search mt-50 mb-50">
+        <div class="container">
+            <form asp-controller="Recipe" asp-action="MenuOfTheDay" method="post">
+                <div class="row">
+                    <div class="col-12 col-lg-9">
+                        <input type="search" name="ingredients" placeholder="Virgülle ayrılmış olarak tarif malzemelerini seçebilirsiniz...">
+                    </div>
+                    <div class="col-12 col-lg-3 text-right">
+                        <button type="submit" class="btn delicious-btn">Getir</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
     <div class="container">
 
-        @if (Model.BreakfastRecipe is not null)
-        {
-            <div class="row">
-                <div class="col-12">
-                    <div class="section-heading">
-                        <h3>Kahvaltılık</h3>
-                    </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="section-heading">
+                    <h3>Kahvaltılık</h3>
                 </div>
             </div>
+        </div>
 
-            <div class="row">
+        <div class="row">
+            @foreach (var breakfastRecipe in Model.BreakfastRecipes)
+            {
                 <!-- Single Best Receipe Area -->
                 <div class="col-12 col-sm-6 col-lg-4">
                     <div class="single-best-receipe-area mb-30">
-                        <a asp-action="Detail" asp-route-slug="@Model.BreakfastRecipe.Slug.Value">
-                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{Model.BreakfastRecipe.Id}/{Model.BreakfastRecipe.Picture.NewName}{Model.BreakfastRecipe.Picture.Extension}")" alt="">
+                        <a asp-action="Detail" asp-route-slug="@breakfastRecipe.Slug.Value">
+                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{breakfastRecipe.Id}/{breakfastRecipe.Picture.NewName}{breakfastRecipe.Picture.Extension}")" alt="">
                             <div class="receipe-content">
-                                <h5>@Model.BreakfastRecipe.Name</h5>
+                                <h5>@breakfastRecipe.Name</h5>
 
                                 <div class="ratings">
                                     @{
                                         int i = 0;
                                     }
-                                    @for (i = 0; i < Model.BreakfastRecipe.Rating; i++)
+                                    @for (i = 0; i < breakfastRecipe.Rating; i++)
                                     {
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                     }
@@ -67,33 +83,33 @@
                         </a>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
 
-        @if (Model.LunchRecipe is not null)
-        {
-            <div class="row">
-                <div class="col-12">
-                    <div class="section-heading">
-                        <h3>Öğle Yemeği</h3>
-                    </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="section-heading">
+                    <h3>Öğle Yemeği</h3>
                 </div>
             </div>
+        </div>
 
-            <div class="row">
+        <div class="row">
+            @foreach (var lunchRecipe in Model.LunchRecipes)
+            {
                 <!-- Single Best Receipe Area -->
                 <div class="col-12 col-sm-6 col-lg-4">
                     <div class="single-best-receipe-area mb-30">
-                        <a asp-action="Detail" asp-route-slug="@Model.LunchRecipe.Slug.Value">
-                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{Model.LunchRecipe.Id}/{Model.LunchRecipe.Picture.NewName}{Model.LunchRecipe.Picture.Extension}")" alt="">
+                        <a asp-action="Detail" asp-route-slug="@lunchRecipe.Slug.Value">
+                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{lunchRecipe.Id}/{lunchRecipe.Picture.NewName}{lunchRecipe.Picture.Extension}")" alt="">
                             <div class="receipe-content">
-                                <h5>@Model.LunchRecipe.Name</h5>
+                                <h5>@lunchRecipe.Name</h5>
 
                                 <div class="ratings">
                                     @{
                                         int i = 0;
                                     }
-                                    @for (i = 0; i < Model.LunchRecipe.Rating; i++)
+                                    @for (i = 0; i < lunchRecipe.Rating; i++)
                                     {
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                     }
@@ -107,33 +123,33 @@
                         </a>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
 
-        @if (Model.SoupRecipe is not null)
-        {
-            <div class="row">
-                <div class="col-12">
-                    <div class="section-heading">
-                        <h3>Çorba</h3>
-                    </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="section-heading">
+                    <h3>Çorba</h3>
                 </div>
             </div>
+        </div>
 
-            <div class="row">
+        <div class="row">
+            @foreach (var soupRecipe in Model.SoupRecipes)
+            {
                 <!-- Single Best Receipe Area -->
                 <div class="col-12 col-sm-6 col-lg-4">
                     <div class="single-best-receipe-area mb-30">
-                        <a asp-action="Detail" asp-route-slug="@Model.SoupRecipe.Slug.Value">
-                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{Model.SoupRecipe.Id}/{Model.SoupRecipe.Picture.NewName}{Model.SoupRecipe.Picture.Extension}")" alt="">
+                        <a asp-action="Detail" asp-route-slug="@soupRecipe.Slug.Value">
+                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{soupRecipe.Id}/{soupRecipe.Picture.NewName}{soupRecipe.Picture.Extension}")" alt="">
                             <div class="receipe-content">
-                                <h5>@Model.SoupRecipe.Name</h5>
+                                <h5>@soupRecipe.Name</h5>
 
                                 <div class="ratings">
                                     @{
                                         int i = 0;
                                     }
-                                    @for (i = 0; i < Model.SoupRecipe.Rating; i++)
+                                    @for (i = 0; i < soupRecipe.Rating; i++)
                                     {
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                     }
@@ -147,33 +163,33 @@
                         </a>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
 
-        @if (Model.DinnerRecipe is not null)
-        {
-            <div class="row">
-                <div class="col-12">
-                    <div class="section-heading">
-                        <h3>Çorba</h3>
-                    </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="section-heading">
+                    <h3>Akşam Yemeği</h3>
                 </div>
             </div>
+        </div>
 
-            <div class="row">
+        <div class="row">
+            @foreach (var dinnerRecipe in Model.DinnerRecipes)
+            {
                 <!-- Single Best Receipe Area -->
                 <div class="col-12 col-sm-6 col-lg-4">
                     <div class="single-best-receipe-area mb-30">
-                        <a asp-action="Detail" asp-route-slug="@Model.DinnerRecipe.Slug.Value">
-                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{Model.DinnerRecipe.Id}/{Model.DinnerRecipe.Picture.NewName}{Model.DinnerRecipe.Picture.Extension}")" alt="">
+                        <a asp-action="Detail" asp-route-slug="@dinnerRecipe.Slug.Value">
+                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{dinnerRecipe.Id}/{dinnerRecipe.Picture.NewName}{dinnerRecipe.Picture.Extension}")" alt="">
                             <div class="receipe-content">
-                                <h5>@Model.DinnerRecipe.Name</h5>
+                                <h5>@dinnerRecipe.Name</h5>
 
                                 <div class="ratings">
                                     @{
                                         int i = 0;
                                     }
-                                    @for (i = 0; i < Model.DinnerRecipe.Rating; i++)
+                                    @for (i = 0; i < dinnerRecipe.Rating; i++)
                                     {
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                     }
@@ -187,9 +203,49 @@
                         </a>
                     </div>
                 </div>
+            }
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="section-heading">
+                    <h3>Tatlı</h3>
+                </div>
             </div>
-        }
-       
+        </div>
+
+        <div class="row">
+            @foreach (var dessertRecipe in Model.DessertRecipes)
+            {
+                <!-- Single Best Receipe Area -->
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="single-best-receipe-area mb-30">
+                        <a asp-action="Detail" asp-route-slug="@dessertRecipe.Slug.Value">
+                            <img src="@Html.Raw($"/{ViewBag.BaseFolderPath}/{dessertRecipe.Id}/{dessertRecipe.Picture.NewName}{dessertRecipe.Picture.Extension}")" alt="">
+                            <div class="receipe-content">
+                                <h5>@dessertRecipe.Name</h5>
+
+                                <div class="ratings">
+                                    @{
+                                        int i = 0;
+                                    }
+                                    @for (i = 0; i < dessertRecipe.Rating; i++)
+                                    {
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    }
+
+                                    @for (; i < 5; i++)
+                                    {
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    }
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+
     </div>
 </section>
 <!-- ##### Best Receipe Area End ##### -->
