@@ -89,6 +89,7 @@ public class RecipeService : IRecipeService
     public async Task<RecipeOutputDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var recipe = await _recipeDbContext.Recipe
+            .AsNoTracking()
             .Include(x => x.Categories)
             .Include(x => x.Ingredients)
             .ThenInclude(x => x.IngredientGroup)
@@ -106,6 +107,7 @@ public class RecipeService : IRecipeService
     public async Task<RecipeOutputDto> GetBySlugAsync(string slug, CancellationToken cancellationToken)
     {
         var recipe = await _recipeDbContext.Recipe
+            .AsNoTracking()
             .Include(x => x.Categories)
             .Include(x => x.Ingredients)
             .ThenInclude(x => x.IngredientGroup)
@@ -170,7 +172,7 @@ public class RecipeService : IRecipeService
             .Where(x => x.Id == recipeId)
             .FirstAsync(cancellationToken);
 
-        recipe.RemoveIngredient(recipe.Ingredients.First());
+        recipe.RemoveIngredient(recipe.Ingredients[0]);
 
         await _recipeDbContext.SaveChangesAsync(cancellationToken);
     }
@@ -244,7 +246,7 @@ public class RecipeService : IRecipeService
             .Where(x => x.Id == inputDto.RecipeId)
             .FirstOrDefaultAsync(cancellationToken);
 
-        var ingredientToBeUpdated = recipe.Ingredients.First();
+        var ingredientToBeUpdated = recipe.Ingredients[0];
 
         ingredientToBeUpdated.SetName(inputDto.Name);
         ingredientToBeUpdated.SetAmount(amount);
@@ -256,6 +258,7 @@ public class RecipeService : IRecipeService
     public async Task<int> GetStepCountAsync(Guid recipeId, CancellationToken cancellationToken)
     {
         var recipe = await _recipeDbContext.Recipe
+            .AsNoTracking()
             .Include(x => x.Steps)
             .Where(x => x.Id == recipeId)
             .FirstOrDefaultAsync(cancellationToken);
@@ -489,6 +492,7 @@ public class RecipeService : IRecipeService
     public async Task<List<RecipeOutputDto>> GetRandomRecipesAsync(int count, CancellationToken cancellationToken)
     {
         var randomRecipies = await _recipeDbContext.Recipe
+            .AsNoTracking()
             .OrderBy(r => Guid.NewGuid())
             .Take(count)
             .ToListAsync(cancellationToken);
@@ -502,7 +506,9 @@ public class RecipeService : IRecipeService
 
     public async Task<SearchOutputDto> SearchAsync(SearchInputDto inputDto, CancellationToken cancellationToken)
     {
-        var searchQuery = _recipeDbContext.Recipe.AsQueryable();
+        var searchQuery = _recipeDbContext.Recipe
+            .AsNoTracking()
+            .AsQueryable();
 
         if (string.IsNullOrWhiteSpace(inputDto.SearchName) == false)
         {
@@ -632,6 +638,7 @@ public class RecipeService : IRecipeService
     public async Task<RecipeOutputDto> GetRecipeForPreviewWiewAsync(string slug, CancellationToken cancellationToken)
     {
         var recipe = await _recipeDbContext.Recipe
+            .AsNoTracking()
             .Include(x => x.Categories)
             .Include(x => x.Ingredients)
             .ThenInclude(x => x.IngredientGroup)
@@ -644,6 +651,7 @@ public class RecipeService : IRecipeService
         var categoryIds = recipe.Categories.Select(x => x.CategoryId).ToList();
 
         var categories = await _recipeDbContext.Category
+            .AsNoTracking()
             .Where(x => categoryIds.Contains(x.Id))
             .ToListAsync(cancellationToken);
 
@@ -664,6 +672,7 @@ public class RecipeService : IRecipeService
     public async Task<List<RecipeOutputDto>> GetMostViewedRecipiesAsync(int count, CancellationToken cancellationToken)
     {
         var mostViewedRecipes = await _recipeDbContext.Recipe
+            .AsNoTracking()
             .OrderByDescending(r => r.ViewCount)
             .Take(count)
             .ToListAsync(cancellationToken);
@@ -676,6 +685,7 @@ public class RecipeService : IRecipeService
     public async Task<RecipeForToolbarViewComponentOutputDto> GetByIdForToolbarViewComponentAsync(Guid id, CancellationToken cancellationToken)
     {
         var recipe = await _recipeDbContext.Recipe
+            .AsNoTracking()
             .Where(x => x.Id == id)
             .FirstOrDefaultAsync(cancellationToken);
 
@@ -687,6 +697,7 @@ public class RecipeService : IRecipeService
     public async Task<RecipeForIngredientsViewComponentOutputDto> GetByIdForIngredientsViewComponentAsync(Guid id, CancellationToken cancellationToken)
     {
         var recipe = await _recipeDbContext.Recipe
+            .AsNoTracking()
             .Include(x => x.Ingredients)
             .ThenInclude(x => x.IngredientGroup)
             .Include(x => x.Ingredients)
@@ -702,6 +713,7 @@ public class RecipeService : IRecipeService
     public async Task<RecipeForStepsViewComponentOutputDto> GetByIdForStepsViewComponentAsync(Guid id, CancellationToken cancellationToken)
     {
         var recipe = await _recipeDbContext.Recipe
+            .AsNoTracking()
             .Include(x => x.Steps)
             .Where(x => x.Id == id)
             .FirstOrDefaultAsync(cancellationToken);
@@ -714,6 +726,7 @@ public class RecipeService : IRecipeService
     public async Task<RecipeForBasicInfoViewComponentOutputDto> GetByIdForBasicInfoViewComponentAsync(Guid id, CancellationToken cancellationToken)
     {
         var recipe = await _recipeDbContext.Recipe
+            .AsNoTracking()
             .Include(x => x.Categories)
             .Where(x => x.Id == id)
             .FirstOrDefaultAsync(cancellationToken);
@@ -740,6 +753,7 @@ public class RecipeService : IRecipeService
         else
         {
             var randomIngredients = (await _recipeDbContext.Recipe
+                .AsNoTracking()
                 .Include(x => x.Categories)
                 .Include(x => x.Ingredients)
                 .Where(x => x.Categories.Select(y => y.CategoryId).Any(y => y == dinnerCategoryId || y == lunchCategoryId))
