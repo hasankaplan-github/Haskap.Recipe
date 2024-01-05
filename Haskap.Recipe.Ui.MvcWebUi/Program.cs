@@ -50,6 +50,7 @@ var builder = WebApplication.CreateBuilder(options);
 // Add services to the container.
 builder.Services.Configure<StepPicturesSettings>(builder.Configuration.GetSection(StepPicturesSettings.SectionName));
 
+builder.Services.AddExceptionHandler<DefaultExceptionHandler>();
 
 builder.Services.AddPersistance(builder.Configuration);
 //var connectionString = builder.Configuration.GetConnectionString("DugunSalonuConnectionString");
@@ -108,7 +109,8 @@ MediatorWrapper.MediatorFunc = () => mediator;
 
 //app.UseExceptionHandler("/Home/Error");
 
-app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+//app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+app.UseExceptionHandler(_ => { });
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
