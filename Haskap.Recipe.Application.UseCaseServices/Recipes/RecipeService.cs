@@ -517,25 +517,28 @@ public class RecipeService : IRecipeService
 
         if (string.IsNullOrWhiteSpace(inputDto.SearchIngredients) == false)
         {
-            searchQuery = searchQuery.Include(x => x.Ingredients);
-
             var searchIngredients = inputDto.SearchIngredients.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
-            var recipeQueries = new List<IQueryable<Domain.RecipeAggregate.Recipe>>();
-            foreach (var ingredient in searchIngredients)
+            if (searchIngredients.Any())
             {
-                recipeQueries.Add(searchQuery.Where(x => x.Ingredients.Any(y => y.Name.ToLower().Contains(ingredient.ToLower()))));
+                searchQuery = searchQuery.Include(x => x.Ingredients);
+
+                var recipeQueries = new List<IQueryable<Domain.RecipeAggregate.Recipe>>();
+                foreach (var ingredient in searchIngredients)
+                {
+                    recipeQueries.Add(searchQuery.Where(x => x.Ingredients.Any(y => y.Name.ToLower().Contains(ingredient.ToLower()))));
+                }
+
+                IQueryable<Domain.RecipeAggregate.Recipe> query = recipeQueries.FirstOrDefault();
+                foreach (var recipeQuery in recipeQueries)
+                {
+                    query = query.Union(recipeQuery);
+                }
+
+                searchQuery = searchQuery.Intersect(query);
+
+                //recipesQuery = recipesQuery.Where(x => x.Ingredients.Any(y => inputDto.SearchIngredients.ToLower().Contains(y.Name.ToLower())));
             }
-
-            IQueryable<Domain.RecipeAggregate.Recipe> query = recipeQueries.FirstOrDefault();
-            foreach (var recipeQuery in recipeQueries)
-            {
-                query = query.Union(recipeQuery);
-            }
-
-            searchQuery = searchQuery.Intersect(query);
-
-            //recipesQuery = recipesQuery.Where(x => x.Ingredients.Any(y => inputDto.SearchIngredients.ToLower().Contains(y.Name.ToLower())));
         }
 
         if (inputDto.CategoryId.HasValue)
