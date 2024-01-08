@@ -39,6 +39,14 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IRecipeService, RecipeService>();
         services.AddTransient<IUnitService, UnitService>();
         services.AddTransient<IIngredientGroupService, IngredientGroupService>();
+
+        services.AddScoped<IMenuOfTheDayService, MenuOfTheDayService>();
+        services.AddScoped<MenuOfTheDayBreakfastRecipesService>();
+        services.AddScoped<MenuOfTheDayLunchRecipesService>();
+        services.AddScoped<MenuOfTheDaySoupRecipesService>();
+        services.AddScoped<MenuOfTheDayDinnerRecipesService>();
+        services.AddScoped<MenuOfTheDayDessertRecipesService>();
+        services.AddScoped<IRecipeSearchService, RecipeSearchService>();
     }
 
     public static void AddProviders(this IServiceCollection services)

@@ -28,6 +28,7 @@ public class RecipeController : Controller
     private readonly IAccountService _accountService;
     private readonly IMultiUserGlobalQueryFilterProvider _multiUserFilter;
     private readonly StepPicturesSettings _stepPicturesSettings;
+    private readonly IRecipeSearchService _recipeSearchService;
 
     public RecipeController(
         ICategoryService categoryService,
@@ -36,7 +37,8 @@ public class RecipeController : Controller
         IIsDraftGlobalQueryFilterProvider isDraftFilter,
         IAccountService accountService,
         IMultiUserGlobalQueryFilterProvider multiUserFilter,
-        IOptions<StepPicturesSettings> stepPicturesSettingsOptions)
+        IOptions<StepPicturesSettings> stepPicturesSettingsOptions,
+        IRecipeSearchService recipeSearchService)
     {
         _categoryService = categoryService;
         _recipeService = recipeService;
@@ -45,9 +47,10 @@ public class RecipeController : Controller
         _accountService = accountService;
         _multiUserFilter = multiUserFilter;
         _stepPicturesSettings = stepPicturesSettingsOptions.Value;
+        _recipeSearchService = recipeSearchService;
     }
 
-    
+
 
     [AllowAnonymous]
     public async Task<IActionResult> Search(SearchInputDto searchInputDto, CancellationToken cancellationToken = default)
@@ -58,7 +61,7 @@ public class RecipeController : Controller
 
         using var _ = _multiUserFilter.Disable();
 
-        var searchOutput = await _recipeService.SearchAsync(searchInputDto, cancellationToken);
+        var searchOutput = await _recipeSearchService.SearchAsync(searchInputDto, cancellationToken);
 
         var pagination = new Pagination(searchInputDto.PageSize, searchInputDto.CurrentPageIndex, searchOutput.FilteredCount);
         ViewBag.Pagination = pagination;

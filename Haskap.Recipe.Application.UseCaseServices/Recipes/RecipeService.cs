@@ -27,13 +27,28 @@ public class RecipeService : IRecipeService
 {
     private readonly IRecipeDbContext _recipeDbContext;
     private readonly IMapper _mapper;
+    private readonly MenuOfTheDayBreakfastRecipesService _menuOfTheDayBreakfastRecipeService;
+    private readonly MenuOfTheDayLunchRecipesService _menuOfTheDayLunchRecipeService;
+    private readonly MenuOfTheDaySoupRecipesService _menuOfTheDaySoupRecipeService;
+    private readonly MenuOfTheDayDinnerRecipesService _menuOfTheDayDinnerRecipeService;
+    private readonly MenuOfTheDayDessertRecipesService _menuOfTheDayDessertRecipesService;
 
     public RecipeService(
         IRecipeDbContext recipeDbContext,
-        IMapper mapper)
+        IMapper mapper,
+        MenuOfTheDayBreakfastRecipesService menuOfTheDayBreakfastRecipeService,
+        MenuOfTheDayLunchRecipesService menuOfTheDayLunchRecipeService,
+        MenuOfTheDaySoupRecipesService menuOfTheDaySoupRecipeService,
+        MenuOfTheDayDinnerRecipesService menuOfTheDayDinnerRecipeService,
+        MenuOfTheDayDessertRecipesService menuOfTheDayDessertRecipesService)
     {
         _recipeDbContext = recipeDbContext;
         _mapper = mapper;
+        _menuOfTheDayBreakfastRecipeService = menuOfTheDayBreakfastRecipeService;
+        _menuOfTheDayLunchRecipeService = menuOfTheDayLunchRecipeService;
+        _menuOfTheDaySoupRecipeService = menuOfTheDaySoupRecipeService;
+        _menuOfTheDayDinnerRecipeService = menuOfTheDayDinnerRecipeService;
+        _menuOfTheDayDessertRecipesService = menuOfTheDayDessertRecipesService;
     }
 
     public async Task ActivateAsync(Guid id, CancellationToken cancellationToken)
@@ -504,104 +519,6 @@ public class RecipeService : IRecipeService
         return output;
     }
 
-    public async Task<SearchOutputDto> SearchAsync(SearchInputDto inputDto, CancellationToken cancellationToken)
-    {
-        var searchQuery = _recipeDbContext.Recipe
-            .AsNoTracking()
-            .AsQueryable();
-
-        if (string.IsNullOrWhiteSpace(inputDto.SearchName) == false)
-        {
-            searchQuery = searchQuery.Where(x => x.Name.Contains(inputDto.SearchName));
-        }
-
-        if (string.IsNullOrWhiteSpace(inputDto.SearchIngredients) == false)
-        {
-            var searchIngredients = inputDto.SearchIngredients.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-
-            if (searchIngredients.Any())
-            {
-                searchQuery = searchQuery.Include(x => x.Ingredients);
-
-                var recipeQueries = new List<IQueryable<Domain.RecipeAggregate.Recipe>>();
-                foreach (var ingredient in searchIngredients)
-                {
-                    recipeQueries.Add(searchQuery.Where(x => x.Ingredients.Any(y => y.Name.ToLower().Contains(ingredient.ToLower()))));
-                }
-
-                IQueryable<Domain.RecipeAggregate.Recipe> query = recipeQueries.FirstOrDefault();
-                foreach (var recipeQuery in recipeQueries)
-                {
-                    query = query.Union(recipeQuery);
-                }
-
-                searchQuery = searchQuery.Intersect(query);
-
-                //recipesQuery = recipesQuery.Where(x => x.Ingredients.Any(y => inputDto.SearchIngredients.ToLower().Contains(y.Name.ToLower())));
-            }
-        }
-
-        if (inputDto.CategoryId.HasValue)
-        {
-            searchQuery = searchQuery.Include(x => x.Categories)
-                .Where(x => x.Categories.Any(y => y.CategoryId == inputDto.CategoryId));
-        }
-
-        var filteredCount = await searchQuery.CountAsync();
-
-        var recipes = await searchQuery
-            .OrderBy(x => EF.Functions.Random())
-            .Skip((inputDto.CurrentPageIndex - 1) * inputDto.PageSize)
-            .Take(inputDto.PageSize)
-            //.Select(x => new SearchRecipeOutputDto
-            //{
-            //    RecipeCreatedOn = x.CreatedOn,
-            //    RecipeId = x.Id,
-            //    RecipeName = x.Name,
-            //    RecipePicture = new FileOutputDto
-            //    {
-            //        Extension = x.Picture.Extension,
-            //        NewName = x.Picture.NewName,
-            //        OriginalName = x.Picture.OriginalName
-            //    }
-            //})
-            .ToListAsync();
-
-        var recipesOutput = _mapper.Map<List<RecipeOutputDto>>(recipes);
-
-        //recipesOutput = (from recipeOutput in recipesOutput
-        //                 join user in _recipeDbContext.User on recipeOutput.OwnerUserId equals user.Id
-        //                 select new RecipeOutputDto
-        //                 {
-        //                     CreatedOn = recipeOutput.CreatedOn,
-        //                     Categories = recipeOutput.Categories,
-        //                     CreatedUserId = recipeOutput.CreatedUserId,
-        //                     Description = recipeOutput.Description,
-        //                     Id = recipeOutput.Id,
-        //                     Ingredients = recipeOutput.Ingredients,
-        //                     IsDraft = recipeOutput.IsDraft,
-        //                     ModifiedOn = recipeOutput.ModifiedOn,
-        //                     ModifiedUserId = recipeOutput.ModifiedUserId,
-        //                     Name = recipeOutput.Name,
-        //                     OwnerUserId = recipeOutput.OwnerUserId,
-        //                     OwnerUserUsername = user.Credentials.UserName,
-        //                     Picture = recipeOutput.Picture,
-        //                     Rating = recipeOutput.Rating,
-        //                     Slug = recipeOutput.Slug,
-        //                     Steps = recipeOutput.Steps,
-        //                     ViewCount = recipeOutput.ViewCount
-        //                 })
-        //                 .ToList();
-
-        var searchOutput = new SearchOutputDto
-        {
-            Recipes = recipesOutput,
-            FilteredCount = filteredCount
-        };
-
-        return searchOutput;
-    }
-
     public async Task<RecipeOutputDto> GetRecipeForDetailWiewAsync(string slug, CancellationToken cancellationToken)
     {
         var recipe = await _recipeDbContext.Recipe
@@ -743,12 +660,6 @@ public class RecipeService : IRecipeService
     {
         string? searchIngredients = null;
 
-        var breakfastCategoryId = Guid.Parse("0e502998-6a5d-4361-953c-b174ac3bd9e4");
-        var lunchCategoryId = Guid.Parse("ee0b4b1e-8e15-471b-8970-d83360cb52dd");
-        var soupCategoryId = Guid.Parse("ab851a8b-22de-48c3-be2b-3d4f0f8fd24d");
-        var dinnerCategoryId = Guid.Parse("c1354fe3-776e-4d21-ad9d-bdd623188031");
-        var dessertCategoryId = Guid.Parse("d86e3066-6047-4128-a1d0-fa092429a6fb");
-
         if (string.IsNullOrWhiteSpace(inputDto.Ingredients) == false)
         {
             searchIngredients = inputDto.Ingredients;
@@ -757,9 +668,9 @@ public class RecipeService : IRecipeService
         {
             var randomIngredients = (await _recipeDbContext.Recipe
                 .AsNoTracking()
-                .Include(x => x.Categories)
+                //.Include(x => x.Categories)
                 .Include(x => x.Ingredients)
-                .Where(x => x.Categories.Select(y => y.CategoryId).Any(y => y == dinnerCategoryId || y == lunchCategoryId))
+                //.Where(x => x.Categories.Select(y => y.CategoryId).Any(y => y == dinnerCategoryId || y == lunchCategoryId))
                 .OrderBy(r => EF.Functions.Random())
                 .FirstOrDefaultAsync(cancellationToken))?
                 .Ingredients;
@@ -769,58 +680,23 @@ public class RecipeService : IRecipeService
             searchIngredients = string.IsNullOrWhiteSpace(searchIngredients) ? null : searchIngredients;
         }
 
-        var breakfastRecipes = await SearchAsync(new SearchInputDto
-        {
-            CategoryId = breakfastCategoryId,
-            CurrentPageIndex = 1,
-            PageSize = 3,
-            SearchIngredients = searchIngredients,
-            SearchName = null
-        }, cancellationToken);
+        var breakfastRecipes = await _menuOfTheDayBreakfastRecipeService.GetBreakfastRecipesAsync(searchIngredients, 3, cancellationToken);
 
-        var lunchRecipes = await SearchAsync(new SearchInputDto
-        {
-            CategoryId = lunchCategoryId,
-            CurrentPageIndex = 1,
-            PageSize = 3,
-            SearchIngredients = searchIngredients,
-            SearchName = null
-        }, cancellationToken);
+        var lunchRecipes = await _menuOfTheDayLunchRecipeService.GetLunchRecipesAsync(searchIngredients, 3, cancellationToken);
 
-        var soupRecipes = await SearchAsync(new SearchInputDto
-        {
-            CategoryId = soupCategoryId,
-            CurrentPageIndex = 1,
-            PageSize = 3,
-            SearchIngredients = searchIngredients,
-            SearchName = null
-        }, cancellationToken);
+        var soupRecipes = await _menuOfTheDaySoupRecipeService.GetSoupRecipesAsync(searchIngredients, 3, cancellationToken);
 
-        var dinnerRecipes = await SearchAsync(new SearchInputDto
-        {
-            CategoryId = dinnerCategoryId,
-            CurrentPageIndex = 1,
-            PageSize = 3,
-            SearchIngredients = searchIngredients,
-            SearchName = null
-        }, cancellationToken);
+        var dinnerRecipes = await _menuOfTheDayDinnerRecipeService.GetDinnerRecipesAsync(searchIngredients, 3, cancellationToken);
 
-        var dessertRecipes = await SearchAsync(new SearchInputDto
-        {
-            CategoryId = dessertCategoryId,
-            CurrentPageIndex = 1,
-            PageSize = 3,
-            SearchIngredients = searchIngredients,
-            SearchName = null
-        }, cancellationToken);
+        var dessertRecipes = await _menuOfTheDayDessertRecipesService.GetDessertRecipesAsync(searchIngredients, 3, cancellationToken);
 
         var outputDto = new MenuOfTheDayOutputDto
         {
-            BreakfastRecipes = breakfastRecipes.Recipes,
-            LunchRecipes = lunchRecipes.Recipes,
-            SoupRecipes = soupRecipes.Recipes,
-            DinnerRecipes = dinnerRecipes.Recipes,
-            DessertRecipes = dessertRecipes.Recipes
+            BreakfastRecipes = breakfastRecipes,
+            LunchRecipes = lunchRecipes,
+            SoupRecipes = soupRecipes,
+            DinnerRecipes = dinnerRecipes,
+            DessertRecipes = dessertRecipes
         };
 
         return outputDto;
