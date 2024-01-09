@@ -40,12 +40,12 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IUnitService, UnitService>();
         services.AddTransient<IIngredientGroupService, IngredientGroupService>();
 
-        services.AddScoped<IMenuOfTheDayService, MenuOfTheDayService>();
-        services.AddScoped<MenuOfTheDayBreakfastRecipesService>();
-        services.AddScoped<MenuOfTheDayLunchRecipesService>();
-        services.AddScoped<MenuOfTheDaySoupRecipesService>();
-        services.AddScoped<MenuOfTheDayDinnerRecipesService>();
-        services.AddScoped<MenuOfTheDayDessertRecipesService>();
+        services.AddScoped<MenuOfTheDayBreakfastRecipes>();
+        services.AddScoped<MenuOfTheDayLunchRecipes>();
+        services.AddScoped<MenuOfTheDaySoupRecipes>();
+        services.AddScoped<MenuOfTheDayDinnerRecipes>();
+        services.AddScoped<MenuOfTheDayDessertRecipes>();
+        services.AddScoped<MenuOfTheDayGenerator>();
         services.AddScoped<IRecipeSearchService, RecipeSearchService>();
     }
 

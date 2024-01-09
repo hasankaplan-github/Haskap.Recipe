@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Haskap.Recipe.Application.Contracts;
-public interface IMenuOfTheDayService
+public interface IMenuOfTheDay
 {
-    Task<List<RecipeOutputDto>> GetRecipesAsync(Guid categoryId, string? ingredients, int count, CancellationToken cancellationToken);
+    Task<List<RecipeOutputDto>> GetRecipesAsync(string? ingredients, int count, CancellationToken cancellationToken);
 }

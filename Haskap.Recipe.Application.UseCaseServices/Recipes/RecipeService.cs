@@ -27,28 +27,31 @@ public class RecipeService : IRecipeService
 {
     private readonly IRecipeDbContext _recipeDbContext;
     private readonly IMapper _mapper;
-    private readonly MenuOfTheDayBreakfastRecipesService _menuOfTheDayBreakfastRecipeService;
-    private readonly MenuOfTheDayLunchRecipesService _menuOfTheDayLunchRecipeService;
-    private readonly MenuOfTheDaySoupRecipesService _menuOfTheDaySoupRecipeService;
-    private readonly MenuOfTheDayDinnerRecipesService _menuOfTheDayDinnerRecipeService;
-    private readonly MenuOfTheDayDessertRecipesService _menuOfTheDayDessertRecipesService;
+    private readonly MenuOfTheDayBreakfastRecipes _menuOfTheDayBreakfastRecipes;
+    private readonly MenuOfTheDayLunchRecipes _menuOfTheDayLunchRecipes;
+    private readonly MenuOfTheDaySoupRecipes _menuOfTheDaySoupRecipes;
+    private readonly MenuOfTheDayDinnerRecipes _menuOfTheDayDinnerRecipes;
+    private readonly MenuOfTheDayDessertRecipes _menuOfTheDayDessertRecipes;
+    private readonly MenuOfTheDayGenerator _menuOfTheDayGenerator;
 
     public RecipeService(
         IRecipeDbContext recipeDbContext,
         IMapper mapper,
-        MenuOfTheDayBreakfastRecipesService menuOfTheDayBreakfastRecipeService,
-        MenuOfTheDayLunchRecipesService menuOfTheDayLunchRecipeService,
-        MenuOfTheDaySoupRecipesService menuOfTheDaySoupRecipeService,
-        MenuOfTheDayDinnerRecipesService menuOfTheDayDinnerRecipeService,
-        MenuOfTheDayDessertRecipesService menuOfTheDayDessertRecipesService)
+        MenuOfTheDayBreakfastRecipes menuOfTheDayBreakfastRecipes,
+        MenuOfTheDayLunchRecipes menuOfTheDayLunchRecipes,
+        MenuOfTheDaySoupRecipes menuOfTheDaySoupRecipes,
+        MenuOfTheDayDinnerRecipes menuOfTheDayDinnerRecipes,
+        MenuOfTheDayDessertRecipes menuOfTheDayDessertRecipes,
+        MenuOfTheDayGenerator menuOfTheDayGenerator)
     {
         _recipeDbContext = recipeDbContext;
         _mapper = mapper;
-        _menuOfTheDayBreakfastRecipeService = menuOfTheDayBreakfastRecipeService;
-        _menuOfTheDayLunchRecipeService = menuOfTheDayLunchRecipeService;
-        _menuOfTheDaySoupRecipeService = menuOfTheDaySoupRecipeService;
-        _menuOfTheDayDinnerRecipeService = menuOfTheDayDinnerRecipeService;
-        _menuOfTheDayDessertRecipesService = menuOfTheDayDessertRecipesService;
+        _menuOfTheDayBreakfastRecipes = menuOfTheDayBreakfastRecipes;
+        _menuOfTheDayLunchRecipes = menuOfTheDayLunchRecipes;
+        _menuOfTheDaySoupRecipes = menuOfTheDaySoupRecipes;
+        _menuOfTheDayDinnerRecipes = menuOfTheDayDinnerRecipes;
+        _menuOfTheDayDessertRecipes = menuOfTheDayDessertRecipes;
+        _menuOfTheDayGenerator = menuOfTheDayGenerator;
     }
 
     public async Task ActivateAsync(Guid id, CancellationToken cancellationToken)
@@ -680,15 +683,11 @@ public class RecipeService : IRecipeService
             searchIngredients = string.IsNullOrWhiteSpace(searchIngredients) ? null : searchIngredients;
         }
 
-        var breakfastRecipes = await _menuOfTheDayBreakfastRecipeService.GetBreakfastRecipesAsync(searchIngredients, 3, cancellationToken);
-
-        var lunchRecipes = await _menuOfTheDayLunchRecipeService.GetLunchRecipesAsync(searchIngredients, 3, cancellationToken);
-
-        var soupRecipes = await _menuOfTheDaySoupRecipeService.GetSoupRecipesAsync(searchIngredients, 3, cancellationToken);
-
-        var dinnerRecipes = await _menuOfTheDayDinnerRecipeService.GetDinnerRecipesAsync(searchIngredients, 3, cancellationToken);
-
-        var dessertRecipes = await _menuOfTheDayDessertRecipesService.GetDessertRecipesAsync(searchIngredients, 3, cancellationToken);
+        var breakfastRecipes = await _menuOfTheDayGenerator.GenerateAsync(_menuOfTheDayBreakfastRecipes, searchIngredients, 3, cancellationToken);
+        var lunchRecipes = await _menuOfTheDayGenerator.GenerateAsync(_menuOfTheDayLunchRecipes, searchIngredients, 3, cancellationToken);
+        var soupRecipes = await _menuOfTheDayGenerator.GenerateAsync(_menuOfTheDaySoupRecipes, searchIngredients, 3, cancellationToken);
+        var dinnerRecipes = await _menuOfTheDayGenerator.GenerateAsync(_menuOfTheDayDinnerRecipes, searchIngredients, 3, cancellationToken);
+        var dessertRecipes = await _menuOfTheDayGenerator.GenerateAsync(_menuOfTheDayDessertRecipes, searchIngredients, 3, cancellationToken);
 
         var outputDto = new MenuOfTheDayOutputDto
         {
